@@ -8,12 +8,13 @@ recoders_make <- function() {
 
   list(
 
-    variable = c('age_cat' = 'Age, years',
-                 'sex' = 'Sex',
-                 'race' = 'Race',
-                 'ckd' = 'Chronic Kidney Disease',
-                 'moca' = 'Cognitive Function',
-                 'frail' = 'Frailty Status'),
+    variable = c("overall" = "Overall",
+                 "age_cat" = "Age, years",
+                 "sex" = "Sex",
+                 "race" = "Race",
+                 "ckd" = "Chronic Kidney Disease",
+                 "moca" = "Cognitive Function",
+                 "frail" = "Frailty Status"),
 
     group = c(
       "overall" = "Overall",

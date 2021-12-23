@@ -11,6 +11,7 @@ subgroups <- tibble(group = c("overall",
                               "ckd",
                               "moca",
                               "frail"))
+
 list(
 
   tar_target(recoders, recoders_make()),
@@ -58,13 +59,19 @@ list(
   tar_combine(
     long_ds,
     long[[2]],
-    command = bind_rows(!!!.x, .id = "variable")
+    command = bind_rows(!!!.x, .id = "variable") |>
+      mutate(variable = str_remove(variable, '^long_ds_'))
   ),
 
   tar_combine(
     long_inf,
     long[[3]],
-    command = bind_rows(!!!.x, .id = "variable")
+    command = bind_rows(!!!.x, .id = "variable") |>
+      mutate(variable = str_remove(variable, '^long_inf_'))
+  ),
+
+  tar_target(
+    long_viz_forest, ndi_long_viz_forest(long_inf, recoders)
   ),
 
   base <- tar_map(
@@ -86,19 +93,29 @@ list(
   tar_combine(
     base_ds,
     base[[2]],
-    command = bind_rows(!!!.x, .id = "variable")
+    command = bind_rows(!!!.x, .id = "variable") |>
+      mutate(variable = str_remove(variable, '^base_ds_'))
   ),
 
   tar_combine(
     base_inf,
     base[[3]],
-    command = bind_rows(!!!.x, .id = "variable")
+    command = bind_rows(!!!.x, .id = "variable") |>
+      mutate(variable = str_remove(variable, '^base_inf_'))
   ),
 
   tar_combine(
     base_viz_inc,
     base[[4]],
-    command = bind_rows(!!!.x, .id = "variable")
+    command = bind_rows(!!!.x, .id = "variable") |>
+      mutate(variable = str_remove(variable, '^base_viz_inc_'))
+  ),
+
+  tar_combine(
+    base_viz_eff,
+    base[[5]],
+    command = bind_rows(!!!.x, .id = "variable") |>
+      mutate(variable = str_remove(variable, '^base_viz_eff_'))
   ),
 
   tar_render(manuscript, "doc/manuscript.Rmd")

@@ -17,13 +17,15 @@ library(table.glue)
 library(flextable)
 library(survminer)
 library(cmprsk)
+library(officer)
+library(cowplot)
 
 conflict_prefer("filter", "dplyr")
 conflict_prefer("select", "dplyr")
 conflict_prefer("border", "flextable")
 conflict_prefer("font", "flextable")
 conflict_prefer("rotate", "flextable")
-
+conflict_prefer("get_legend", "cowplot")
 
 
 library(rmarkdown)

@@ -82,7 +82,7 @@ ndi_base_viz_incidence <- function(ndi_data_list) {
             y = est,
             col = treatment,
             group = interaction(treatment, event)) +
-        geom_line(size = 1.2) +
+        geom_line(size = 1.5) +
         geom_ribbon(
           aes(x = time,
               ymin = est - sqrt(var) * 1.96,
@@ -103,7 +103,7 @@ ndi_base_viz_incidence <- function(ndi_data_list) {
                            limits = c(0, ymax)) +
         scale_x_continuous(breaks = c(0:10),
                            expand = c(0, 0, 0, 0),
-                           limits = c(0, 12)) +
+                           limits = c(0, 13)) +
         scale_color_manual(values = cols_tx) +
         scale_fill_manual(values = cols_tx)
 
@@ -118,20 +118,22 @@ ndi_base_viz_incidence <- function(ndi_data_list) {
       fig_cr <- add_annotations(fig_cr,
                                 cols = cols_bg,
                                 ymax = ymax,
-                                xmax = 12) +
+                                xmax = 13,
+                                x_cohort_phase = 6.25) +
         annotate(geom = 'text',
-                 x = 11.1,
+                 x = 11.5,
                  y = y_text$est[y_text$event == 'Non-CVD mortality'],
                  size = 5,
                  label = 'Non-CVD\nMortality') +
         annotate(geom = 'text',
-                 x = 11.1,
+                 x = 11.5,
                  y = y_text$est[y_text$event == 'CVD mortality'],
                  size = 5,
                  label = 'CVD\nMortality')
 
 
-      tibble(acm = list(fig_kap), cvd = list(fig_cr))
+      tibble(inc_acm = list(fig_kap),
+             inc_cvd = list(fig_cr))
 
     }
   )

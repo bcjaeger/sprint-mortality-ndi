@@ -8,14 +8,16 @@ output:
     reference_docx: style_manuscript_times_new_roman.docx
 ---
 
-
-Nicholas M. Pajewski, PhD^1^ 
 Byron C. Jaeger, PhD^1^ 
 Paul E. Drawz, DEGREES^2^ 
 Paul K. Whelton, DEGREES^3^ 
 Mark A. Supiano, DEGREES^4^ 
-Jeff D. Williamson, DEGREES^5^, and 
-David M. Reboussin, DEGREES^1^
+Adam P. Bress, PharmD, MS^5,6^
+Jeff D. Williamson, DEGREES^7^
+David M. Reboussin, DEGREES^1^, and
+Nicholas M. Pajewski, PhD^1^ 
+
+<!-- Jackson T. Wright Jr., MD, PhD, Alfred K. Cheung, MD, William C. Cushman, MD, Cora E. Lewis, MD, Suzanne Oparil, MD, Michael V. Rocco, MD and Karen Johnson, MD -->
 
 ^1^Department of Biostatistics and Data Science, Wake Forest School of Medicine, Winston-Salem, NC
 
@@ -25,7 +27,11 @@ David M. Reboussin, DEGREES^1^
 
 ^4^Division of Geriatrics, University of Utah School of Medicine, Salt Lake City.  
 
-^5^Section on Gerontology and Geriatric Medicine, Wake Forest School of Medicine, Winston-Salem, NC. 
+^5^	Informatics, Decision-Enhancement, and Analytic Sciences (IDEAS) Center, Veterans Affairs, Salt Lake City Health Care System, Salt Lake City, UT
+
+^6^	Department of Population Health Sciences, University of Utah School of Medicine, Salt Lake City, UT
+
+^7^Section on Gerontology and Geriatric Medicine, Wake Forest School of Medicine, Winston-Salem, NC. 
 
 
 ```{r setup, include=FALSE}
@@ -33,9 +39,10 @@ David M. Reboussin, DEGREES^1^
 
 knitr::opts_chunk$set(echo = FALSE, 
                       message = FALSE,
+                      warning = FALSE,
                       dpi = 600, 
-                      fig.height = 7, 
-                      fig.width = 6.75)
+                      fig.width = 11, 
+                      fig.height = 6.25)
 
 # specification for table tables
 rspec <- round_spec() |>
@@ -52,24 +59,15 @@ options(rspec)
 
 tar_load(names = c(recoders,
                    base_viz_inc,
+                   base_viz_eff,
+                   long_viz_forest,
                    base_ds, 
                    long_ds,
                    long_inf,
                    base_inf,
                    ndi_baseline))
 
-base_ds <- mutate(base_ds,
-                  variable = str_remove(variable, '^base_ds_'))
-
-long_ds <- mutate(long_ds,
-                  variable = str_remove(variable, '^long_ds_'))
-
-long_inf <- mutate(long_inf,
-                   variable = str_remove(variable, '^long_inf_'))
-
-base_inf <- mutate(base_inf,
-                   variable = str_remove(variable, '^base_inf_'))
-
+fig <- left_join(base_viz_inc, base_viz_eff)
 
 inline <- list()
 
@@ -243,35 +241,94 @@ tbl_object
 
 ```
 
-\newpage
-__Figure 1__: Cumulative incidence of all-cause mortality.
+```{r}
+
+block_section(
+  prop_section(
+    page_size = page_size(orient = "portrait"),
+    type = "continuous"
+  )
+)
+
+```
+
+
+__Figure 1__: (A) Cumulative incidence of all-cause mortality by treatment group. (B) Time-dependent effect of being randomized to intensive treatment on all-cause mortality.
 
 ```{r}
 
-base_viz_inc$acm[[1]]
+blank_plot <- ggplot(data.frame()) + aes() + theme_void()
+
+legend <- get_legend(
+  fig$inc_acm[[1]]$plot + 
+    theme(legend.position = c(.55, .2),
+          legend.direction = 'horizontal')
+)
+
+plot_grid(
+  # row 1 (legend)
+  legend, 
+  blank_plot,
+  # row 2 (figures)
+  fig$inc_acm[[1]]$plot + theme(legend.position = ''), 
+  fig$eff_acm[[1]],
+  # row 3 (table)
+  fig$inc_acm[[1]]$table, 
+  blank_plot,
+  ncol = 2,
+  align = 'v',
+  axis = 'lr',
+  rel_heights = c(1,10,2),
+  labels = c("","","A","B","",""),
+  label_x = 0.1,
+  label_y = 1.05
+)
 
 ```
 
 \newpage
-__Figure 2__: Cumulative incidence of cardiovascular and non-cardiovascular mortality.
+__Figure 2__: (A) Cumulative incidence of cardiovascular and non-cardiovascular mortality by treatment group. (B) Time-dependent effect of being randomized to intensive treatment on cardiovascular mortality.
 
 ```{r}
 
-base_viz_inc$cvd[[1]]
+plot_grid(
+  # row 1 (legend)
+  legend, 
+  blank_plot,
+  # row 2 (figures)
+  fig$inc_cvd[[1]] + theme(legend.position = ''), 
+  fig$eff_cvd[[1]],
+  ncol = 2,
+  align = 'v',
+  axis = 'lr',
+  rel_heights = c(1,10,2),
+  labels = c("","","A","B","",""),
+  label_x = 0.1,
+  label_y = 1.05
+)
 
 ```
 
 \newpage
+__Figure 3__: Hazard ratio for all-cause mortality for participants randomized to intensive versus standard treatment, overall and in subgroups.
+
+```{r}
+
+long_viz_forest
+
+```
+
+
 # SUPPLEMENT
 
-We have a total of `r nrow(base_viz_inc)`) plots showing all-cause mortality and mortality split into cardiovascular and non-cardiovascular causes. They are automated enough to dynamically set text and axis values that will look reasonable. To show what I mean, I've added the figures for adults 75 years or older, who have a much higher incidence. 
+We have a total of `r nrow(base_viz_inc)` plots showing all-cause mortality and mortality split into cardiovascular and non-cardiovascular causes. They are automated enough to dynamically set text and axis values that will look reasonable. To show what I mean, I've added the figures for adults 75 years or older, who have a much higher incidence. 
 
 \newpage
 __Figure S1__: Cumulative incidence of all-cause mortality among participants 75 years or older.
 
 ```{r}
 
-base_viz_inc$acm[[3]]
+# base_viz_inc$acm[[3]]
 
 ```
 
@@ -280,6 +337,18 @@ __Figure S2__: Cumulative incidence of cardiovascular and non-cardiovascular mor
 
 ```{r}
 
-base_viz_inc$cvd[[3]]
+# base_viz_inc$cvd[[3]]
 
 ```
+
+```{r}
+block_section(
+  prop_section(
+    page_size = page_size(orient = "landscape"),
+    page_margins = page_mar(bottom = 1/8, top = 1/8, 
+                            right = 1/4, left = 1/4),
+    type = "continuous"
+  )
+)
+```
+
