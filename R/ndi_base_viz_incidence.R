@@ -57,7 +57,8 @@ ndi_base_viz_incidence <- function(ndi_data_list) {
                                         labels = c("- Censored",
                                                    "- CVD mortality",
                                                    "- Non-CVD mortality")),
-                       group   = ndi_data$treatment, cencode = '- Censored')
+                       group   = ndi_data$treatment,
+                       cencode = '- Censored')
 
       data_cr <-
         map_dfr(.x = fit_cr[1:4],

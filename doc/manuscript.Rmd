@@ -1,7 +1,7 @@
 ---
 title: "Longer term All-Cause and Cardiovascular Mortality with Intensive Blood Pressure Control"
 bibliography: refs.bib
-csl: jacc.csl
+csl: lancet.csl
 always_allow_html: true
 output: 
   officedown::rdocx_document:
@@ -60,7 +60,8 @@ options(rspec)
 tar_load(names = c(recoders,
                    base_viz_inc,
                    base_viz_eff,
-                   long_viz_forest,
+                   long_viz_mort,
+                   long_viz_cvd,
                    base_ds, 
                    long_ds,
                    long_inf,
@@ -125,24 +126,34 @@ __Results__. Over a median follow-up of `r ap_b_o$fup_est` years, there were `r 
 __Conclusions__. Our results show a clear benefit for cardiovascular and all-cause mortality during the trial which was largely attenuated during post-trial observational follow-up. Given indications of increasing blood pressures in SPRINT participants randomized to intensive treatment following the trial, these results highlight the importance of consistent long-term management of hypertension in line with current guidelines. 
 \newpage
 
+<!-- END OF ABSTRACT -->
+
 # INTRODUCTION
 
 # METHODS
 
+___Statistical Analysis___: The effect of randomization to intensive treatment was estimated as a function of time using two approaches. The first approach split the follow-up of study participants into non-overlapping trial and cohort phases, then estimated the effect of randomization to intensive treatment in each phase [@zhang_time_varying_2018]. The second approach estimated the cumulative time-dependent effect of randomization to intensive treatment [@martinussen2007dynamic]. While the phase-specific estimate of the treatment effect treats the trial and cohort phases independently, the cumulative estimate enforces continuity of the treatment effect through time so that the effect of treatment during the trial phase is not 'forgotten' during the cohort phase. All analyses accounted for correlation within study sites [@lin_robust_1989], and analyses of cardiovascular mortality accounted for the competing risk of non-cardiovascular mortality [@scheike_flexible_2008].
+
 # RESULTS
+
+In both treatment groups, median follow-up time was `r ap_b_o$fup_est` years. A total of `r ap_b_i$n_acm` and `r ap_b_s$n_acm` all-cause mortality events occurred among participants randomized to intensive and standard treatment, respectively (__Table 1__). The hazard ratio (HR) for all-cause mortality among participants randomized to intensive versus standard treatment was `r with(ap_l_o_t, .("{mort_est} (95% confidence interval [CI] {mort_lwr}, {mort_upr})"))` during the trial phase and `r with(ap_l_o_c, .("{mort_est} (95% CI {mort_lwr}, {mort_upr})"))` during the cohort phase. The cumulative time-varying effect of intensive versus standard treatment indicated lower risk for all-cause mortality during the trial phase and was attenuated during the cohort phase (__Figure 1__). 
+
 
 # DISCUSSION
 
+
+
 ```{r}
-# in case you want to make something landscape,
-# wrap it in this code
-#<!---BLOCK_LANDSCAPE_START--->
-#<!---BLOCK_LANDSCAPE_STOP--->
-# remove the # signs - you will be placing this in the markdown text
+
+block_section(
+  prop_section(
+    page_size = page_size(orient = "portrait"),
+    type = "continuous"
+  )
+)
+
 ```
 
-
-\newpage
 __Table 1__: All-cause mortality by treatment group and subgroup 
 
 ```{r}
@@ -158,14 +169,13 @@ tbl_inf <- long_inf |>
               names_prefix = '.h_')
 
 tbl_data <- long_ds |>
-  left_join(base_ds) |>
   mutate(
+    across(starts_with("n_"), as.integer),
     .n = .("{n_acm} / {n_obs}"),
-    .i = .("{incidence_est}\n({incidence_lwr}, {incidence_upr})")
+    .i = .("{inc_mort_est}\n({inc_mort_lwr}, {inc_mort_upr})")
   ) |>
-  select(-starts_with("incidence_"),
-         -starts_with("n_"),
-         -starts_with("fup_")) |> 
+  select(-starts_with("inc_"),
+         -starts_with("n_")) |> 
   pivot_wider(names_from = c(treatment, trial_phase),
               values_from = c(.n, .i)) |> 
   left_join(tbl_inf) |> 
@@ -177,18 +187,15 @@ tbl_data <- long_ds |>
   
 
 tbl_object <- tbl_data |> 
-  select(variable, group, 
-         ends_with('trial'), 
-         ends_with('cohort')) |> 
   select(variable,
          group,
-         # .n_Standard_trial,
-         # .n_Intensive_trial,
+         .n_Standard_trial,
+         .n_Intensive_trial,
          .i_Standard_trial,
          .i_Intensive_trial,
          .h_trial,
-         # .n_Standard_cohort,
-         # .n_Intensive_cohort,
+         .n_Standard_cohort,
+         .n_Intensive_cohort,
          .i_Standard_cohort,
          .i_Intensive_cohort,
          .h_cohort) |> 
@@ -197,29 +204,29 @@ tbl_object <- tbl_data |>
   as_flextable(hide_grouplabel = TRUE) |> 
   add_header_row(
     values = c(" ", 
-               # "N Events / N Total", 
-               "Incidence (95% CI)", 
+               "N Events / N Total", 
+               "Incidence\n(95% CI)", 
                "Hazard Ratio\n(95% CI)",
-               # "N Events / N Total", 
-               "Incidence (95% CI)",
+               "N Events / N Total", 
+               "Incidence\n(95% CI)",
                "Hazard Ratio\n(95% CI)"),
-    colwidths = c(1, 2, 1, 2, 1)
+    colwidths = c(1, 2, 2, 1, 2, 2, 1)
   ) |> 
   add_header_row(
     values = c(" ", 
                "Trial Follow-up Through Close-out Visits",
                "Post-trial Follow-up"),
-    colwidths = c(1, 3, 3)
+    colwidths = c(1, 5, 5)
   ) |> 
   set_header_labels(
     group = " ",
-    # .n_Standard_trial   = "Standard",
-    # .n_Intensive_trial  = "Intensive",
+    .n_Standard_trial   = "Standard",
+    .n_Intensive_trial  = "Intensive",
     .i_Standard_trial   = "Standard",
     .i_Intensive_trial  = "Intensive",
     .h_trial            = "Hazard Ratio\n(95% CI)",
-    # .n_Standard_cohort  = "Standard",
-    # .n_Intensive_cohort = "Intensive",
+    .n_Standard_cohort  = "Standard",
+    .n_Intensive_cohort = "Intensive",
     .i_Standard_cohort  = "Standard",
     .i_Intensive_cohort = "Intensive",
     .h_cohort           = "Hazard Ratio\n(95% CI)"
@@ -241,19 +248,99 @@ tbl_object
 
 ```
 
+\newpage
+__Table 2__: Cardiovascular and non-cardiovascular mortality by treatment group and subgroup 
+
 ```{r}
 
-block_section(
-  prop_section(
-    page_size = page_size(orient = "portrait"),
-    type = "continuous"
+tbl_inf <- long_inf |> 
+  mutate(cvd = .("{cvd_est}\n({cvd_lwr}, {cvd_upr})"),
+         non = .("{other_est}\n({other_lwr}, {other_upr})")) |> 
+  select(variable,
+         group, 
+         trial_phase,
+         cvd,
+         non) |> 
+  pivot_wider(names_from = trial_phase,
+              values_from = c(cvd, non),
+              names_glue = ".h_{.value}_{trial_phase}")
+
+tbl_data <- long_ds |>
+  mutate(
+    across(starts_with("n_"), as.integer),
+    .n = .("{n_cvd} / {n_other} / {n_obs}")
+  ) |>
+  select(-starts_with("inc_"),
+         -starts_with("n_")) |> 
+  pivot_wider(names_from = c(treatment, trial_phase),
+              values_from = c(.n),
+              names_prefix = '.n_') |> 
+  left_join(tbl_inf) |> 
+  mutate(
+    variable = replace(variable, group == variable, NA_character_),
+    variable = recode(variable, !!!recoders$variable),
+    group = recode(group, !!!recoders$group)
   )
-)
+  
+
+tbl_object <- tbl_data |> 
+  select(variable,
+         group,
+         .n_Standard_trial,
+         .n_Intensive_trial,
+         .h_cvd_trial,
+         .h_non_trial,
+         .n_Standard_cohort,
+         .n_Intensive_cohort,
+         .h_cvd_cohort,
+         .h_non_cohort) |> 
+  as_grouped_data(groups = 'variable') |> 
+  drop_na_rows() |> 
+  as_flextable(hide_grouplabel = TRUE) |> 
+  add_header_row(
+    values = c(" ", 
+               "N\nCVD / non-CVD / Total", 
+               "Hazard Ratio\n(95% CI)",
+               "N\nCVD / non-CVD / Total", 
+               "Hazard Ratio\n(95% CI)"),
+    colwidths = c(1, 2, 2, 2, 2)
+  ) |> 
+  add_header_row(
+    values = c(" ", 
+               "Trial Follow-up Through Close-out Visits",
+               "Post-trial Follow-up"),
+    colwidths = c(1, 4, 4)
+  ) |> 
+  set_header_labels(
+    group = " ",
+    .n_Standard_trial= "Standard",
+    .n_Intensive_trial= "Intensive",
+    .h_cvd_trial = "CVD",
+    .h_non_trial = "Non-CVD",
+    .n_Standard_cohort = "Standard",
+    .n_Intensive_cohort = "Intensive",
+    .h_cvd_cohort = "CVD",
+    .h_non_cohort = "Non-CVD"
+  ) |> 
+  merge_v(part = 'header') |>
+  theme_box() |> 
+  padding(j = 1, i = ~ !is.na(group), padding.left = 15, part = 'body') |> 
+  bg(i = ~ is.na(group), bg = 'grey80') |> 
+  italic(i = ~ is.na(group), italic = TRUE) |> 
+  width(width = 0.95) |> 
+  width(j=1, width = 1.5) |> 
+  align(align = 'center', part = 'all') |> 
+  align(j = 1, align = 'left', part = 'all') |> 
+  fontsize(size = 12, part = 'all') |> 
+  font(fontname = 'Times New Roman', part = 'all')
+
+tbl_object
+
 
 ```
 
-
-__Figure 1__: (A) Cumulative incidence of all-cause mortality by treatment group. (B) Time-dependent effect of being randomized to intensive treatment on all-cause mortality.
+\newpage
+__Figure 1__: (A) Cumulative incidence of all-cause mortality by treatment group. (B) Time-dependent effect of randomization to intensive treatment for all-cause mortality.
 
 ```{r}
 
@@ -287,7 +374,7 @@ plot_grid(
 ```
 
 \newpage
-__Figure 2__: (A) Cumulative incidence of cardiovascular and non-cardiovascular mortality by treatment group. (B) Time-dependent effect of being randomized to intensive treatment on cardiovascular mortality.
+__Figure 2__: (A) Cumulative incidence of cardiovascular and non-cardiovascular mortality by treatment group. (B) Time-dependent effect of randomization to intensive treatment for cardiovascular mortality.
 
 ```{r}
 
@@ -310,36 +397,42 @@ plot_grid(
 ```
 
 \newpage
-__Figure 3__: Hazard ratio for all-cause mortality for participants randomized to intensive versus standard treatment, overall and in subgroups.
+__Figure 3__: Mean systolic blood pressure over time by treatment group. Shaded areas indicate a 95% confidence interval for the mean.
 
 ```{r}
 
-long_viz_forest
+knitr::include_graphics(
+  path = 'Z:/bjaeger/sprint-mortality-ndi/fig/SPRINT_EHR_SBP_LongTerm_Comparison_122721.png', 
+  dpi = 600
+)
 
 ```
+
+
+\newpage
+__Figure 4__: All-cause mortality hazard ratio for participants randomized to intensive versus standard treatment.
+
+```{r}
+
+long_viz_mort
+
+```
+
+\newpage
+__Figure 5__: Cardiovascular mortality hazard ratio for participants randomized to intensive versus standard treatment.
+
+```{r}
+
+long_viz_cvd
+
+```
+
+
 
 
 # SUPPLEMENT
 
-We have a total of `r nrow(base_viz_inc)` plots showing all-cause mortality and mortality split into cardiovascular and non-cardiovascular causes. They are automated enough to dynamically set text and axis values that will look reasonable. To show what I mean, I've added the figures for adults 75 years or older, who have a much higher incidence. 
-
-\newpage
-__Figure S1__: Cumulative incidence of all-cause mortality among participants 75 years or older.
-
-```{r}
-
-# base_viz_inc$acm[[3]]
-
-```
-
-\newpage
-__Figure S2__: Cumulative incidence of cardiovascular and non-cardiovascular mortality among participants 75 years or older.
-
-```{r}
-
-# base_viz_inc$cvd[[3]]
-
-```
+To be decided.
 
 ```{r}
 block_section(
@@ -352,3 +445,5 @@ block_section(
 )
 ```
 
+
+# REFERENCES

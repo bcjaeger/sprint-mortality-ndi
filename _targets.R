@@ -70,9 +70,8 @@ list(
       mutate(variable = str_remove(variable, '^long_inf_'))
   ),
 
-  tar_target(
-    long_viz_forest, ndi_long_viz_forest(long_inf, recoders)
-  ),
+  tar_target(long_viz_mort, ndi_long_viz_mort(long_inf, recoders)),
+  tar_target(long_viz_cvd, ndi_long_viz_cvd(long_inf, recoders)),
 
   base <- tar_map(
     values = subgroups,
