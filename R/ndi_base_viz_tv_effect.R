@@ -14,36 +14,33 @@ ndi_base_viz_tv_effect <- function(ndi_data_list) {
     .id = 'group',
     .f = function(ndi_data){
 
-
-      fit_acm <- timecox(
-        Surv(acm_years, acm_event) ~ treatment + cluster(randSite),
-        data = ndi_data
-      )
-
       fit_acm <- coxph(
         formula = Surv(acm_years, acm_event) ~ treatment + cluster(randSite),
         data = ndi_data
       )
 
-      x <- cox.zph(fit_acm)
+      zph <- cox.zph(fit_acm)
 
-      var_acm <- as_tibble(fit_acm$robvar.cum) |>
-        transmute(time, se = sqrt(treatmentIntensive))
+      zph_data <- tibble(time = zph$time,
+                         resid = zph$y[, 'treatment', drop = TRUE])
 
-      fit_acm_data <- as_tibble(fit_acm$cum) |>
-        left_join(var_acm) |>
-        transmute(
-          time,
-          hr_est = exp(treatmentIntensive),
-          hr_lwr = exp(treatmentIntensive - 1.96 * se),
-          hr_upr = exp(treatmentIntensive + 1.96 * se)
-        )
+      resid_fit <- lm(resid ~ ns(time, df = 6), zph_data)
+
+      resid_pred <- predict(resid_fit, se.fit = TRUE)
+
+      fit_acm_data <- tibble(
+        time = zph$time,
+        hr_est = exp(resid_pred$fit),
+        hr_lwr = exp(resid_pred$fit - 1.96 * resid_pred$se.fit),
+        hr_upr = exp(resid_pred$fit + 1.96 * resid_pred$se.fit)
+      )
 
       fig_eff_acm <- ggplot(fit_acm_data) +
         aes(x = time, y = hr_est, ymin = hr_lwr, ymax = hr_upr) +
         geom_ribbon(alpha = 0.2) +
         geom_line(color = cols_tx[2]) +
-        scale_y_log10(limits = c(0.15, 2.5), breaks = c(0.15, 0.25, 0.5, 1)) +
+        scale_y_log10(limits = c(0.35, 2.5),
+                      breaks = c(0.5, 1)) +
         scale_x_continuous(breaks = seq(0,10)) +
         theme_fig() +
         geom_segment(aes(x = 0, xend = max(time),
@@ -56,7 +53,7 @@ ndi_base_viz_tv_effect <- function(ndi_data_list) {
       fig_eff_acm <- add_annotations(fig_eff_acm, cols = cols_bg,
                                      ymax = 2.5,
                                      xmax = 10,
-                                     ymin = 0.15,
+                                     ymin = 0.35,
                                      ymult = 0.75)
 
       times <- ndi_data$acm_years[ndi_data$acm_event>0]
