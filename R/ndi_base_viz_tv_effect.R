@@ -20,6 +20,13 @@ ndi_base_viz_tv_effect <- function(ndi_data_list) {
         data = ndi_data
       )
 
+      fit_acm <- coxph(
+        formula = Surv(acm_years, acm_event) ~ treatment + cluster(randSite),
+        data = ndi_data
+      )
+
+      x <- cox.zph(fit_acm)
+
       var_acm <- as_tibble(fit_acm$robvar.cum) |>
         transmute(time, se = sqrt(treatmentIntensive))
 
