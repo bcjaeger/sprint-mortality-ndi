@@ -14,25 +14,50 @@ ndi_base_viz_tv_effect <- function(ndi_data_list) {
     .id = 'group',
     .f = function(ndi_data){
 
+      # Deprecated b/c this was an analysis of residuals
+      # fit_acm <- coxph(
+      #   formula = Surv(acm_years, acm_event) ~ treatment + cluster(randSite),
+      #   data = ndi_data
+      # )
+      # zph <- cox.zph(fit_acm)
+      #
+      # zph_data <- tibble(time = zph$time,
+      #                    resid = zph$y[, 'treatment', drop = TRUE])
+      #
+      # resid_fit <- lm(resid ~ ns(time, df = 6), zph_data)
+      #
+      # resid_pred <- predict(resid_fit, se.fit = TRUE)
+      #
+      # fit_acm_data <- tibble(
+      #   time = zph$time,
+      #   hr_est = exp(resid_pred$fit),
+      #   hr_lwr = exp(resid_pred$fit - 1.96 * resid_pred$se.fit),
+      #   hr_upr = exp(resid_pred$fit + 1.96 * resid_pred$se.fit)
+      # )
+
+      # Using the tt() approach instead of residual analysis
+      # this gives model estimates of the time-varying effect
       fit_acm <- coxph(
-        formula = Surv(acm_years, acm_event) ~ treatment + cluster(randSite),
+        formula = Surv(acm_years, acm_event) ~ treatment +
+          tt(treatment) + cluster(randSite),
+        tt = function(x, t, ...)
+          as.numeric(x == 'Intensive') * ns(t, df=6),
         data = ndi_data
       )
 
-      zph <- cox.zph(fit_acm)
+      plot_times <- seq(0, 10, length.out = 1000)
 
-      zph_data <- tibble(time = zph$time,
-                         resid = zph$y[, 'treatment', drop = TRUE])
+      spline_x <- cbind(1, ns(x = plot_times, df=6))
 
-      resid_fit <- lm(resid ~ ns(time, df = 6), zph_data)
+      yhat <- spline_x %*% coef(fit_acm)
 
-      resid_pred <- predict(resid_fit, se.fit = TRUE)
+      ses <- sqrt(diag(spline_x %*% vcov(fit_acm) %*% t(spline_x)))
 
       fit_acm_data <- tibble(
-        time = zph$time,
-        hr_est = exp(resid_pred$fit),
-        hr_lwr = exp(resid_pred$fit - 1.96 * resid_pred$se.fit),
-        hr_upr = exp(resid_pred$fit + 1.96 * resid_pred$se.fit)
+        time = plot_times,
+        hr_est = exp(yhat),
+        hr_lwr = exp(yhat - 1.96 * ses),
+        hr_upr = exp(yhat + 1.96 * ses)
       )
 
       fig_eff_acm <- ggplot(fit_acm_data) +
@@ -55,9 +80,6 @@ ndi_base_viz_tv_effect <- function(ndi_data_list) {
                                      xmax = 10,
                                      ymin = 0.35,
                                      ymult = 0.75)
-
-      times <- ndi_data$acm_years[ndi_data$acm_event>0]
-      times <- times[times > 1.5]
 
       fit_cvd <- comp.risk(
         formula = Event(acm_years, cvd_event_cr) ~ treatment + cluster(randSite),
