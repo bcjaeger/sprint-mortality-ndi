@@ -24,6 +24,7 @@ list(
              pid,
              # study site
              randSite,
+             screat,
              # all cause mortality time and statue
              acm_years, acm_event,
              # cvd mortality status

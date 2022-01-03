@@ -32,6 +32,7 @@ ndi_load <- function(sasinet_drive = "Z", fname, ...) {
       ckd = factor(eGFR_CKDEPI < 60,
                    levels = c(FALSE, TRUE),
                    labels = c("No", "Yes")),
+      egfr_2021 = ckd_epi_2021_compute(age, sex, screat),
       moca = factor(moca_status,
                     levels = c(0, 1),
                     labels = c("gt10th_percentile",
