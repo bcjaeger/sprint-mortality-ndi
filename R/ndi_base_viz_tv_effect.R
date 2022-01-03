@@ -60,6 +60,11 @@ ndi_base_viz_tv_effect <- function(ndi_data_list) {
         hr_upr = exp(yhat + 1.96 * ses)
       )
 
+      # do not remove the rm() statement.
+      # ggplot saves fit_acm in its environment, which causes
+      # the file size of the current target to be massive.
+      rm(fit_acm)
+
       fig_eff_acm <- ggplot(fit_acm_data) +
         aes(x = time, y = hr_est, ymin = hr_lwr, ymax = hr_upr) +
         geom_ribbon(alpha = 0.2) +
