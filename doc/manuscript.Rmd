@@ -1,5 +1,5 @@
 ---
-title: "Longer term All-Cause and Cardiovascular Mortality with Intensive Blood Pressure Control"
+title: "Longer term All-Cause and Cardiovascular Mortality with Intensive Blood Pressure Control: A Secondary Analysis of SPRINT"
 bibliography: refs.bib
 csl: lancet.csl
 always_allow_html: true
@@ -130,9 +130,23 @@ __Conclusions__. Our results show a clear benefit for cardiovascular and all-cau
 
 # INTRODUCTION
 
+both the The Systolic Blood Pressure Intervention Trial (SPRINT) and the Strategy of Blood Pressure Intervention in the Elderly Hypertensive Patients (STEP) trial have shown the benefits of intensive blood pressure control on cardiovascular morbidity and mortality [@sprint_research_group_randomized_2015; @zhang_trial_2021].
+
+__Reminder: bring in the recent BPTTC meta-analyses into the introduction__[@rahimi_age_stratified_2021].
+
 # METHODS
 
-___Statistical Analysis___: The effect of randomization to intensive treatment was estimated as a function of time using two approaches. The first approach split the follow-up of study participants into non-overlapping trial and cohort phases, then estimated the effect of randomization to intensive treatment in each phase [@zhang_time_varying_2018]. The second approach estimated the cumulative time-dependent effect of randomization to intensive treatment [@martinussen2007dynamic]. While the phase-specific estimate of the treatment effect treats the trial and cohort phases independently, the cumulative estimate enforces continuity of the treatment effect through time so that the effect of treatment during the trial phase is not 'forgotten' during the cohort phase. All analyses accounted for correlation within study sites [@lin_robust_1989], and analyses of cardiovascular mortality accounted for the competing risk of non-cardiovascular mortality [@scheike_flexible_2008].
+__Trial Design__: The trial design and methods have been published previously [@ambrosius_design_2014]. Briefly, we conducted a multicenter randomized clinical trial that compared two strategies for managing systolic BP (SBP) in older adults with hypertension who were at increased risk of cardiovascular disease. Participants were aged 50 years or older and had an SBP between 130 and 180 mm Hg at the screening visit, depending on the number of anti-hypertensive agents prescribed. Participants were considered to have an increased cardiovascular risk if they had clinical or subclinical cardiovascular disease, chronic kidney disease (defined by an estimated glomerular filtration rate of <60 mL/min/1.73 m^2^), or a Framingham Risk Score of 15% or greater or if they were aged 75 years or older. Individuals residing in a nursing home, persons with a diagnosis of dementia (based on medical record review), and those treated with medications primarily used for dementia therapy were excluded, as were persons with prevalent diabetes mellitus, history of stroke, proteinuria > 1 gram per day, or polycystic kidney disease. Individuals at 102 sites in the United States and Puerto Rico were randomized (1:1) to a SBP goal of less than 120 mm Hg (intensive treatment group, n = 4678) or a goal of less than 140 mm Hg (standard treatment group, n = 4683), using random permuted blocks with the randomization stratified by clinic site. The algorithms and formulary for the trial are listed in the published study protocol ( __citations needed__? ). Trial enrollment began in November 2010 and ended in March 2013, with active follow-up through July 1, 2016. The study was approved by the institutional review board at each participating site, and each participant provided written informed consent. The study is registered at ClinicalTrials.gov (NCT01206062).
+
+__National Death Index Linkage__: 
+
+__Baseline Study Measurements__: Sociodemographic data were collected at baseline, with race or ethnicity information collected via self-report. The estimated glomerular filtration rate (eGFR) was calculated by the four-variable Modification of Diet in Renal Disease study equation. Cognitive function was assessed using Montreal Cognitive Assessment (MoCA) [@nasreddine_montreal_2005]. Lower cognitive function was defined as scoring 18 or lower (less than high school education) or 20 or lower (high school education or higher) on the MoCA. This roughly corresponds to the estimated normative 25th percentile at 80 years of age in the Irish Longitudinal Study of Aging [@kenny_normative_2013]. We defined frailty status at baseline using a previously developed Frailty Index (FI) based upon the model of deficit accumulation [@pajewski_characterizing_2016]. Briefly, the FI comprises a total of 36 items, and is calculated as the sum of the score for each deficit divided by the total number of nonmissing items. We categorized frailty status as fit (FI ≤ 0.10), less fit (0.10 < FI ≤ 0.21), or frail (FI > 0.21).
+
+__EHR Ancillary Study__: We examined the trajectory of systolic blood pressure (SBP) following the conclusion of the trial using outpatient SBPs extracted from the electronic health record (EHR). Methods for the linkage of participants to their medical record number and the extraction of vital sign data have been previously described [@drawz_concordance_2020]. Because encounter type information was inconsistently available (i.e. outpatient, inpatient, observation, etc.), we defined a BP measurement as outpatient if there were was not a BP measurement on the preceding or following day, and if there were 2 or less BP measurements on a particular day. We averaged outpatient EHR BP readings when there were 2 on the same day.
+
+
+
+___Statistical Analysis___: The effect of randomization to intensive treatment was estimated as a function of time using two approaches. The first approach split the follow-up of study participants into non-overlapping trial and cohort phases, then estimated the effect of randomization to intensive treatment in each phase [@zhang_time_varying_2018]. The second approach estimated a continuous time-dependent effect [@martinussen2007dynamic; @therneau2017using]. While the phase-specific estimate of the treatment effect treats the trial and cohort phases independently, the cumulative estimate enforces continuity of the treatment effect through time so that the effect of treatment during the trial phase is not 'forgotten' during the cohort phase. All analyses accounted for correlation within study sites [@lin_robust_1989], and analyses of cardiovascular mortality accounted for the competing risk of non-cardiovascular mortality [@scheike_flexible_2008].
 
 # RESULTS
 
@@ -345,7 +359,6 @@ __Figure 1__: (A) Cumulative incidence of all-cause mortality by treatment group
 ```{r}
 
 blank_plot <- ggplot(data.frame()) + aes() + theme_void()
-
 legend <- get_legend(
   fig$inc_acm[[1]]$plot + 
     theme(legend.position = c(.55, .2),
