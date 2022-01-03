@@ -9,12 +9,12 @@ output:
 ---
 
 Byron C. Jaeger, PhD^1^ 
-Paul E. Drawz, DEGREES^2^ 
-Paul K. Whelton, DEGREES^3^ 
-Mark A. Supiano, DEGREES^4^ 
+Paul E. Drawz, MD^2^ 
+Paul K. Whelton, MD^3^ 
+Mark A. Supiano, MD^4^ 
 Adam P. Bress, PharmD, MS^5,6^
-Jeff D. Williamson, DEGREES^7^
-David M. Reboussin, DEGREES^1^, and
+Jeff D. Williamson, MD, MHS^7^
+David M. Reboussin, PhD^1^, and
 Nicholas M. Pajewski, PhD^1^ 
 
 <!-- Jackson T. Wright Jr., MD, PhD, Alfred K. Cheung, MD, William C. Cushman, MD, Cora E. Lewis, MD, Suzanne Oparil, MD, Michael V. Rocco, MD and Karen Johnson, MD -->
