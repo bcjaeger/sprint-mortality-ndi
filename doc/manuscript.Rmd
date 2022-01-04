@@ -155,12 +155,40 @@ All analyses were performed using SAS version 9.4 (SAS Institute Inc, Cary, NC) 
 
 ```{r}
 
-# fig$eff_acm[[1]]$data$hr_lwr
+acm_overall_epochs <- fig |> 
+  filter(variable == 'overall') |> 
+  pull(eff_acm) |> 
+  unlist(recursive = FALSE) |> 
+  getElement('data') |> 
+  filter(find_signchange_lgl(hr_upr-1)) |> 
+  mutate(label = table_value(time))
+
+t_signif <- acm_overall_epochs$label[1] 
+t_atten <- acm_overall_epochs$label[2]
 
 ```
 
+In both treatment groups, median follow-up time was `r ap_b_o$fup_est` years. A total of `r ap_b_i$n_acm` and `r ap_b_s$n_acm` all-cause mortality events occurred among participants randomized to intensive and standard treatment, respectively (__Table 1__). The hazard ratio (HR) for all-cause mortality among participants randomized to intensive versus standard treatment was `r with(ap_l_o_t, .("{mort_est} (95% confidence interval [CI] {mort_lwr}, {mort_upr})"))` during the trial phase and `r with(ap_l_o_c, .("{mort_est} (95% CI {mort_lwr}, {mort_upr})"))` during the cohort phase. In subgroups based on age, sex, race, CKD, cognitive function, and frailty, there was no evidence that intensive treatment during the trial phase had benefit for all-cause mortality during the cohort phase (__eFigure 1__). The continuous time-dependent effect of intensive versus standard treatment indicated a benefit for all-cause mortality from `r t_signif` to `r t_atten` years from randomization, and was attenuated throughout the remainder of the cohort phase (__Figure 1__). 
 
-In both treatment groups, median follow-up time was `r ap_b_o$fup_est` years. A total of `r ap_b_i$n_acm` and `r ap_b_s$n_acm` all-cause mortality events occurred among participants randomized to intensive and standard treatment, respectively (__Table 1__). The hazard ratio (HR) for all-cause mortality among participants randomized to intensive versus standard treatment was `r with(ap_l_o_t, .("{mort_est} (95% confidence interval [CI] {mort_lwr}, {mort_upr})"))` during the trial phase and `r with(ap_l_o_c, .("{mort_est} (95% CI {mort_lwr}, {mort_upr})"))` during the cohort phase. The cumulative time-varying effect of intensive versus standard treatment indicated lower risk for all-cause mortality during the trial phase and was attenuated during the cohort phase (__Figure 1__). 
+```{r}
+
+cvd_overall_epochs <- fig |> 
+  filter(variable == 'overall') |> 
+  pull(eff_cvd) |> 
+  unlist(recursive = FALSE) |> 
+  getElement('data') |> 
+  slice(-1) |> 
+  filter(find_signchange_lgl(hr_upr-1)) |> 
+  mutate(label = table_value(time))
+
+t_signif <- cvd_overall_epochs$label[1] 
+t_atten  <- cvd_overall_epochs$label[2]
+
+```
+
+A total of `r ap_b_i$n_cvd` and `r ap_b_s$n_cvd` CVD mortality events occurred among participants randomized to intensive and standard treatment, respectively (__Table 2__). The HR for CVD mortality among participants randomized to intensive versus standard treatment was `r with(ap_l_o_t, .("{cvd_est} (95% CI {cvd_lwr}, {cvd_upr})"))` during the trial phase and `r with(ap_l_o_c, .("{cvd_est} (95% CI {cvd_lwr}, {cvd_upr})"))` during the cohort phase. Adults randomized to intensive treatment who were <75 years of age, men, non-black, without CKD, or with cognitive function >10^th^ percentile had lower CVD mortality risk during the trial phase compared to their counterparts randomized to standard treatment, but there was no evidence that intensive treatment during the trial phase had benefit for CVD mortality during the cohort phase (__eFigure 2__). The time-dependent effect of intensive versus standard treatment indicated a benefit for CVD mortality from `r t_signif` to `r t_atten` years from randomization, and was attenuated throughout the remainder of the cohort period (__Figure 2__).
+
+The estimated mean SBP among participants randomized to intensive treatment was <placeholder (95% CI)> at 5 years and <placeholder (95% CI)> at 10 years post-randomization (__Figure 3__). For participants randomized to standard treatment, mean SBP was estimated to be <placeholder (95% CI)> at 5 years and <placeholder (95% CI)> at 10 years post-randomization. 
 
 
 
@@ -432,9 +460,58 @@ knitr::include_graphics(
 
 ```
 
+```{r}
+block_section(
+  prop_section(
+    page_size = page_size(orient = "landscape"),
+    page_margins = page_mar(bottom = 1/8, top = 1/8, 
+                            right = 1/4, left = 1/4),
+    type = "continuous"
+  )
+)
+```
 
-\newpage
-__Figure 4__: All-cause mortality hazard ratio for participants randomized to intensive versus standard treatment.
+Online supplement only
+
+Longer term All-Cause and Cardiovascular Mortality with Intensive Blood Pressure Control: A Secondary Analysis of SPRINT
+
+Byron C. Jaeger, PhD^1^ 
+Paul E. Drawz, MD^2^ 
+Paul K. Whelton, MD^3^ 
+Mark A. Supiano, MD^4^ 
+Adam P. Bress, PharmD, MS^5,6^
+Jeff D. Williamson, MD, MHS^7^
+David M. Reboussin, PhD^1^, and
+Nicholas M. Pajewski, PhD^1^ 
+
+<!-- Jackson T. Wright Jr., MD, PhD, Alfred K. Cheung, MD, William C. Cushman, MD, Cora E. Lewis, MD, Suzanne Oparil, MD, Michael V. Rocco, MD and Karen Johnson, MD -->
+
+^1^Department of Biostatistics and Data Science, Wake Forest School of Medicine, Winston-Salem, NC
+
+^2^Division of Renal Diseases & Hypertension, University of Minnesota, Minneapolis. 
+
+^3^Department of Epidemiology, Tulane University School of Public Health and Tropical Medicine, New Orleans, LA. 
+
+^4^Division of Geriatrics, University of Utah School of Medicine, Salt Lake City.  
+
+^5^	Informatics, Decision-Enhancement, and Analytic Sciences (IDEAS) Center, Veterans Affairs, Salt Lake City Health Care System, Salt Lake City, UT
+
+^6^	Department of Population Health Sciences, University of Utah School of Medicine, Salt Lake City, UT
+
+^7^Section on Gerontology and Geriatric Medicine, Wake Forest School of Medicine, Winston-Salem, NC. 
+
+
+
+```{r}
+block_section(
+  prop_section(
+    page_size = page_size(orient = "portrait"),
+    type = "continuous"
+  )
+)
+```
+
+__eFigure 1__: All-cause mortality hazard ratio for participants randomized to intensive versus standard treatment.
 
 ```{r}
 
@@ -443,7 +520,7 @@ long_viz_mort
 ```
 
 \newpage
-__Figure 5__: Cardiovascular mortality hazard ratio for participants randomized to intensive versus standard treatment.
+__eFigure 2__: Cardiovascular mortality hazard ratio for participants randomized to intensive versus standard treatment.
 
 ```{r}
 
@@ -451,12 +528,6 @@ long_viz_cvd
 
 ```
 
-
-
-
-# SUPPLEMENT
-
-To be decided.
 
 ```{r}
 block_section(
