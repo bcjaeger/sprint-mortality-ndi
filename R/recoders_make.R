@@ -13,6 +13,7 @@ recoders_make <- function() {
                  "sex" = "Sex",
                  "race" = "Race",
                  "ckd" = "Chronic Kidney Disease",
+                 "ckd_2021" = "Chronic Kidney Disease",
                  "moca" = "Cognitive Function",
                  "frail" = "Frailty Status"),
 

@@ -8,7 +8,7 @@ subgroups <- tibble(group = c("overall",
                               "age_cat",
                               "sex",
                               "race",
-                              "ckd",
+                              "ckd_2021",
                               "moca",
                               "frail"))
 
@@ -24,7 +24,6 @@ list(
              pid,
              # study site
              randSite,
-             screat,
              # all cause mortality time and statue
              acm_years, acm_event,
              # cvd mortality status
