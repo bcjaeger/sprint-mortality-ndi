@@ -146,11 +146,22 @@ __EHR Ancillary Study__: We examined the trajectory of systolic blood pressure (
 
 
 
-___Statistical Analysis___: The effect of randomization to intensive treatment was estimated as a function of time using two approaches. The first approach split the follow-up of study participants into non-overlapping trial and cohort phases, then estimated the effect of randomization to intensive treatment in each phase [@zhang_time_varying_2018]. The second approach estimated a continuous time-dependent effect [@martinussen2007dynamic; @therneau2017using]. While the phase-specific estimate of the treatment effect treats the trial and cohort phases independently, the cumulative estimate enforces continuity of the treatment effect through time so that the effect of treatment during the trial phase is not 'forgotten' during the cohort phase. All analyses accounted for correlation within study sites [@lin_robust_1989], and analyses of cardiovascular mortality accounted for the competing risk of non-cardiovascular mortality [@scheike_flexible_2008].
+___Statistical Analysis___: The effect of randomization to intensive treatment was estimated as a function of time using two approaches. The first approach split the follow-up of study participants into non-overlapping trial and cohort phases, then estimated the effect of randomization to intensive treatment in each phase [@zhang_time_varying_2018]. The second approach estimated a continuous time-dependent effect [@martinussen2007dynamic; @therneau2017using]. All analyses accounted for correlation within study sites [@lin_robust_1989], and analyses of cardiovascular mortality accounted for the competing risk of non-cardiovascular mortality [@scheike_flexible_2008]. The mean between-group differences in SBP following the conclusion of trial follow-up (after July 2016) were estimated using linear mixed models. Models included random effects for participant and clinic site. Our primary models included an interaction between treatment group and time since randomization, which was flexibly modeled using B-splines.
+
+All analyses were performed using SAS version 9.4 (SAS Institute Inc, Cary, NC) and R version `r paste(version$major, version$minor, sep = '.')` (R Project for Statistical Computing [http://www.r-project.org]) with multiple auxiliary R packages [@r_language; @table.glue; @tidyverse; @survival_package; @timereg; @targets]. All hypothesis tests were 2-sided, and P values less than 0.05 were considered statistically significant. No adjustments for multiple comparisons were made.
+
 
 # RESULTS
 
+```{r}
+
+# fig$eff_acm[[1]]$data$hr_lwr
+
+```
+
+
 In both treatment groups, median follow-up time was `r ap_b_o$fup_est` years. A total of `r ap_b_i$n_acm` and `r ap_b_s$n_acm` all-cause mortality events occurred among participants randomized to intensive and standard treatment, respectively (__Table 1__). The hazard ratio (HR) for all-cause mortality among participants randomized to intensive versus standard treatment was `r with(ap_l_o_t, .("{mort_est} (95% confidence interval [CI] {mort_lwr}, {mort_upr})"))` during the trial phase and `r with(ap_l_o_c, .("{mort_est} (95% CI {mort_lwr}, {mort_upr})"))` during the cohort phase. The cumulative time-varying effect of intensive versus standard treatment indicated lower risk for all-cause mortality during the trial phase and was attenuated during the cohort phase (__Figure 1__). 
+
 
 
 # DISCUSSION

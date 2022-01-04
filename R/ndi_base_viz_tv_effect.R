@@ -49,7 +49,7 @@ ndi_base_viz_tv_effect <- function(ndi_data_list) {
 
       spline_x <- cbind(1, ns(x = plot_times, df=6))
 
-      yhat <- spline_x %*% coef(fit_acm)
+      yhat <- as.numeric(spline_x %*% coef(fit_acm))
 
       ses <- sqrt(diag(spline_x %*% vcov(fit_acm) %*% t(spline_x)))
 
