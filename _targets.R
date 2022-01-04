@@ -18,7 +18,7 @@ list(
 
   tar_target(
     ndi_baseline,
-    ndi_load(sasinet_drive = 'Z',
+    ndi_load(sasinet_drive = get_sasinet_drive(),
              fname = 'longterm_death.csv',
              # participant identifier
              pid,
