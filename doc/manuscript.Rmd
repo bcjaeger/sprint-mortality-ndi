@@ -7,33 +7,6 @@ output:
   officedown::rdocx_document:
     reference_docx: style_manuscript_times_new_roman.docx
 ---
-
-Byron C. Jaeger, PhD^1^ 
-Paul E. Drawz, MD^2^ 
-Paul K. Whelton, MD^3^ 
-Mark A. Supiano, MD^4^ 
-Adam P. Bress, PharmD, MS^5,6^
-Jeff D. Williamson, MD, MHS^7^
-David M. Reboussin, PhD^1^, and
-Nicholas M. Pajewski, PhD^1^ 
-
-<!-- Jackson T. Wright Jr., MD, PhD, Alfred K. Cheung, MD, William C. Cushman, MD, Cora E. Lewis, MD, Suzanne Oparil, MD, Michael V. Rocco, MD and Karen Johnson, MD -->
-
-^1^Department of Biostatistics and Data Science, Wake Forest School of Medicine, Winston-Salem, NC
-
-^2^Division of Renal Diseases & Hypertension, University of Minnesota, Minneapolis. 
-
-^3^Department of Epidemiology, Tulane University School of Public Health and Tropical Medicine, New Orleans, LA. 
-
-^4^Division of Geriatrics, University of Utah School of Medicine, Salt Lake City.  
-
-^5^	Informatics, Decision-Enhancement, and Analytic Sciences (IDEAS) Center, Veterans Affairs, Salt Lake City Health Care System, Salt Lake City, UT
-
-^6^	Department of Population Health Sciences, University of Utah School of Medicine, Salt Lake City, UT
-
-^7^Section on Gerontology and Geriatric Medicine, Wake Forest School of Medicine, Winston-Salem, NC. 
-
-
 ```{r setup, include=FALSE}
 
 
@@ -53,7 +26,32 @@ rspec <- round_spec() |>
 names(rspec) <- paste('table.glue', names(rspec), sep = '.')
 options(rspec)
 
+# default is double space 
+# single spacing for title page, abstract, captions
+single_par <- fp_par(line_spacing=1)
+
+# make the . symbol equivalent to calling table_glue.
+# Another way to makes inline insertion of results less text-heavy
+. <- table.glue::table_glue
+
 ```
+
+Byron C. Jaeger, PhD,^1^ Adam P. Bress, PharmD, MS,^2,3^ Alfred K. Cheung, MD,^4,5^ William C. Cushman, MD,^6^ Paul E. Drawz, MD,^7^ Lawrence J. Fine, MD,^8^ Karen C. Johnson, MD,^6^ Cora E. Lewis, MD,^9^ Suzanne Oparil, MD,^10^ Michael V. Rocco, MD,^11^ Mark A. Supiano, MD,^12^ Paul K. Whelton, MD,^13^ Joshua D. Bundy, PhD,^13^ Jeff D. Williamson, MD, MHS,^14^ Jackson T. Wright, Jr, MD, PhD,^15^ David M. Reboussin, PhD,^1^ and Nicholas M. Pajewski, PhD,^1^ 
+
+^1^Department of Biostatistics and Data Science, Wake Forest School of Medicine, Winston-Salem, NC. ^2^Informatics, Decision-Enhancement, and Analytic Sciences (IDEAS) Center, Veterans Affairs, Salt Lake City Health Care System, Salt Lake City, UT. ^3^Department of Population Health Sciences, University of Utah School of Medicine, Salt Lake City, UT. ^4^Renal Section, Veterans Affairs Salt Lake City Healthcare System, UT. ^5^Division of Nephrology and Hypertension, Department of Internal Medicine, University of Utah School of Medicine, Salt Lake Cite, UT. ^6^Department of Preventive Medicine, University of Tennessee Health Science Center, Memphis. ^7^Division of Renal Diseases & Hypertension, University of Minnesota, MN. ^8^Clinical Applications and Prevention Branch, National Heart, Lung, and Blood Institute, National Institutes of Health, Bethesda, MD. ^9^Department of Epidemiology, University of Alabama at Birmingham. ^10^Division of Cardiovascular Disease, Department of Medicine, University of Alabama at Birmingham. ^11^Section on Nephrology, Department of Internal Medicine, Wake Forest School of Medicine, Winston-Salem, NC. ^12^Division of Geriatrics, University of Utah School of Medicine, Salt Lake City. ^13^Department of Epidemiology, Tulane University School of Public Health and Tropical Medicine, New Orleans, LA. ^14^Section on Gerontology and Geriatric Medicine, Department of Internal Medicine, Wake Forest School of Medicine, Winston-Salem, NC. ^15^Division of Nephrology and Hypertension, University Hospitals Cleveland Medical Center, Case Western Reserve University, OH `r single_par`
+\ \
+
+**Correspondence to:** \
+Nicholas M. Pajewski, PhD \
+Department of Biostatistics and Data Science \
+Division of Public Health Sciences \
+Wake Forest School of Medicine \
+Medical Center Boulevard \
+Winston-Salem, NC 27154 \
+(336) 713-1396 \
+npajewsk@wakehealth.edu `r single_par`
+
+**Word Count:** Abstract: ; Manuscript: 
 
 ```{r load-targets, include=FALSE}
 
@@ -88,19 +86,6 @@ inline$long_inf <- long_inf |>
   as_inline(tbl_variables = tbl_variables,
             tbl_values = setdiff(names(long_inf), tbl_variables))
 
-
-```
-
-\newpage
-
-# ABSTRACT
-
-__Background__. Both the Systolic Blood Pressure Intervention Trial (SPRINT) and the Strategy of Blood Pressure Intervention in the Elderly Hypertensive Patients (STEP) trial have shown benefits of intensive blood pressure control on cardiovascular morbidity and mortality. However, as both trials were ended after slightly more than 3 years of follow-up, the legacy effect of intensive treatment on longer term cardiovascular and all-cause mortality is unknown. 
-
-__Methods__. We linked participants in SPRINT to the National Death Index (NDI, 2016 to 2020), assessing cardiovascular mortality using the NDI plus system. Cox and competing risk regression models were used to model the effect of intensive treatment through the trial and during post-trial follow-up on all-cause and cardiovascular mortality respectively      
-
-```{r}
-
 # ap makes inline insertion of results less text-heavy.
 # ap = access point, 
 # b = baseline, l = longitudinal
@@ -114,33 +99,45 @@ ap_b_s <- inline$base_ds$overall$overall$Standard
 ap_l_o_t <- inline$long_inf$overall$overall$trial
 ap_l_o_c <- inline$long_inf$overall$overall$cohort
 
-# make the . symbol equivalent to calling table_glue.
-# Another way to makes inline insertion of results less text-heavy
-. <- table.glue::table_glue
-
 ```
 
-
-__Results__. Over a median follow-up of `r ap_b_o$fup_est` years, there were `r ap_b_i$n_cvd` and `r ap_b_i$n_acm` cardiovascular and all-cause deaths with intensive treatment respectively, and `r ap_b_s$n_cvd` cardiovascular / `r ap_b_s$n_acm` all-cause deaths for standard treatment. Intensive treatment was beneficial for both cardiovascular (Hazard Ratio [HR] = `r with(ap_l_o_t, .("{cvd_est}, 95% CI {cvd_lwr} to {cvd_upr}"))`) and all-cause mortality (HR = `r with(ap_l_o_t, .("{mort_est}, 95% CI {mort_lwr} to {mort_upr}"))`) through close-out visits for the trial (follow-up through July 2016). However, there was no indication of benefit during post-trial follow-up for either cardiovascular (HR = `r with(ap_l_o_c, .("{cvd_est}, 95% CI {cvd_lwr} to {cvd_upr}"))`) or all-cause mortality (HR = `r with(ap_l_o_c, .("{mort_est}, 95% CI {mort_lwr} to {mort_upr}"))`). Results were similar for subgroups based on baseline age, cognitive function, and frailty status. 
-
-__Conclusions__. Our results show a clear benefit for cardiovascular and all-cause mortality during the trial which was largely attenuated during post-trial observational follow-up. Given indications of increasing blood pressures in SPRINT participants randomized to intensive treatment following the trial, these results highlight the importance of consistent long-term management of hypertension in line with current guidelines. 
 \newpage
 
-<!-- END OF ABSTRACT -->
+# ABSTRACT
+
+__IMPORTANCE__. Both the Systolic Blood Pressure Intervention Trial (SPRINT) and the Strategy of Blood Pressure Intervention in the Elderly Hypertensive Patients (STEP) trial have shown benefits of intensive blood pressure control on cardiovascular morbidity and mortality. However, as both trials were ended after slightly more than 3 years of follow-up, the effect of intensive treatment on longer term mortality is unknown. 
+
+__OBJECTIVE__. To evaluate the legacy effect of intensive hypertension treatment on longer term all-cause and cardiovascular mortality. 
+
+__DESIGN, SETTING, AND PARTICIPANTS__. SPRINT, a randomized clinical trial of 9361 patients aged 50 years or older with hypertension and increased cardiovascular risk, but without diabetes or history of stroke. Randomization began on November 8, 2010, the trial intervention was stopped early on August 20, 2015, and trial follow-up visits occurred through July 2016.  
+
+__INTERVENTIONS__. Randomization to a systolic blood pressure goal of either less than 120 mm Hg (intensive treatment, n=4678) versus less than 140 mm Hg (standard treatment, N=4683).  
+
+__MAIN OUTCOMES AND MEASURES__. Cardiovascular and all-cause mortality assessed via the US National Death Index, beginning in 2016 through December 31st, 2020. Outpatient blood pressures measured in routine clinical practice were examined in a subset of trial participants (N=3644).    
+
+__RESULTS__. Among 9361 randomized participants (mean age, 67.9 years; 3332 women [35.6%]), the median intervention period was 3.34 years. Over a median follow-up of `r ap_b_o$fup_est` years, intensive treatment was beneficial for both cardiovascular (Hazard Ratio [HR] = `r with(ap_l_o_t, .("{cvd_est}, 95% CI {cvd_lwr} to {cvd_upr}"))`) and all-cause mortality (HR = `r with(ap_l_o_t, .("{mort_est}, 95% CI {mort_lwr} to {mort_upr}"))`) through close-out visits for the trial (follow-up through July 2016). However, there was no indication of benefit during post-trial follow-up for either cardiovascular (HR = `r with(ap_l_o_c, .("{cvd_est}, 95% CI {cvd_lwr} to {cvd_upr}"))`) or all-cause mortality (HR = `r with(ap_l_o_c, .("{mort_est}, 95% CI {mort_lwr} to {mort_upr}"))`). Results were similar for subgroups based on baseline age, cognitive function, and frailty status. Analyses of outpatient blood pressures indicated a steady decline in the mean between group difference following the trial, largely driven by increases in mean systolic blood pressure in participnts randomized to intensive treatment, increasing from a mean of X at 4.5 years of follow-up to Y at 9 years of follow-up.   
+
+there were `r ap_b_i$n_cvd` and `r ap_b_i$n_acm` cardiovascular and all-cause deaths with intensive treatment respectively, and `r ap_b_s$n_cvd` cardiovascular / `r ap_b_s$n_acm` all-cause deaths for standard treatment.
+
+__CONCLUSIONS AND RELEVANCE__. The observed benefit of intensive treatment on cardiovascular and all-cause mortality was largely attenuated during post-trial observational follow-up. Given increasing blood pressures in participants randomized to intensive treatment following the trial, these results highlight the importance of consistent long-term management of hypertension. 
+
+\newpage
 
 # INTRODUCTION
 
-both the The Systolic Blood Pressure Intervention Trial (SPRINT) and the Strategy of Blood Pressure Intervention in the Elderly Hypertensive Patients (STEP) trial have shown the benefits of intensive blood pressure control on cardiovascular morbidity and mortality [@sprint_research_group_randomized_2015; @zhang_trial_2021].
+both the The Systolic Blood Pressure Intervention Trial (SPRINT) and the Strategy of Blood Pressure Intervention in the Elderly Hypertensive Patients (STEP) trial have shown the benefits of intensive blood pressure control on cardiovascular morbidity and mortality [@sprint_research_group_randomized_2015; @zhang_trial_2021]. However, both trials were stopped early after a median follow-up of 3 years. 
 
 __Reminder: bring in the recent BPTTC meta-analyses into the introduction__[@rahimi_age_stratified_2021].
 
+Here we examined the longer term effect of randomization to intensive treatment on through linkage to the National Death Index (NDI).
+
 # METHODS
 
-__Trial Design__: The trial design and methods have been published previously [@ambrosius_design_2014]. Briefly, we conducted a multicenter randomized clinical trial that compared two strategies for managing systolic BP (SBP) in older adults with hypertension who were at increased risk of cardiovascular disease. Participants were aged 50 years or older and had an SBP between 130 and 180 mm Hg at the screening visit, depending on the number of anti-hypertensive agents prescribed. Participants were considered to have an increased cardiovascular risk if they had clinical or subclinical cardiovascular disease, chronic kidney disease (defined by an estimated glomerular filtration rate of <60 mL/min/1.73 m^2^), or a Framingham Risk Score of 15% or greater or if they were aged 75 years or older. Individuals residing in a nursing home, persons with a diagnosis of dementia (based on medical record review), and those treated with medications primarily used for dementia therapy were excluded, as were persons with prevalent diabetes mellitus, history of stroke, proteinuria > 1 gram per day, or polycystic kidney disease. Individuals at 102 sites in the United States and Puerto Rico were randomized (1:1) to a SBP goal of less than 120 mm Hg (intensive treatment group, n = 4678) or a goal of less than 140 mm Hg (standard treatment group, n = 4683), using random permuted blocks with the randomization stratified by clinic site. The algorithms and formulary for the trial are listed in the published study protocol ( __citations needed__? ). Trial enrollment began in November 2010 and ended in March 2013, with active follow-up through July 1, 2016. The study was approved by the institutional review board at each participating site, and each participant provided written informed consent. The study is registered at ClinicalTrials.gov (NCT01206062).
+__Trial Design__: The trial design and methods have been published previously [@ambrosius_design_2014]. Briefly, we conducted a multicenter randomized clinical trial that compared two strategies for managing systolic BP (SBP) in older adults with hypertension who were at increased risk of cardiovascular disease (CVD). Participants were aged 50 years or older and had an SBP between 130 and 180 mm Hg at the screening visit, depending on the number of anti-hypertensive agents prescribed. Participants were considered to have an increased cardiovascular risk if they had clinical or subclinical cardiovascular disease, chronic kidney disease (defined by an estimated glomerular filtration rate of <60 mL/min/1.73 m^2^), or a Framingham Risk Score of 15% or greater or if they were aged 75 years or older. Individuals residing in a nursing home, persons with a diagnosis of dementia (based on medical record review), and those treated with medications primarily used for dementia therapy were excluded, as were persons with prevalent diabetes mellitus, history of stroke, proteinuria > 1 gram per day, or polycystic kidney disease. Individuals at 102 sites in the United States and Puerto Rico were randomized (1:1) to a SBP goal of less than 120 mm Hg (intensive treatment group, n = 4678) or a goal of less than 140 mm Hg (standard treatment group, n = 4683), using random permuted blocks with the randomization stratified by clinic site. The algorithms and formulary for the trial are listed in the published study protocol ( __citations needed__? ). Trial enrollment began in November 2010 and ended in March 2013, with active follow-up through July 1, 2016. The study was approved by the institutional review board at each participating site, and each participant provided written informed consent. The study is registered at ClinicalTrials.gov (NCT01206062).
 
-__National Death Index Linkage__: 
+__Baseline Study Measurements__: Sociodemographic data were collected at baseline, with race or ethnicity information collected via self-report. The estimated glomerular filtration rate (eGFR) was calculated by the race-free 2021 CKD-EPI creatinine equation.[@inker_new_2021] Cognitive function was assessed using Montreal Cognitive Assessment (MoCA) [@nasreddine_montreal_2005]. Lower cognitive function was defined as scoring 18 or lower (less than high school education) or 20 or lower (high school education or higher) on the MoCA. This roughly corresponds to the estimated normative 10th percentile in the Irish Longitudinal Study of Aging [@kenny_normative_2013]. We defined frailty status at baseline using a previously developed Frailty Index (FI) based upon the model of deficit accumulation [@pajewski_characterizing_2016]. Briefly, the FI comprises a total of 36 items, and is calculated as the sum of the score for each deficit divided by the total number of nonmissing items. We categorized frailty status as fit (FI ≤ 0.10), less fit (0.10 < FI ≤ 0.21), or frail (FI > 0.21).
 
-__Baseline Study Measurements__: Sociodemographic data were collected at baseline, with race or ethnicity information collected via self-report. The estimated glomerular filtration rate (eGFR) was calculated by the four-variable Modification of Diet in Renal Disease study equation. Cognitive function was assessed using Montreal Cognitive Assessment (MoCA) [@nasreddine_montreal_2005]. Lower cognitive function was defined as scoring 18 or lower (less than high school education) or 20 or lower (high school education or higher) on the MoCA. This roughly corresponds to the estimated normative 25th percentile at 80 years of age in the Irish Longitudinal Study of Aging [@kenny_normative_2013]. We defined frailty status at baseline using a previously developed Frailty Index (FI) based upon the model of deficit accumulation [@pajewski_characterizing_2016]. Briefly, the FI comprises a total of 36 items, and is calculated as the sum of the score for each deficit divided by the total number of nonmissing items. We categorized frailty status as fit (FI ≤ 0.10), less fit (0.10 < FI ≤ 0.21), or frail (FI > 0.21).
+__National Death Index Linkage__: Outcomes of interest included all-cause and CVD mortality. Methods of ascertainment and adjudication through the course of trial follow-up have been previously described. Subsequently, mortality was ascertained through a US National Death Index (NDI) search. Possible matches were identified according to NDI guidelines. To be considered a confirmed death, we required 4 or more of 5 matches among Social Security number, name, date of birth, city, and state in the NDI. NDI follow-up began in 2016 and ended on the date of death or date of the NDI search (2020). Deaths ascertained in 2020 were based on the preliminary data release. CVD mortality for NDI-based follow-up used the NDI Plus System, which automatically identifies underlying causes of death from death certificates, including conversion to ICD-10 codes. we defined CVD mortality as any death containing the ICD-10 codes of I00 to I99.  
 
 __EHR Ancillary Study__: We examined the trajectory of systolic blood pressure (SBP) following the conclusion of the trial using outpatient SBPs extracted from the electronic health record (EHR). Methods for the linkage of participants to their medical record number and the extraction of vital sign data have been previously described [@drawz_concordance_2020]. Because encounter type information was inconsistently available (i.e. outpatient, inpatient, observation, etc.), we defined a BP measurement as outpatient if there were was not a BP measurement on the preceding or following day, and if there were 2 or less BP measurements on a particular day. We averaged outpatient EHR BP readings when there were 2 on the same day.
 
@@ -168,7 +165,7 @@ t_atten <- acm_overall_epochs$label[2]
 
 ```
 
-In both treatment groups, median follow-up time was `r ap_b_o$fup_est` years. A total of `r ap_b_i$n_acm` and `r ap_b_s$n_acm` all-cause mortality events occurred among participants randomized to intensive and standard treatment, respectively (__Table 1__). The hazard ratio (HR) for all-cause mortality among participants randomized to intensive versus standard treatment was `r with(ap_l_o_t, .("{mort_est} (95% confidence interval [CI] {mort_lwr}, {mort_upr})"))` during the trial phase and `r with(ap_l_o_c, .("{mort_est} (95% CI {mort_lwr}, {mort_upr})"))` during the cohort phase. In subgroups based on age, sex, race, CKD, cognitive function, and frailty, there was no evidence that intensive treatment during the trial phase had benefit for all-cause mortality during the cohort phase (__eFigure 1__). The continuous time-dependent effect of intensive versus standard treatment indicated a benefit for all-cause mortality from `r t_signif` to `r t_atten` years from randomization, and was attenuated throughout the remainder of the cohort phase (__Figure 1__). 
+In both treatment groups, median follow-up time was `r ap_b_o$fup_est` years. A total of `r ap_b_i$n_acm` and `r ap_b_s$n_acm` all-cause mortality events occurred among participants randomized to intensive and standard treatment, respectively (__Table 2__). The hazard ratio (HR) for all-cause mortality among participants randomized to intensive versus standard treatment was `r with(ap_l_o_t, .("{mort_est} (95% confidence interval [CI] {mort_lwr}, {mort_upr})"))` during the trial phase and `r with(ap_l_o_c, .("{mort_est} (95% CI {mort_lwr}, {mort_upr})"))` during the cohort phase. In subgroups based on age, sex, race, CKD, cognitive function, and frailty, there was no evidence that intensive treatment during the trial phase had benefit for all-cause mortality during the cohort phase (__eFigure 1__). The continuous time-dependent effect of intensive versus standard treatment indicated a benefit for all-cause mortality from `r t_signif` to `r t_atten` years from randomization, and was attenuated throughout the remainder of the cohort phase (__Figure 1__). 
 
 ```{r}
 
@@ -186,16 +183,134 @@ t_atten  <- cvd_overall_epochs$label[2]
 
 ```
 
-A total of `r ap_b_i$n_cvd` and `r ap_b_s$n_cvd` CVD mortality events occurred among participants randomized to intensive and standard treatment, respectively (__Table 2__). The HR for CVD mortality among participants randomized to intensive versus standard treatment was `r with(ap_l_o_t, .("{cvd_est} (95% CI {cvd_lwr}, {cvd_upr})"))` during the trial phase and `r with(ap_l_o_c, .("{cvd_est} (95% CI {cvd_lwr}, {cvd_upr})"))` during the cohort phase. Adults randomized to intensive treatment who were <75 years of age, men, non-black, without CKD, or with cognitive function >10^th^ percentile had lower CVD mortality risk during the trial phase compared to their counterparts randomized to standard treatment, but there was no evidence that intensive treatment during the trial phase had benefit for CVD mortality during the cohort phase (__eFigure 2__). The time-dependent effect of intensive versus standard treatment indicated a benefit for CVD mortality from `r t_signif` to `r t_atten` years from randomization, and was attenuated throughout the remainder of the cohort period (__Figure 2__).
+A total of `r ap_b_i$n_cvd` and `r ap_b_s$n_cvd` CVD mortality events occurred among participants randomized to intensive and standard treatment, respectively (__Table 3__). The HR for CVD mortality among participants randomized to intensive versus standard treatment was `r with(ap_l_o_t, .("{cvd_est} (95% CI {cvd_lwr}, {cvd_upr})"))` during the trial phase and `r with(ap_l_o_c, .("{cvd_est} (95% CI {cvd_lwr}, {cvd_upr})"))` during the cohort phase. Adults randomized to intensive treatment who were <75 years of age, men, non-black, without CKD, or with cognitive function >10^th^ percentile had lower CVD mortality risk during the trial phase compared to their counterparts randomized to standard treatment, but there was no evidence that intensive treatment during the trial phase had benefit for CVD mortality during the cohort phase (__eFigure 2__). The time-dependent effect of intensive versus standard treatment indicated a benefit for CVD mortality from `r t_signif` to `r t_atten` years from randomization, and was attenuated throughout the remainder of the cohort period (__Figure 2__).
 
 The estimated mean SBP among participants randomized to intensive treatment was <placeholder (95% CI)> at 5 years and <placeholder (95% CI)> at 10 years post-randomization (__Figure 3__). For participants randomized to standard treatment, mean SBP was estimated to be <placeholder (95% CI)> at 5 years and <placeholder (95% CI)> at 10 years post-randomization. 
 
-
-
 # DISCUSSION
 
+A striking aspect of our results is the quickly weakening level of BP control for participants randomized to intensive treatment. While an attenuation of the between-group BP delta subsequent to the trial was certainly expected, one hypothesis was that such an attenuation would be driven by participants randomized to standard treatment pursuing a lower BP goal, given the results of SPRINT and subsequent changes to hypertension guidelines. However, this is clearly not what occurred. While we do not have access to prescription records to know how participant medication regimes may have changed after the trial, these results likely show some contribution of clinician therapeutic inertia, which has been identified as a significant barrier to improving population level control of hypertension. Combined with evidence showing recent decreases in the population of prevalence of controlled hypertension in the US,[@muntner2020htn] our results highlight the sobering reality facing the hypertension community. Sustainability is a clear limiting factor, especially with trying to implement lower BP goals and interventions earlier in adulthood.
+
+This study has several limitations. First, while we restricted analyses to high quality NDI matches, some small degree of misclassification in linking participants to the NDI is likely. Second, while several studies have shown reasonable performance of using NDI diagnosis codes for defining CVD mortality, it is clearly not as robust as the adjudication process used in the primary follow-up for the trial. Third, information about BP control after the trial was limited to routine outpatient BPs extracted from the EHR, which are well known to poorly reflect the standardized BP measurement process used during the trial.[@drawz_concordance_2020]       
+
+# ACKNOWLEDGMENTS 
+The views expressed in this paper are those of the authors and do not represent the official position of the National Institutes of Health (NIH), the National Heart, Lung, and Blood Institute, the Department of Veterans Affairs, or the U.S. Government, or the SPRINT Research Group. This paper was not reviewed by the SPRINT Publications and Presentations Committee. The authors also wish to acknowledge computing support provided the Veterans Affairs Informatics and Computing Infrastructure (VINCI). 
+
+# FINANCIAL DISCLOSURE 
+The work presented here was supported by R01HL136679, R01AG055606, and R01AG065805. The Systolic Blood Pressure Intervention Trial was funded by the National Institutes of Health (including the National Heart, Lung, and Blood Institute, the National Institute of Diabetes and Digestive and Kidney Diseases, the National Institute on Aging, and the National Institute of Neurological Disorders and Stroke) under contracts HHSN268200900040C, HHSN268200900046C, HHSN268200900047C, HHSN268200900048C, and HHSN268200900049C and interagency agreement A-HL-13-002-001. It was also supported in part with resources and use of facilities through the Department of Veterans Affairs. Azilsartan and chlorthalidone (combined with azilsartan) were provided by Takeda Pharmaceuticals International Inc.  
+
+Additional support was provided through the following National Center for Advancing Translational Sciences clinical and translational science awards: UL1TR000439 (awarded to Case Western Reserve University); UL1RR025755 (Ohio State University); UL1RR024134 and UL1TR000003 (University of Pennsylvania); UL1RR025771 (Boston University); UL1TR000093 (Stanford University); UL1RR025752, UL1TR000073, and UL1TR001064 (Tufts University); UL1TR000050 (University of Illinois); UL1TR000005 (University of Pittsburgh); U54TR000017-06 (University of Texas Southwestern Medical Center); UL1TR000105-05 (University of Utah); UL1 TR000445 (Vanderbilt University); UL1TR000075 (George Washington University); UL1 TR000002 (University of California, Davis); UL1 TR000064 (University of Florida); and UL1TR000433 (University of Michigan); and by National Institute of General Medical Sciences, Centers of Biomedical Research Excellence award NIGMS P30GM103337 (awarded to Tulane University). 
+
+```{r tbl_footers}
+
+ckd_defn <- as_paragraph("Chronic Kidney Disease was defined by an estimated glomerular filtration rate <60 ml/min/1.73 m", as_sup(2L), " based on the 2021 CKD-EPI creatinine equation.")
+
+```
 
 
+```{r tbl_abbrvs}
+
+abbrvs <- list(
+  CI   = 'confidence interval',
+  FI   = 'frailty index',
+  SD   = 'standard deviation',
+  IQR  = 'interquartile range',
+  MoCA = 'Montreal cognitive assessment',
+  EHR  = 'electronic health records'
+)
+
+abbrvs_paste <- function(strings){
+  
+  strings[1] <- str_replace(strings[1], ' ', ' represents ')
+  
+  glue::glue_collapse(strings, sep = ', ', last = ' and ')
+  
+}
+
+abbrvs_write <- function(abbr){
+  
+  sorted <- abbr[sort(names(abbr))]
+  
+  strings <- map2_chr(names(sorted), sorted, paste)
+  
+  as_paragraph(abbrvs_paste(strings))
+  
+}
+
+
+```
+
+
+\newpage
+__Table 1__: Characteristics of study participants overall and stratified by inclusion in the electronic health record ancillary study. `r single_par`
+
+```{r}
+
+tar_load(tbl_characteristics)
+
+header_labels <- tbl_characteristics |> 
+  show_header_names(quiet = TRUE) |> 
+  mutate(
+    label = str_remove_all(label, fixed("*")),
+    label = str_replace(label, ', ', '\n')
+  ) |> 
+  deframe()
+
+tbl_characteristics |> 
+  modify_footnote(update = everything() ~ NA) |> 
+  as_flex_table() |> 
+  add_header_row(
+    values = c("Characteristic",
+               header_labels['stat_0'], 
+               "Included in ancillary EHR study", 
+               header_labels['p.value']),
+    colwidths = c(1, 1, 2, 1)
+  ) |> 
+  theme_box() |> 
+  set_header_labels(stat_0 = header_labels['stat_0'],
+                    stat_1 = header_labels['stat_1'],
+                    stat_2 = header_labels['stat_2']) |> 
+  merge_v(part = 'header') |> 
+  align(j = c(2, 3, 4, 5), align = 'center', part = 'all') |> 
+  footnote(
+    i = 1, 
+    j = 1, 
+    ref_symbols = '',
+    value = as_paragraph(
+      "Table values are percentages unless otherwise specified"
+    )
+  ) |> 
+  footnote(
+    i = 1, 
+    j = ~p.value,
+    part = 'header',
+    ref_symbols = 'a',
+    value = as_paragraph(
+      "P-values computed using Wilcoxon rank sum test for age in years, chi-square test for age \u226575 years, and chi-square test for all other variables"
+    )
+  ) |> 
+  footnote(
+    i = ~ label == "Chronic Kidney Disease",
+    j = 1, 
+    ref_symbols = 'b',
+    value = ckd_defn,
+    part = 'body'
+  ) |> 
+  footnote(
+    i = 1,
+    j = 1,
+    ref_symbols = '',
+    value = abbrvs_write(abbrvs[c('SD', 'EHR', 'IQR', 'MoCA', 'FI')]),
+    part = 'body'
+  ) |>
+  fontsize(size = 12, part = 'all') |> 
+  font(fontname = 'Times New Roman', part = 'all')
+
+
+```
+
+
+<!-- new page not needed at the end of a block section -->
 ```{r}
 
 block_section(
@@ -207,7 +322,7 @@ block_section(
 
 ```
 
-__Table 1__: All-cause mortality by treatment group and subgroup 
+__Table 2__: All-cause mortality by treatment group and subgroup `r single_par`
 
 ```{r}
 
@@ -296,13 +411,15 @@ tbl_object <- tbl_data |>
   fontsize(size = 12, part = 'all') |> 
   font(fontname = 'Times New Roman', part = 'all')
 
+tbl_object <- add_footer_lines(tbl_object, values="Abbreviations: CI, confidence interval; FI, frailty index.")
+
 tbl_object
 
 
 ```
 
 \newpage
-__Table 2__: Cardiovascular and non-cardiovascular mortality by treatment group and subgroup 
+__Table 3__: Cardiovascular and non-cardiovascular mortality by treatment group and subgroup `r single_par`
 
 ```{r}
 
@@ -393,7 +510,7 @@ tbl_object
 ```
 
 \newpage
-__Figure 1__: (A) Cumulative incidence of all-cause mortality by treatment group. (B) Time-dependent effect of randomization to intensive treatment for all-cause mortality.
+__Figure 1__: (A) Cumulative incidence of all-cause mortality by treatment group. (B) Time-dependent effect of randomization to intensive treatment for all-cause mortality. `r single_par`
 
 ```{r}
 
@@ -426,7 +543,7 @@ plot_grid(
 ```
 
 \newpage
-__Figure 2__: (A) Cumulative incidence of cardiovascular and non-cardiovascular mortality by treatment group. (B) Time-dependent effect of randomization to intensive treatment for cardiovascular mortality.
+__Figure 2__: (A) Cumulative incidence of cardiovascular and non-cardiovascular mortality by treatment group. (B) Time-dependent effect of randomization to intensive treatment for cardiovascular mortality. `r single_par`
 
 ```{r}
 
@@ -449,12 +566,20 @@ plot_grid(
 ```
 
 \newpage
-__Figure 3__: Mean systolic blood pressure over time by treatment group. Shaded areas indicate a 95% confidence interval for the mean.
+__Figure 3__: Mean systolic blood pressure over time by treatment group. Shaded areas indicate a 95% confidence interval for the mean. `r single_par`
 
 ```{r}
 
+fpath <- file.path(
+  paste0(get_sasinet_drive(), ":"),
+  'bjaeger',
+  'sprint-mortality-ndi',
+  'fig',
+  'SPRINT_EHR_SBP_LongTerm_Comparison_122721.png'
+)
+
 knitr::include_graphics(
-  path = 'Z:/bjaeger/sprint-mortality-ndi/fig/SPRINT_EHR_SBP_LongTerm_Comparison_122721.png', 
+  path = fpath, 
   dpi = 600
 )
 
@@ -472,6 +597,7 @@ block_section(
 ```
 
 Online supplement only
+
 
 Longer term All-Cause and Cardiovascular Mortality with Intensive Blood Pressure Control: A Secondary Analysis of SPRINT
 
@@ -539,6 +665,5 @@ block_section(
   )
 )
 ```
-
 
 # REFERENCES

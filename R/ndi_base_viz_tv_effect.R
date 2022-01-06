@@ -14,27 +14,6 @@ ndi_base_viz_tv_effect <- function(ndi_data_list) {
     .id = 'group',
     .f = function(ndi_data){
 
-      # Deprecated b/c this was an analysis of residuals
-      # fit_acm <- coxph(
-      #   formula = Surv(acm_years, acm_event) ~ treatment + cluster(randSite),
-      #   data = ndi_data
-      # )
-      # zph <- cox.zph(fit_acm)
-      #
-      # zph_data <- tibble(time = zph$time,
-      #                    resid = zph$y[, 'treatment', drop = TRUE])
-      #
-      # resid_fit <- lm(resid ~ ns(time, df = 6), zph_data)
-      #
-      # resid_pred <- predict(resid_fit, se.fit = TRUE)
-      #
-      # fit_acm_data <- tibble(
-      #   time = zph$time,
-      #   hr_est = exp(resid_pred$fit),
-      #   hr_lwr = exp(resid_pred$fit - 1.96 * resid_pred$se.fit),
-      #   hr_upr = exp(resid_pred$fit + 1.96 * resid_pred$se.fit)
-      # )
-
       # Using the tt() approach instead of residual analysis
       # this gives model estimates of the time-varying effect
       fit_acm <- coxph(

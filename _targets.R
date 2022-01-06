@@ -1,5 +1,11 @@
+
+
 ## Load your packages, e.g. library(targets).
 source("./packages.R")
+
+# used by NMP to run target pipeline
+# Sys.setenv(RSTUDIO_PANDOC="C:/Program Files/RStudio/bin/pandoc")
+# setwd("O:/sprint/npajewski/sprint-mortality-ndi")
 
 ## Load your R files
 lapply(list.files("./R", full.names = TRUE), source)
@@ -33,7 +39,7 @@ list(
 
   tar_target(
     ndi_longitudinal,
-    ndi_load(sasinet_drive = 'Z',
+    ndi_load(sasinet_drive = get_sasinet_drive(),
              fname = 'longterm_death_td_subgroup.csv',
              pid,
              randSite,
@@ -42,6 +48,11 @@ list(
                                   labels = c("trial", "cohort")),
              start_yrs, end_yrs,
              mortality, cvd_mortality)
+  ),
+
+  tar_target(
+    tbl_characteristics,
+    ndi_tabulate_characteristics(ndi_baseline, recoders)
   ),
 
   # arrow assignment is necessary to make 'long' an object that
@@ -118,7 +129,6 @@ list(
   ),
 
   tar_render(manuscript, "doc/manuscript.Rmd")
-
 
 )
 

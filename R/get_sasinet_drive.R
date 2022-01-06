@@ -4,14 +4,15 @@
 #'
 #' @title
 
-get_sasinet_drive <- function() {
+get_sasinet_drive <- function(username = NULL) {
 
-  username <- getElement(gitcreds::gitcreds_get(), 'username')
+  if(is.null(username))
+    username <- getElement(gitcreds::gitcreds_get(), 'username')
 
   switch(
     username,
     'bcjaeger' = 'Z',
-    'nmpieyeskey' = 'O'
+    'nmpieyeskey' = 'O:/sprint'
   )
 
 }
