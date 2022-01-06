@@ -1,5 +1,7 @@
 ## Load your packages, e.g. library(targets).
 source("./packages.R")
+Sys.setenv(RSTUDIO_PANDOC="C:/Program Files/RStudio/bin/pandoc")
+setwd("O:/sprint/npajewski/sprint-mortality-ndi")
 
 ## Load your R files
 lapply(list.files("./R", full.names = TRUE), source)
@@ -18,7 +20,7 @@ list(
 
   tar_target(
     ndi_baseline,
-    ndi_load(sasinet_drive = get_sasinet_drive(),
+    ndi_load(sasinet_drive = get_sasinet_drive('nmpieyeskey'),
              fname = 'longterm_death.csv',
              # participant identifier
              pid,
@@ -33,7 +35,7 @@ list(
 
   tar_target(
     ndi_longitudinal,
-    ndi_load(sasinet_drive = 'Z',
+    ndi_load(sasinet_drive = get_sasinet_drive('nmpieyeskey'),
              fname = 'longterm_death_td_subgroup.csv',
              pid,
              randSite,
@@ -118,7 +120,6 @@ list(
   ),
 
   tar_render(manuscript, "doc/manuscript.Rmd")
-
 
 )
 
