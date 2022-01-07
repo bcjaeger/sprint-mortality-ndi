@@ -1,7 +1,7 @@
 ---
 title: "Longer term All-Cause and Cardiovascular Mortality with Intensive Blood Pressure Control: A Secondary Analysis of SPRINT"
 bibliography: refs.bib
-csl: lancet.csl
+csl: jama.csl
 always_allow_html: true
 output: 
   officedown::rdocx_document:
@@ -36,10 +36,10 @@ single_par <- fp_par(line_spacing=1)
 
 ```
 
-Byron C. Jaeger, PhD,^1^ Adam P. Bress, PharmD, MS,^2,3^ Alfred K. Cheung, MD,^4,5^ William C. Cushman, MD,^6^ Paul E. Drawz, MD,^7^ Lawrence J. Fine, MD,^8^ Karen C. Johnson, MD,^6^ Cora E. Lewis, MD,^9^ Suzanne Oparil, MD,^10^ Michael V. Rocco, MD,^11^ Mark A. Supiano, MD,^12^ Paul K. Whelton, MD,^13^ Joshua D. Bundy, PhD,^13^ Jeff D. Williamson, MD, MHS,^14^ Jackson T. Wright, Jr, MD, PhD,^15^ David M. Reboussin, PhD,^1^ and Nicholas M. Pajewski, PhD,^1^ 
+Byron C. Jaeger, PhD,^1^ Adam P. Bress, PharmD, MS,^2,3^ Alfred K. Cheung, MD,^4,5^ William C. Cushman, MD,^6^ Paul E. Drawz, MD,^7^ Lawrence J. Fine, MD,^8^ Karen C. Johnson, MD,^6^ Cora E. Lewis, MD,^9^ Suzanne Oparil, MD,^10^ Michael V. Rocco, MD,^11^ Mark A. Supiano, MD,^12^ Paul K. Whelton, MD,^13^ Joshua D. Bundy, PhD,^13^ Jeff D. Williamson, MD, MHS,^14^ Jackson T. Wright, Jr, MD, PhD,^15^ David M. Reboussin, PhD,^1^ and Nicholas M. Pajewski, PhD^1^ 
 
 ^1^Department of Biostatistics and Data Science, Wake Forest School of Medicine, Winston-Salem, NC. ^2^Informatics, Decision-Enhancement, and Analytic Sciences (IDEAS) Center, Veterans Affairs, Salt Lake City Health Care System, Salt Lake City, UT. ^3^Department of Population Health Sciences, University of Utah School of Medicine, Salt Lake City, UT. ^4^Renal Section, Veterans Affairs Salt Lake City Healthcare System, UT. ^5^Division of Nephrology and Hypertension, Department of Internal Medicine, University of Utah School of Medicine, Salt Lake Cite, UT. ^6^Department of Preventive Medicine, University of Tennessee Health Science Center, Memphis. ^7^Division of Renal Diseases & Hypertension, University of Minnesota, MN. ^8^Clinical Applications and Prevention Branch, National Heart, Lung, and Blood Institute, National Institutes of Health, Bethesda, MD. ^9^Department of Epidemiology, University of Alabama at Birmingham. ^10^Division of Cardiovascular Disease, Department of Medicine, University of Alabama at Birmingham. ^11^Section on Nephrology, Department of Internal Medicine, Wake Forest School of Medicine, Winston-Salem, NC. ^12^Division of Geriatrics, University of Utah School of Medicine, Salt Lake City. ^13^Department of Epidemiology, Tulane University School of Public Health and Tropical Medicine, New Orleans, LA. ^14^Section on Gerontology and Geriatric Medicine, Department of Internal Medicine, Wake Forest School of Medicine, Winston-Salem, NC. ^15^Division of Nephrology and Hypertension, University Hospitals Cleveland Medical Center, Case Western Reserve University, OH `r single_par`
-\ \
+\
 
 **Correspondence to:** \
 Nicholas M. Pajewski, PhD \
@@ -216,14 +216,17 @@ abbrvs <- list(
   SD   = 'standard deviation',
   IQR  = 'interquartile range',
   MoCA = 'Montreal cognitive assessment',
-  EHR  = 'electronic health records'
+  EHR  = 'electronic health records',
+  CVD  = 'cardiovascular disease'
 )
 
 abbrvs_paste <- function(strings){
   
-  strings[1] <- str_replace(strings[1], ' ', ' represents ')
+  front <- 'Abbreviations'
   
-  glue::glue_collapse(strings, sep = ', ', last = ' and ')
+  matter <- glue::glue_collapse(strings, sep = '; ', last = '; and ')
+  
+  paste(front, matter, sep = ': ')
   
 }
 
@@ -231,7 +234,7 @@ abbrvs_write <- function(abbr){
   
   sorted <- abbr[sort(names(abbr))]
   
-  strings <- map2_chr(names(sorted), sorted, paste)
+  strings <- map2_chr(names(sorted), sorted, paste, sep = ' = ')
   
   as_paragraph(abbrvs_paste(strings))
   
@@ -242,13 +245,14 @@ abbrvs_write <- function(abbr){
 
 
 \newpage
-__Table 1__: Characteristics of study participants overall and stratified by inclusion in the electronic health record ancillary study. `r single_par`
+__Table 1__: Characteristics of study participants stratified by inclusion in the electronic health record ancillary study. `r single_par`
 
 ```{r}
 
 tar_load(tbl_characteristics)
 
 header_labels <- tbl_characteristics |> 
+  getElement('main') |> 
   show_header_names(quiet = TRUE) |> 
   mutate(
     label = str_remove_all(label, fixed("*")),
@@ -257,21 +261,20 @@ header_labels <- tbl_characteristics |>
   deframe()
 
 tbl_characteristics |> 
+  getElement('main') |> 
   modify_footnote(update = everything() ~ NA) |> 
   as_flex_table() |> 
   add_header_row(
     values = c("Characteristic",
-               header_labels['stat_0'], 
                "Included in ancillary EHR study", 
                header_labels['p.value']),
-    colwidths = c(1, 1, 2, 1)
+    colwidths = c(1, 2, 1)
   ) |> 
   theme_box() |> 
-  set_header_labels(stat_0 = header_labels['stat_0'],
-                    stat_1 = header_labels['stat_1'],
+  set_header_labels(stat_1 = header_labels['stat_1'],
                     stat_2 = header_labels['stat_2']) |> 
   merge_v(part = 'header') |> 
-  align(j = c(2, 3, 4, 5), align = 'center', part = 'all') |> 
+  align(j = c(2, 3, 4), align = 'center', part = 'all') |> 
   footnote(
     i = 1, 
     j = 1, 
@@ -409,9 +412,16 @@ tbl_object <- tbl_data |>
   align(align = 'center', part = 'all') |> 
   align(j = 1, align = 'left', part = 'all') |> 
   fontsize(size = 12, part = 'all') |> 
-  font(fontname = 'Times New Roman', part = 'all')
-
-tbl_object <- add_footer_lines(tbl_object, values="Abbreviations: CI, confidence interval; FI, frailty index.")
+  font(fontname = 'Times New Roman', part = 'all') |> 
+  footnote(i = ~ variable == 'Chronic Kidney Disease', 
+           j = 1,
+           part = 'body',
+           ref_symbols = 'a',
+           value = ckd_defn) |> 
+  footnote(i = 1, 
+           j = 1, 
+           ref_symbols = '',
+           value = abbrvs_write(abbrvs[c('CI', 'FI')]))
 
 tbl_object
 
@@ -502,7 +512,16 @@ tbl_object <- tbl_data |>
   align(align = 'center', part = 'all') |> 
   align(j = 1, align = 'left', part = 'all') |> 
   fontsize(size = 12, part = 'all') |> 
-  font(fontname = 'Times New Roman', part = 'all')
+  font(fontname = 'Times New Roman', part = 'all') |> 
+  footnote(i = ~ variable == 'Chronic Kidney Disease', 
+           j = 1,
+           part = 'body',
+           ref_symbols = 'a',
+           value = ckd_defn) |> 
+  footnote(i = 1, 
+           j = 1, 
+           ref_symbols = '',
+           value = abbrvs_write(abbrvs[c('CI', 'CVD', 'FI')]))
 
 tbl_object
 
@@ -515,6 +534,7 @@ __Figure 1__: (A) Cumulative incidence of all-cause mortality by treatment group
 ```{r}
 
 blank_plot <- ggplot(data.frame()) + aes() + theme_void()
+
 legend <- get_legend(
   fig$inc_acm[[1]]$plot + 
     theme(legend.position = c(.55, .2),
@@ -566,22 +586,49 @@ plot_grid(
 ```
 
 \newpage
-__Figure 3__: Mean systolic blood pressure over time by treatment group. Shaded areas indicate a 95% confidence interval for the mean. `r single_par`
+__Figure 3__: (A) Mean systolic blood pressure over time by treatment group. (B) Mean difference in systolic blood pressure over time. Shaded areas indicate a 95% confidence interval for the mean. Horizontal lines during the trial period show target blood pressure values for each treatment group `r single_par`
 
 ```{r}
 
-fpath <- file.path(
-  paste0(get_sasinet_drive(), ":"),
-  'bjaeger',
-  'sprint-mortality-ndi',
-  'fig',
-  'SPRINT_EHR_SBP_LongTerm_Comparison_122721.png'
+
+tar_load(bp_viz)
+
+blank_plot <- ggplot(data.frame()) + aes() + theme_void()
+
+legend <- get_legend(
+  bp_viz$levels + 
+    theme(legend.position = c(.55, .2),
+          legend.direction = 'horizontal')
 )
 
-knitr::include_graphics(
-  path = fpath, 
-  dpi = 600
+plot_grid(
+  # row 1 (legend)
+  legend, 
+  blank_plot,
+  # row 2 (figures)
+  bp_viz$levels + theme(legend.position = ''), 
+  bp_viz$diff,
+  ncol = 2,
+  align = 'v',
+  axis = 'lr',
+  rel_heights = c(1,10,2),
+  labels = c("","","A","B","",""),
+  label_x = 0.1,
+  label_y = 1.05
 )
+
+# fpath <- file.path(
+#   paste0(get_sasinet_drive(), ":"),
+#   'bjaeger',
+#   'sprint-mortality-ndi',
+#   'fig',
+#   'SPRINT_EHR_SBP_LongTerm_Comparison_122721.png'
+# )
+# 
+# knitr::include_graphics(
+#   path = fpath, 
+#   dpi = 600
+# )
 
 ```
 
@@ -598,33 +645,20 @@ block_section(
 
 Online supplement only
 
+Byron C. Jaeger, PhD,^1^ Adam P. Bress, PharmD, MS,^2,3^ Alfred K. Cheung, MD,^4,5^ William C. Cushman, MD,^6^ Paul E. Drawz, MD,^7^ Lawrence J. Fine, MD,^8^ Karen C. Johnson, MD,^6^ Cora E. Lewis, MD,^9^ Suzanne Oparil, MD,^10^ Michael V. Rocco, MD,^11^ Mark A. Supiano, MD,^12^ Paul K. Whelton, MD,^13^ Joshua D. Bundy, PhD,^13^ Jeff D. Williamson, MD, MHS,^14^ Jackson T. Wright, Jr, MD, PhD,^15^ David M. Reboussin, PhD,^1^ and Nicholas M. Pajewski, PhD^1^ 
 
-Longer term All-Cause and Cardiovascular Mortality with Intensive Blood Pressure Control: A Secondary Analysis of SPRINT
+^1^Department of Biostatistics and Data Science, Wake Forest School of Medicine, Winston-Salem, NC. ^2^Informatics, Decision-Enhancement, and Analytic Sciences (IDEAS) Center, Veterans Affairs, Salt Lake City Health Care System, Salt Lake City, UT. ^3^Department of Population Health Sciences, University of Utah School of Medicine, Salt Lake City, UT. ^4^Renal Section, Veterans Affairs Salt Lake City Healthcare System, UT. ^5^Division of Nephrology and Hypertension, Department of Internal Medicine, University of Utah School of Medicine, Salt Lake Cite, UT. ^6^Department of Preventive Medicine, University of Tennessee Health Science Center, Memphis. ^7^Division of Renal Diseases & Hypertension, University of Minnesota, MN. ^8^Clinical Applications and Prevention Branch, National Heart, Lung, and Blood Institute, National Institutes of Health, Bethesda, MD. ^9^Department of Epidemiology, University of Alabama at Birmingham. ^10^Division of Cardiovascular Disease, Department of Medicine, University of Alabama at Birmingham. ^11^Section on Nephrology, Department of Internal Medicine, Wake Forest School of Medicine, Winston-Salem, NC. ^12^Division of Geriatrics, University of Utah School of Medicine, Salt Lake City. ^13^Department of Epidemiology, Tulane University School of Public Health and Tropical Medicine, New Orleans, LA. ^14^Section on Gerontology and Geriatric Medicine, Department of Internal Medicine, Wake Forest School of Medicine, Winston-Salem, NC. ^15^Division of Nephrology and Hypertension, University Hospitals Cleveland Medical Center, Case Western Reserve University, OH `r single_par`
+\
 
-Byron C. Jaeger, PhD^1^ 
-Paul E. Drawz, MD^2^ 
-Paul K. Whelton, MD^3^ 
-Mark A. Supiano, MD^4^ 
-Adam P. Bress, PharmD, MS^5,6^
-Jeff D. Williamson, MD, MHS^7^
-David M. Reboussin, PhD^1^, and
-Nicholas M. Pajewski, PhD^1^ 
-
-<!-- Jackson T. Wright Jr., MD, PhD, Alfred K. Cheung, MD, William C. Cushman, MD, Cora E. Lewis, MD, Suzanne Oparil, MD, Michael V. Rocco, MD and Karen Johnson, MD -->
-
-^1^Department of Biostatistics and Data Science, Wake Forest School of Medicine, Winston-Salem, NC
-
-^2^Division of Renal Diseases & Hypertension, University of Minnesota, Minneapolis. 
-
-^3^Department of Epidemiology, Tulane University School of Public Health and Tropical Medicine, New Orleans, LA. 
-
-^4^Division of Geriatrics, University of Utah School of Medicine, Salt Lake City.  
-
-^5^	Informatics, Decision-Enhancement, and Analytic Sciences (IDEAS) Center, Veterans Affairs, Salt Lake City Health Care System, Salt Lake City, UT
-
-^6^	Department of Population Health Sciences, University of Utah School of Medicine, Salt Lake City, UT
-
-^7^Section on Gerontology and Geriatric Medicine, Wake Forest School of Medicine, Winston-Salem, NC. 
+**Correspondence to:** \
+Nicholas M. Pajewski, PhD \
+Department of Biostatistics and Data Science \
+Division of Public Health Sciences \
+Wake Forest School of Medicine \
+Medical Center Boulevard \
+Winston-Salem, NC 27154 \
+(336) 713-1396 \
+npajewsk@wakehealth.edu `r single_par`
 
 
 
@@ -636,6 +670,70 @@ block_section(
   )
 )
 ```
+
+__eTable 1__: Characteristics of study participants stratified by inclusion in the electronic health record ancillary study and by treatment group. `r single_par`
+
+```{r}
+
+header_labels <- tbl_characteristics |> 
+  getElement('supp') |> 
+  show_header_names(quiet = TRUE) |> 
+  mutate(
+    label = str_remove_all(label, fixed("*")),
+    label = str_replace(label, ', ', '\n')
+  ) |> 
+  deframe()
+
+tbl_characteristics |> 
+  getElement('supp') |> 
+  modify_footnote(update = everything() ~ NA) |> 
+  as_flex_table() |> 
+  theme_box() |> 
+  width(width = 0.95) |> 
+  width(j=1, width = 1.75) |> 
+  set_header_labels(stat_1_1 = header_labels['stat_1_1'],
+                    stat_1_2 = header_labels['stat_1_2'],
+                    stat_2_1 = header_labels['stat_2_1'],
+                    stat_2_2 = header_labels['stat_2_2']) |> 
+  align(j = 2:7, align = 'center', part = 'all') |> 
+  footnote(
+    i = 1, 
+    j = 1, 
+    ref_symbols = '',
+    value = as_paragraph(
+      "Table values are percentages unless otherwise specified"
+    )
+  ) |> 
+  footnote(
+    i = 2, 
+    j = ~ p.value_1 + p.value_2,
+    part = 'header',
+    ref_symbols = 'a',
+    value = as_paragraph(
+      "P-values computed using Wilcoxon rank sum test for age in years, chi-square test for age \u226575 years, and chi-square test for all other variables"
+    )
+  ) |> 
+  footnote(
+    i = ~ label == "Chronic Kidney Disease",
+    j = 1, 
+    ref_symbols = 'b',
+    value = ckd_defn,
+    part = 'body'
+  ) |> 
+  footnote(
+    i = 1,
+    j = 1,
+    ref_symbols = '',
+    value = abbrvs_write(abbrvs[c('SD', 'EHR', 'IQR', 'MoCA', 'FI')]),
+    part = 'body'
+  ) |>
+  fontsize(size = 12, part = 'all') |> 
+  font(fontname = 'Times New Roman', part = 'all')
+
+```
+
+
+\newpage
 
 __eFigure 1__: All-cause mortality hazard ratio for participants randomized to intensive versus standard treatment.
 

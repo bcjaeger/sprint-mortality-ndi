@@ -98,6 +98,8 @@ list(
     tar_target(base_viz_eff, ndi_base_viz_tv_effect(base_sub))
   ),
 
+  tar_target(bp_viz, bp_long_viz(date='12-27-21')),
+
   # ndi_long_describe(ndi_data_list)
 
   tar_combine(

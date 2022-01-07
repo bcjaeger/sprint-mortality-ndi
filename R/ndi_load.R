@@ -14,10 +14,12 @@ ndi_load <- function(sasinet_drive = "Z", fname, ...) {
     fname
   )
 
-  read_csv(path) |>
+
+  data_in <- read_csv(path) |>
     transmute(
       # ... makes it easy to modify the call to this function in targets
       # for including additional variables or modifying them.
+      pid,
       ...,
       age_yrs = age,
       age_cat = factor(sub_senior,
@@ -53,5 +55,21 @@ ndi_load <- function(sasinet_drive = "Z", fname, ...) {
                          levels = c(0,1),
                          labels = c('Standard', 'Intensive'))
     )
+
+
+  # indicate ancillary study membership for baseline data
+  if(fname == 'longterm_death.csv'){
+
+    ancillary <- read_csv('ehr/SPRINT_EHR_SBP_LongTerm_PID_010622.csv')
+
+    data_in$ehr_ancillary <- if_else(
+      condition = data_in$pid %in% ancillary$pid,
+      true = 'Yes',
+      false = 'No'
+    )
+
+  }
+
+  data_in
 
 }
