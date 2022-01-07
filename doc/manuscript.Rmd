@@ -38,6 +38,8 @@ single_par <- fp_par(line_spacing=1)
 
 Byron C. Jaeger, PhD,^1^ Adam P. Bress, PharmD, MS,^2,3^ Alfred K. Cheung, MD,^4,5^ William C. Cushman, MD,^6^ Paul E. Drawz, MD,^7^ Lawrence J. Fine, MD,^8^ Karen C. Johnson, MD,^6^ Cora E. Lewis, MD,^9^ Suzanne Oparil, MD,^10^ Michael V. Rocco, MD,^11^ Mark A. Supiano, MD,^12^ Paul K. Whelton, MD,^13^ Joshua D. Bundy, PhD,^13^ Jeff D. Williamson, MD, MHS,^14^ Jackson T. Wright, Jr, MD, PhD,^15^ David M. Reboussin, PhD,^1^ and Nicholas M. Pajewski, PhD^1^ 
 
+NOTE: ADD Steve Rapp AS A CO-AUTHOR
+
 ^1^Department of Biostatistics and Data Science, Wake Forest School of Medicine, Winston-Salem, NC. ^2^Informatics, Decision-Enhancement, and Analytic Sciences (IDEAS) Center, Veterans Affairs, Salt Lake City Health Care System, Salt Lake City, UT. ^3^Department of Population Health Sciences, University of Utah School of Medicine, Salt Lake City, UT. ^4^Renal Section, Veterans Affairs Salt Lake City Healthcare System, UT. ^5^Division of Nephrology and Hypertension, Department of Internal Medicine, University of Utah School of Medicine, Salt Lake Cite, UT. ^6^Department of Preventive Medicine, University of Tennessee Health Science Center, Memphis. ^7^Division of Renal Diseases & Hypertension, University of Minnesota, MN. ^8^Clinical Applications and Prevention Branch, National Heart, Lung, and Blood Institute, National Institutes of Health, Bethesda, MD. ^9^Department of Epidemiology, University of Alabama at Birmingham. ^10^Division of Cardiovascular Disease, Department of Medicine, University of Alabama at Birmingham. ^11^Section on Nephrology, Department of Internal Medicine, Wake Forest School of Medicine, Winston-Salem, NC. ^12^Division of Geriatrics, University of Utah School of Medicine, Salt Lake City. ^13^Department of Epidemiology, Tulane University School of Public Health and Tropical Medicine, New Orleans, LA. ^14^Section on Gerontology and Geriatric Medicine, Department of Internal Medicine, Wake Forest School of Medicine, Winston-Salem, NC. ^15^Division of Nephrology and Hypertension, University Hospitals Cleveland Medical Center, Case Western Reserve University, OH `r single_par`
 \
 
@@ -60,6 +62,8 @@ tar_load(names = c(recoders,
                    base_viz_eff,
                    long_viz_mort,
                    long_viz_cvd,
+                   bp_viz,
+                   tbl_characteristics,
                    base_ds, 
                    long_ds,
                    long_inf,
@@ -138,9 +142,7 @@ __Baseline Study Measurements__: Sociodemographic data were collected at baselin
 
 __National Death Index Linkage__: Outcomes of interest included all-cause and CVD mortality. Methods of ascertainment and adjudication through the course of trial follow-up have been previously described. Subsequently, mortality was ascertained through a US National Death Index (NDI) search. Possible matches were identified according to NDI guidelines. To be considered a confirmed death, we required 4 or more of 5 matches among Social Security number, name, date of birth, city, and state in the NDI. NDI follow-up began in 2016 and ended on the date of death or date of the NDI search (2020). Deaths ascertained in 2020 were based on the preliminary data release. CVD mortality for NDI-based follow-up used the NDI Plus System, which automatically identifies underlying causes of death from death certificates, including conversion to ICD-10 codes. we defined CVD mortality as any death containing the ICD-10 codes of I00 to I99.  
 
-__EHR Ancillary Study__: We examined the trajectory of systolic blood pressure (SBP) following the conclusion of the trial using outpatient SBPs extracted from the electronic health record (EHR). Methods for the linkage of participants to their medical record number and the extraction of vital sign data have been previously described [@drawz_concordance_2020]. Because encounter type information was inconsistently available (i.e. outpatient, inpatient, observation, etc.), we defined a BP measurement as outpatient if there were was not a BP measurement on the preceding or following day, and if there were 2 or less BP measurements on a particular day. We averaged outpatient EHR BP readings when there were 2 on the same day.
-
-
+__EHR Ancillary Study__: We examined the trajectory of SBP following the conclusion of the trial using outpatient SBPs extracted from the EHR. Methods for the linkage of participants to their medical record number and the extraction of vital sign data have been previously described [@drawz_concordance_2020]. Because encounter type information was inconsistently available (i.e. outpatient, inpatient, observation, etc.), we defined a BP measurement as outpatient if there were was not a BP measurement on the preceding or following day, and if there were 2 or less BP measurements on a particular day. We averaged outpatient EHR BP readings when there were 2 on the same day.
 
 ___Statistical Analysis___: The effect of randomization to intensive treatment was estimated as a function of time using two approaches. The first approach split the follow-up of study participants into non-overlapping trial and cohort phases, then estimated the effect of randomization to intensive treatment in each phase [@zhang_time_varying_2018]. The second approach estimated a continuous time-dependent effect [@martinussen2007dynamic; @therneau2017using]. All analyses accounted for correlation within study sites [@lin_robust_1989], and analyses of cardiovascular mortality accounted for the competing risk of non-cardiovascular mortality [@scheike_flexible_2008]. The mean between-group differences in SBP following the conclusion of trial follow-up (after July 2016) were estimated using linear mixed models. Models included random effects for participant and clinic site. Our primary models included an interaction between treatment group and time since randomization, which was flexibly modeled using B-splines.
 
@@ -148,6 +150,8 @@ All analyses were performed using SAS version 9.4 (SAS Institute Inc, Cary, NC) 
 
 
 # RESULTS
+
+__ADD 1-2 SENTENCES ON CHARACTERISTICS__ (__Table 1__). Among participants included and not included in the ancillary EHR study, there was no evidence of a difference in study characteristics between participants randomized to intensive versus standard treatment (__eTable 1__).
 
 ```{r}
 
@@ -184,7 +188,41 @@ t_atten  <- cvd_overall_epochs$label[2]
 
 A total of `r ap_b_i$n_cvd` and `r ap_b_s$n_cvd` CVD mortality events occurred among participants randomized to intensive and standard treatment, respectively (__Table 3__). The HR for CVD mortality among participants randomized to intensive versus standard treatment was `r with(ap_l_o_t, .("{cvd_est} (95% CI {cvd_lwr}, {cvd_upr})"))` during the trial phase and `r with(ap_l_o_c, .("{cvd_est} (95% CI {cvd_lwr}, {cvd_upr})"))` during the cohort phase. Adults randomized to intensive treatment who were <75 years of age, men, non-black, without CKD, or with cognitive function >10^th^ percentile had lower CVD mortality risk during the trial phase compared to their counterparts randomized to standard treatment, but there was no evidence that intensive treatment during the trial phase had benefit for CVD mortality during the cohort phase (__eFigure 2__). The time-dependent effect of intensive versus standard treatment indicated a benefit for CVD mortality from `r t_signif` to `r t_atten` years from randomization, and was attenuated throughout the remainder of the cohort period (__Figure 2__).
 
-The estimated mean SBP among participants randomized to intensive treatment was <placeholder (95% CI)> at 5 years and <placeholder (95% CI)> at 10 years post-randomization (__Figure 3__). For participants randomized to standard treatment, mean SBP was estimated to be <placeholder (95% CI)> at 5 years and <placeholder (95% CI)> at 10 years post-randomization. 
+```{r}
+
+bp_viz_5yr <- bp_viz |> 
+  getElement('levels') |> 
+  getElement('data') |> 
+  filter(time_months == 60)
+
+bp_viz_5yr <- split(bp_viz_5yr, bp_viz_5yr$group)
+
+bp_viz_10yr <- bp_viz |> 
+  getElement('levels') |> 
+  getElement('data') |> 
+  filter(time_months == '120')
+
+bp_viz_10yr <- split(bp_viz_10yr, bp_viz_10yr$group)
+
+# a temporary function for inline reporting below.
+f <- function(d) with(d, .("{Estimate} ({Lower}, {Upper})"))
+
+bp_diff_5yr <- bp_viz |> 
+  getElement('diff') |> 
+  getElement('data') |> 
+  filter(time_months == 60)
+
+t_atten <- bp_viz |> 
+  getElement('diff') |> 
+  getElement('data') |> 
+  filter(find_signchange_lgl(Lower)) |> 
+  pull(time_months) |> 
+  divide_by(12)
+
+```
+
+
+The estimated mean (95% CI) SBP among participants randomized to intensive treatment was `r f(bp_viz_5yr$Intensive)` at 5 years and `r f(bp_viz_10yr$Intensive)` at 10 years post-randomization (__Figure 3__; panel A). For participants randomized to standard treatment, mean (95% CI) SBP was estimated to be `r f(bp_viz_5yr$Standard)` at 5 years and `r f(bp_viz_10yr$Standard)` post-randomization. The difference in mean SBP levels between participants randomized to intensive versus standard treatment, in mm Hg, was `r f(bp_diff_5yr)` at 5 years post-randomization, and was attenuated by `r t_atten` years post-randomization (__Figure 3__; Panel B).
 
 # DISCUSSION
 
@@ -248,7 +286,6 @@ __Table 1__: Characteristics of study participants stratified by inclusion in th
 
 ```{r}
 
-tar_load(tbl_characteristics)
 
 header_labels <- tbl_characteristics |> 
   getElement('main') |> 
@@ -590,7 +627,6 @@ __Figure 3__: (A) Mean systolic blood pressure over time by treatment group. (B)
 ```{r}
 
 
-tar_load(bp_viz)
 
 blank_plot <- ggplot(data.frame()) + aes() + theme_void()
 
