@@ -4,8 +4,8 @@
 source("./packages.R")
 
 # used by NMP to run target pipeline
-# Sys.setenv(RSTUDIO_PANDOC="C:/Program Files/RStudio/bin/pandoc")
-# setwd("O:/sprint/npajewski/sprint-mortality-ndi")
+Sys.setenv(RSTUDIO_PANDOC="C:/Program Files/RStudio/bin/pandoc")
+setwd("O:/sprint/npajewski/sprint-mortality-ndi")
 
 ## Load your R files
 lapply(list.files("./R", full.names = TRUE), source)
@@ -24,7 +24,7 @@ list(
 
   tar_target(
     ndi_baseline,
-    ndi_load(sasinet_drive = get_sasinet_drive(),
+    ndi_load(sasinet_drive = get_sasinet_drive("nmpieyeskey"),
              fname = 'longterm_death.csv',
              # participant identifier
              pid,
@@ -39,7 +39,7 @@ list(
 
   tar_target(
     ndi_longitudinal,
-    ndi_load(sasinet_drive = get_sasinet_drive(),
+    ndi_load(sasinet_drive = get_sasinet_drive("nmpieyeskey"),
              fname = 'longterm_death_td_subgroup.csv',
              pid,
              randSite,
@@ -98,7 +98,7 @@ list(
     tar_target(base_viz_eff, ndi_base_viz_tv_effect(base_sub))
   ),
 
-  tar_target(bp_viz, bp_long_viz(date='12-27-21')),
+  tar_target(bp_viz, bp_long_viz(date='01-15-22')),
 
   # ndi_long_describe(ndi_data_list)
 
