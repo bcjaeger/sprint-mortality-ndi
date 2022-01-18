@@ -163,7 +163,7 @@ t_atten <- acm_overall_epochs$label[2]
 
 ```
 
-___All-cause Mortality___. In both treatment groups, median follow-up time was `r ap_b_o$fup_est` years. A total of `r ap_b_i$n_acm` and `r ap_b_s$n_acm` deaths occurred among participants randomized to intensive and standard treatment, respectively (__eTable 2__). The hazard ratio (HR) for all-cause mortality comparing intensive to standard treatment was `r with(ap_l_o_t, .("{mort_est} (95% confidence interval [CI] {mort_lwr}, {mort_upr})"))` during the trial, and `r with(ap_l_o_c, .("{mort_est} (95% CI {mort_lwr}, {mort_upr})"))` during observational follow-up following the trial. The continuous time-dependent effect of intensive versus standard treatment indicated a benefit for all-cause mortality from `r t_signif` to `r t_atten` years from randomization, and was attenuated throughout the remainder of the cohort phase (__Figure 1__).  In subgroups based on age, sex, race, CKD, cognitive function, and frailty, there was no evidence that intensive treatment during the trial phase had benefit for all-cause mortality during the cohort phase (__Figure 2__).
+___All-cause Mortality___. In both treatment groups, median follow-up time was `r ap_b_o$fup_est` years. A total of `r ap_b_i$n_acm` and `r ap_b_s$n_acm` deaths occurred among participants randomized to intensive and standard treatment, respectively (__eTable 2__). The hazard ratio (HR) for all-cause mortality comparing intensive to standard treatment was `r with(ap_l_o_t, .("{mort_est} (95% confidence interval [CI] {mort_lwr}, {mort_upr})"))` during the trial phase, and `r with(ap_l_o_c, .("{mort_est} (95% CI {mort_lwr}, {mort_upr})"))` during the cohort phase. The continuous time-dependent effect of intensive versus standard treatment indicated a benefit for all-cause mortality from `r t_signif` to `r t_atten` years from randomization, and was attenuated throughout the remainder of the cohort phase (__Figure 1__).  In subgroups based on age, sex, race, CKD, cognitive function, and frailty, there was no evidence that intensive treatment during the trial phase had benefit for all-cause mortality during the cohort phase (__Figure 2__).
 
 ```{r}
 
@@ -188,16 +188,18 @@ ___Cardiovascular Mortality___. A total of `r ap_b_i$n_cvd` and `r ap_b_s$n_cvd`
 bp_viz_5yr <- bp_viz |> 
   getElement('levels') |> 
   getElement('data') |> 
-  filter(time_months == 60)
+  filter(source == 'EHR', 
+         time_months == 60)
 
-bp_viz_5yr <- split(bp_viz_5yr, bp_viz_5yr$group)
+bp_viz_5yr <- split(bp_viz_5yr, bp_viz_5yr$treatment)
 
 bp_viz_10yr <- bp_viz |> 
   getElement('levels') |> 
   getElement('data') |> 
-  filter(time_months == '120')
+  filter(source=='EHR',
+         time_months == 120)
 
-bp_viz_10yr <- split(bp_viz_10yr, bp_viz_10yr$group)
+bp_viz_10yr <- split(bp_viz_10yr, bp_viz_10yr$treatment)
 
 # a temporary function for inline reporting below.
 f <- function(d) with(d, .("{Estimate} ({Lower}, {Upper})"))
@@ -210,13 +212,14 @@ bp_diff_5yr <- bp_viz |>
 t_atten <- bp_viz |> 
   getElement('diff') |> 
   getElement('data') |> 
-  filter(find_signchange_lgl(Lower)) |> 
+  filter(source == 'EHR',
+         find_signchange_lgl(Lower)) |> 
   pull(time_months) |> 
   divide_by(12)
 
 ```
 
-___Blood Pressure___. The estimated mean (95% CI) SBP among participants randomized to intensive treatment was `r f(bp_viz_5yr$Intensive)` at 5 years and `r f(bp_viz_10yr$Intensive)` at 10 years post-randomization (__Figure 5__; panel A). For participants randomized to standard treatment, mean (95% CI) SBP was estimated to be `r f(bp_viz_5yr$Standard)` at 5 years and `r f(bp_viz_10yr$Standard)` post-randomization. The difference in mean SBP levels between participants randomized to intensive versus standard treatment, in mm Hg, was `r f(bp_diff_5yr)` at 5 years post-randomization, and was attenuated by `r t_atten` years post-randomization (__Figure 5__; Panel B). 
+___Blood Pressure___. The estimated mean (95% CI) SBP among participants randomized to intensive treatment was `r f(bp_viz_5yr$Intensive)` at 5 years and `r f(bp_viz_10yr$Intensive)` at 10 years post-randomization (__Figure 5__). For participants randomized to standard treatment, mean (95% CI) SBP was estimated to be `r f(bp_viz_5yr$Standard)` at 5 years and `r f(bp_viz_10yr$Standard)` post-randomization. The difference in mean SBP levels between participants randomized to intensive versus standard treatment, in mm Hg, was `r f(bp_diff_5yr)` at 5 years post-randomization, and was attenuated at `r t_atten` years post-randomization (__eFigure 1__). 
 
 # DISCUSSION
 
@@ -368,35 +371,12 @@ long_viz_cvd
 
 
 \newpage
-__Figure 5__: (A) Mean systolic blood pressure over time by treatment group. (B) Mean difference in systolic blood pressure over time. Shaded areas indicate a 95% confidence interval for the mean. Horizontal lines during the trial period show target blood pressure values for each treatment group `r single_par`
+__Figure 5__: Mean systolic blood pressure over time by treatment group. Shaded areas indicate a 95% confidence interval for the mean. `r single_par`
 
 ```{r}
 
-
-
-blank_plot <- ggplot(data.frame()) + aes() + theme_void()
-
-legend <- get_legend(
-  bp_viz$levels + 
-    theme(legend.position = c(.55, .2),
-          legend.direction = 'horizontal')
-)
-
-plot_grid(
-  # row 1 (legend)
-  legend, 
-  blank_plot,
-  # row 2 (figures)
-  bp_viz$levels + theme(legend.position = ''), 
-  bp_viz$diff,
-  ncol = 2,
-  align = 'v',
-  axis = 'lr',
-  rel_heights = c(1,10,2),
-  labels = c("","","A","B","",""),
-  label_x = 0.1,
-  label_y = 1.05
-)
+bp_viz$levels + 
+  theme(legend.key.size = unit(1, 'cm'))
 
 # fpath <- file.path(
 #   paste0(get_sasinet_drive(), ":"),
@@ -726,6 +706,18 @@ tbl_object
 
 
 ```
+
+\newpage
+
+__eFigure 1__: Mean difference in systolic blood pressure over time. Shaded areas indicate a 95% confidence interval for the mean. `r single_par`
+
+```{r}
+
+bp_viz$diff + 
+  theme(legend.key.size = unit(1, 'cm'))
+
+```
+
 
 ```{r}
 block_section(
