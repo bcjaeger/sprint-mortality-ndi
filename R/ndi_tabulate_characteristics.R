@@ -35,7 +35,7 @@ ndi_tabulate_characteristics <- function(ndi_baseline, recoders) {
   }
 
   tbl_by_anci <- ndi_tbl_data |>
-    select(-treatment) |>
+    relocate(treatment, .after = race) |>
     tbl_summary(
       by = 'ehr_ancillary',
       statistic = list(
@@ -44,16 +44,19 @@ ndi_tabulate_characteristics <- function(ndi_baseline, recoders) {
       ),
       label = list(age_cat ~ paste("Age", recoders$levels$age_cat[2]),
                    sex ~ recoders$levels$sex[2],
+                   treatment ~ "Intensive treatment",
                    race ~ recoders$levels$race[2],
                    moca ~ paste("MoCA", recoders$levels$moca[2])),
       type = list(age_yrs ~ "continuous2",
                   age_cat ~ "dichotomous",
+                  treatment ~ "dichotomous",
                   sex ~ "dichotomous",
                   race ~ "dichotomous",
                   ckd_2021 ~ "dichotomous",
                   moca ~ "dichotomous",
                   frail ~ "categorical"),
       value = list(age_cat = recoders$levels$age_cat[2],
+                   treatment = 'Intensive',
                    sex = recoders$levels$sex[2],
                    race = recoders$levels$race[2],
                    ckd_2021 = recoders$levels$ckd_2021[2],
@@ -62,44 +65,75 @@ ndi_tabulate_characteristics <- function(ndi_baseline, recoders) {
     ) |>
     add_p()
 
-  tbls_by_tx <- split(ndi_tbl_data, ndi_tbl_data$ehr_ancillary) |>
-    map(
-      ~ .x |>
-        select(-ehr_ancillary) |>
-        tbl_summary(
-          by = 'treatment',
-          statistic = list(
-            age_yrs ~ c("{mean} ({sd})", "{median} ({p25}, {p75})"),
-            all_categorical() ~ "{p}"
-          ),
-          label = list(age_cat ~ paste("Age", recoders$levels$age_cat[2]),
-                       sex ~ recoders$levels$sex[2],
-                       race ~ recoders$levels$race[2],
-                       moca ~ paste("MoCA", recoders$levels$moca[2])),
-          type = list(age_yrs ~ "continuous2",
-                      age_cat ~ "dichotomous",
-                      sex ~ "dichotomous",
-                      race ~ "dichotomous",
-                      ckd_2021 ~ "dichotomous",
-                      moca ~ "dichotomous",
-                      frail ~ "categorical"),
-          value = list(age_cat = recoders$levels$age_cat[2],
-                       sex = recoders$levels$sex[2],
-                       race = recoders$levels$race[2],
-                       ckd_2021 = recoders$levels$ckd_2021[2],
-                       moca = recoders$levels$moca[2]),
-          missing = 'no'
-        ) |>
-        add_p()
+  tbl_by_tx <- ndi_tbl_data |>
+    relocate(ehr_ancillary, .after = race) |>
+    tbl_summary(
+      by = 'treatment',
+      statistic = list(
+        age_yrs ~ c("{mean} ({sd})", "{median} ({p25}, {p75})"),
+        all_categorical() ~ "{p}"
+      ),
+      label = list(age_cat ~ paste("Age", recoders$levels$age_cat[2]),
+                   sex ~ recoders$levels$sex[2],
+                   ehr_ancillary ~ "Included in EHR ancillary study",
+                   race ~ recoders$levels$race[2],
+                   moca ~ paste("MoCA", recoders$levels$moca[2])),
+      type = list(age_yrs ~ "continuous2",
+                  age_cat ~ "dichotomous",
+                  ehr_ancillary ~ "dichotomous",
+                  sex ~ "dichotomous",
+                  race ~ "dichotomous",
+                  ckd_2021 ~ "dichotomous",
+                  moca ~ "dichotomous",
+                  frail ~ "categorical"),
+      value = list(age_cat = recoders$levels$age_cat[2],
+                   ehr_ancillary = 'Yes',
+                   sex = recoders$levels$sex[2],
+                   race = recoders$levels$race[2],
+                   ckd_2021 = recoders$levels$ckd_2021[2],
+                   moca = recoders$levels$moca[2]),
+      missing = 'no'
+    ) |>
+    add_p()
+
+  tbl_overall <- ndi_tbl_data |>
+    relocate(treatment, ehr_ancillary, .after = race) |>
+    tbl_summary(
+      by = NULL,
+      statistic = list(
+        age_yrs ~ c("{mean} ({sd})", "{median} ({p25}, {p75})"),
+        all_categorical() ~ "{p}"
+      ),
+      label = list(age_cat ~ paste("Age", recoders$levels$age_cat[2]),
+                   sex ~ recoders$levels$sex[2],
+                   treatment ~ "Intensive treatment",
+                   ehr_ancillary ~ "Included in EHR ancillary study",
+                   race ~ recoders$levels$race[2],
+                   moca ~ paste("MoCA", recoders$levels$moca[2])),
+      type = list(age_yrs ~ "continuous2",
+                  age_cat ~ "dichotomous",
+                  treatment ~ "dichotomous",
+                  ehr_ancillary ~ "dichotomous",
+                  sex ~ "dichotomous",
+                  race ~ "dichotomous",
+                  ckd_2021 ~ "dichotomous",
+                  moca ~ "dichotomous",
+                  frail ~ "categorical"),
+      value = list(age_cat = recoders$levels$age_cat[2],
+                   treatment = 'Intensive',
+                   ehr_ancillary = 'Yes',
+                   sex = recoders$levels$sex[2],
+                   race = recoders$levels$race[2],
+                   ckd_2021 = recoders$levels$ckd_2021[2],
+                   moca = recoders$levels$moca[2]),
+      missing = 'no'
     )
 
-  list(
-    main = tbl_by_anci,
-    supp = tbl_merge(
-      tbls_by_tx,
-      tab_spanner = c('Not included in EHR ancillary study',
-                      'Included in EHR ancillary study')
-    )
+  tbl_merge(
+    list(tbl_overall, tbl_by_tx, tbl_by_anci),
+    tab_spanner = c('Overall',
+                    'Treatment',
+                    'Included in EHR ancillary study')
   )
 
 
