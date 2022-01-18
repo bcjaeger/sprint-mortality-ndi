@@ -3,9 +3,15 @@
 ## Load your packages, e.g. library(targets).
 source("./packages.R")
 
+# determine the paths used for accessing sasinet
+user <- 'bcjaeger'
+
 # used by NMP to run target pipeline
-Sys.setenv(RSTUDIO_PANDOC="C:/Program Files/RStudio/bin/pandoc")
-setwd("O:/sprint/npajewski/sprint-mortality-ndi")
+if(user == 'nmpieyeskey'){
+  Sys.setenv(RSTUDIO_PANDOC="C:/Program Files/RStudio/bin/pandoc")
+  setwd("O:/sprint/npajewski/sprint-mortality-ndi")
+}
+
 
 ## Load your R files
 lapply(list.files("./R", full.names = TRUE), source)
@@ -18,13 +24,14 @@ subgroups <- tibble(group = c("overall",
                               "moca",
                               "frail"))
 
+
 list(
 
   tar_target(recoders, recoders_make()),
 
   tar_target(
     ndi_baseline,
-    ndi_load(sasinet_drive = get_sasinet_drive("nmpieyeskey"),
+    ndi_load(sasinet_drive = get_sasinet_drive(user),
              fname = 'longterm_death.csv',
              # participant identifier
              pid,
@@ -39,7 +46,7 @@ list(
 
   tar_target(
     ndi_longitudinal,
-    ndi_load(sasinet_drive = get_sasinet_drive("nmpieyeskey"),
+    ndi_load(sasinet_drive = get_sasinet_drive(user),
              fname = 'longterm_death_td_subgroup.csv',
              pid,
              randSite,
