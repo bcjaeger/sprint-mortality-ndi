@@ -11,6 +11,7 @@ recoders_make <- function() {
     variable = c("overall" = "Overall",
                  "age_cat" = "Age group",
                  "age_yrs" = "Age, years",
+                 "sbp" = "Systolic blood pressure",
                  "sex" = "Sex",
                  "race" = "Race",
                  "ckd_2021" = "Chronic Kidney Disease",

@@ -35,20 +35,23 @@ ndi_tabulate_characteristics <- function(ndi_baseline, recoders) {
   }
 
   tbl_by_anci <- ndi_tbl_data |>
-    relocate(treatment, .after = race) |>
+    relocate(sbp, treatment, .after = race) |>
     tbl_summary(
       by = 'ehr_ancillary',
       statistic = list(
-        age_yrs ~ c("{mean} ({sd})", "{median} ({p25}, {p75})"),
+        all_continuous() ~ c("{mean} ({sd})"),
         all_categorical() ~ "{p}"
       ),
+      digits = list(everything() ~ 1),
       label = list(age_cat ~ paste("Age", recoders$levels$age_cat[2]),
                    sex ~ recoders$levels$sex[2],
+                   sbp ~ recoders$variable['sbp'],
                    treatment ~ "Intensive treatment",
                    race ~ recoders$levels$race[2],
                    moca ~ paste("MoCA", recoders$levels$moca[2])),
-      type = list(age_yrs ~ "continuous2",
+      type = list(age_yrs ~ "continuous",
                   age_cat ~ "dichotomous",
+                  sbp ~ 'continuous',
                   treatment ~ "dichotomous",
                   sex ~ "dichotomous",
                   race ~ "dichotomous",
@@ -66,21 +69,24 @@ ndi_tabulate_characteristics <- function(ndi_baseline, recoders) {
     add_p()
 
   tbl_by_tx <- ndi_tbl_data |>
-    relocate(ehr_ancillary, .after = race) |>
+    relocate(sbp, treatment, ehr_ancillary, .after = race) |>
     tbl_summary(
       by = 'treatment',
       statistic = list(
-        age_yrs ~ c("{mean} ({sd})", "{median} ({p25}, {p75})"),
+        all_continuous() ~ c("{mean} ({sd})"),
         all_categorical() ~ "{p}"
       ),
+      digits = list(everything() ~ 1),
       label = list(age_cat ~ paste("Age", recoders$levels$age_cat[2]),
                    sex ~ recoders$levels$sex[2],
+                   sbp ~ recoders$variable['sbp'],
                    ehr_ancillary ~ "Included in EHR ancillary study",
                    race ~ recoders$levels$race[2],
                    moca ~ paste("MoCA", recoders$levels$moca[2])),
-      type = list(age_yrs ~ "continuous2",
+      type = list(age_yrs ~ "continuous",
                   age_cat ~ "dichotomous",
                   ehr_ancillary ~ "dichotomous",
+                  sbp ~ 'continuous',
                   sex ~ "dichotomous",
                   race ~ "dichotomous",
                   ckd_2021 ~ "dichotomous",
@@ -97,21 +103,24 @@ ndi_tabulate_characteristics <- function(ndi_baseline, recoders) {
     add_p()
 
   tbl_overall <- ndi_tbl_data |>
-    relocate(treatment, ehr_ancillary, .after = race) |>
+    relocate(sbp, treatment, ehr_ancillary, .after = race) |>
     tbl_summary(
       by = NULL,
       statistic = list(
-        age_yrs ~ c("{mean} ({sd})", "{median} ({p25}, {p75})"),
+        all_continuous() ~ c("{mean} ({sd})"),
         all_categorical() ~ "{p}"
       ),
+      digits = list(everything() ~ 1),
       label = list(age_cat ~ paste("Age", recoders$levels$age_cat[2]),
                    sex ~ recoders$levels$sex[2],
+                   sbp ~ recoders$variable['sbp'],
                    treatment ~ "Intensive treatment",
                    ehr_ancillary ~ "Included in EHR ancillary study",
                    race ~ recoders$levels$race[2],
                    moca ~ paste("MoCA", recoders$levels$moca[2])),
-      type = list(age_yrs ~ "continuous2",
+      type = list(age_yrs ~ "continuous",
                   age_cat ~ "dichotomous",
+                  sbp ~ 'continuous',
                   treatment ~ "dichotomous",
                   ehr_ancillary ~ "dichotomous",
                   sex ~ "dichotomous",

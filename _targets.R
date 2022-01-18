@@ -35,6 +35,8 @@ list(
              fname = 'longterm_death.csv',
              # participant identifier
              pid,
+             # systolic blood pressure at baseline
+             sbp,
              # study site
              randSite,
              # all cause mortality time and statue
