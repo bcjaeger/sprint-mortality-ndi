@@ -99,8 +99,7 @@ ndi_tabulate_characteristics <- function(ndi_baseline, recoders) {
                    ckd_2021 = recoders$levels$ckd_2021[2],
                    moca = recoders$levels$moca[2]),
       missing = 'no'
-    ) |>
-    add_p()
+    )
 
   tbl_overall <- ndi_tbl_data |>
     relocate(sbp, treatment, ehr_ancillary, .after = race) |>

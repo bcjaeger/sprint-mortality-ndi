@@ -1,0 +1,169 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+
+knitr::opts_chunk$set(echo = FALSE, 
+                      collapse = TRUE,
+                      comment = "#>",
+                      message = FALSE,
+                      warning = FALSE,
+                      dpi = 600, 
+                      fig.width = 11, 
+                      fig.height = 6.25)
+
+# specification for tables
+rspec <- round_spec() |>
+  round_using_magnitude(digits = c(2, 1, 0),
+                        breaks = c(10, 100, Inf))
+
+# save it to options:
+names(rspec) <- paste('table.glue', names(rspec), sep = '.')
+options(rspec)
+
+# make the . symbol equivalent to calling table_glue.
+# Another way to makes inline insertion of results less text-heavy
+. <- table.glue::table_glue
+
+```
+
+# sprint-mortality-ndi
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+```{r load-targets, include=FALSE}
+
+tar_load(names = c(recoders,
+                   base_viz_inc,
+                   base_viz_eff,
+                   long_viz_mort,
+                   long_viz_cvd,
+                   bp_viz,
+                   tbl_characteristics,
+                   base_ds, 
+                   long_ds,
+                   long_inf,
+                   base_inf,
+                   ndi_baseline))
+
+fig <- left_join(base_viz_inc, base_viz_eff)
+
+inline <- list()
+
+tbl_variables <- c('variable', 'group', 'treatment')
+
+inline$base_ds <- base_ds |>
+  mutate(across(matches("est$|lwr$|upr"), table_value),
+         across(matches("^n_"), ~table_value(as.integer(.x)))) |>
+  as_inline(tbl_variables = tbl_variables,
+            tbl_values = setdiff(names(base_ds), tbl_variables))
+
+tbl_variables <- c('variable', 'group', 'trial_phase')
+
+inline$long_inf <- long_inf |>
+  mutate(across(matches("est$|lwr$|upr"), table_value),
+         across(matches("^n_"), ~table_value(as.integer(.x)))) |>
+  as_inline(tbl_variables = tbl_variables,
+            tbl_values = setdiff(names(long_inf), tbl_variables))
+
+# ap makes inline insertion of results less text-heavy.
+# ap = access point, 
+# b = baseline, l = longitudinal
+# o = overall, i = intensive, s = standard,
+# t = trial, c = cohort
+
+ap_b_o <- inline$base_ds$overall$overall$overall
+ap_b_i <- inline$base_ds$overall$overall$Intensive
+ap_b_s <- inline$base_ds$overall$overall$Standard
+
+ap_l_o_t <- inline$long_inf$overall$overall$trial
+ap_l_o_c <- inline$long_inf$overall$overall$cohort
+
+bp_viz_5yr <- bp_viz |> 
+  getElement('levels') |> 
+  getElement('data') |> 
+  filter(source == 'EHR', 
+         time_months == 60)
+
+bp_viz_5yr <- split(bp_viz_5yr, bp_viz_5yr$treatment)
+
+bp_viz_10yr <- bp_viz |> 
+  getElement('levels') |> 
+  getElement('data') |> 
+  filter(source=='EHR',
+         time_months == 120)
+
+bp_viz_10yr <- split(bp_viz_10yr, bp_viz_10yr$treatment)
+
+# a temporary function for inline reporting of BP values
+f <- function(d) with(d, .("{Estimate} ({Lower}, {Upper})"))
+
+bp_diff_5yr <- bp_viz |> 
+  getElement('diff') |> 
+  getElement('data') |> 
+  filter(time_months == 60)
+
+t_atten_sbp <- bp_viz |> 
+  getElement('diff') |> 
+  getElement('data') |> 
+  filter(source == 'EHR',
+         find_signchange_lgl(Lower)) |> 
+  pull(time_months) |> 
+  divide_by(12)
+
+```
+
+\newpage
+
+# ABSTRACT
+
+__IMPORTANCE__. The Systolic Blood Pressure Intervention Trial (SPRINT) showed that intensive treatment, defined by a systolic blood pressure (SBP) goal of <120 mmHg, reduced the risk of cardiovascular morbidity and mortality. However, the post-trial association of intensive treatment with mortality is unknown. 
+
+__OBJECTIVE__. To evaluate the association of receiving intensive treatment for approximately three years during the SPRINT trial with all-cause and cardiovascular mortality up to ten years post-randomization. 
+
+__DESIGN, SETTING, AND PARTICIPANTS__. SPRINT, a randomized clinical trial of 9361 patients aged 50 years or older with hypertension and increased cardiovascular risk, but without diabetes or history of stroke. Randomization began on November 8, 2010, the trial intervention ended on August 20, 2015, and trial follow-up visits occurred through July 2016.  
+
+__INTERVENTIONS__. Randomization to SBP goal of either <120 mmHg (intensive treatment, N=4678) versus <140 mmHg (standard treatment, N=4683).
+
+__MAIN OUTCOMES AND MEASURES__. All-cause and cardiovascular mortality assessed via the US National Death Index, beginning in 2016 through December 31st, 2020. In a subset of 3644 trial participants, outpatient SBP levels measured in routine clinical practice after the trial were examined.    
+
+__RESULTS__. Among 9361 randomized participants (mean [standard deviation] age `r inline_text(tbl_characteristics, variable = 'age_yrs', column = 'stat_0_1')` years; `r inline_text(tbl_characteristics, variable = 'sex', column = 'stat_0_1')`% women), the median intervention phase was 3.3 years. Over a median follow-up of `r ap_b_o$fup_est` years, intensive treatment was beneficial for both cardiovascular (Hazard Ratio [HR] = `r with(ap_l_o_t, .("{cvd_est}, 95% confidence interval [CI] {cvd_lwr} to {cvd_upr}"))`) and all-cause mortality (HR = `r with(ap_l_o_t, .("{mort_est}, 95% CI {mort_lwr} to {mort_upr}"))`) through close-out visits for the trial. However, there was no evidence of association during post-trial follow-up for cardiovascular (HR = `r with(ap_l_o_c, .("{cvd_est}, 95% CI {cvd_lwr} to {cvd_upr}"))`) or all-cause mortality (HR = `r with(ap_l_o_c, .("{mort_est}, 95% CI {mort_lwr} to {mort_upr}"))`). The estimated mean (95% CI) SBP among participants randomized to intensive treatment was `r f(bp_viz_5yr$Intensive)` at 5 years and `r f(bp_viz_10yr$Intensive)` at 10 years post-randomization.
+
+__CONCLUSIONS AND RELEVANCE__. The beneficial effect of intensive treatment on cardiovascular and all-cause mortality was attenuated during post-trial observational follow-up. Given increasing SBP levels in participants randomized to intensive treatment following the trial, these results highlight the importance of consistent long-term management of hypertension. 
+
+__CENTRAL ILLUSTRATION__
+
+Panel A: Cumulative incidence of cardiovascular and non-cardiovascular mortality by treatment group. Panel B: Time-dependent effect of randomization to intensive treatment for cardiovascular mortality.
+
+```{r}
+
+blank_plot <- ggplot(data.frame()) + aes() + theme_void()
+
+legend <- get_legend(
+  fig$inc_acm[[1]]$plot + 
+    theme(legend.position = c(.55, .2),
+          legend.direction = 'horizontal')
+)
+
+plot_grid(
+  # row 1 (legend)
+  legend, 
+  blank_plot,
+  # row 2 (figures)
+  fig$inc_cvd[[1]] + theme(legend.position = ''), 
+  fig$eff_cvd[[1]],
+  ncol = 2,
+  align = 'v',
+  axis = 'lr',
+  rel_heights = c(1,10,2),
+  labels = c("","","A","B","",""),
+  label_x = 0.1,
+  label_y = 1.05
+)
+
+```
+
