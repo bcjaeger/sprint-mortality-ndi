@@ -60,7 +60,9 @@ ndi_load <- function(sasinet_drive = "Z", fname, ...) {
   # indicate ancillary study membership for baseline data
   if(fname == 'longterm_death.csv'){
 
-    ancillary <- read_csv('ehr/SPRINT_EHR_SBP_LongTerm_PID_010622.csv')
+    ancillary <- read_csv('ehr/SPRINT_EHR_SBP_LongTerm_PID_011522.csv')
+
+    names(ancillary) <- tolower(names(ancillary))
 
     data_in$ehr_ancillary <- if_else(
       condition = data_in$pid %in% ancillary$pid,

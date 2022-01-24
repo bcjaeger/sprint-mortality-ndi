@@ -19,8 +19,11 @@ knitr::opts_chunk$set(echo = FALSE,
 
 # specification for table tables
 rspec <- round_spec() |>
-  round_using_magnitude(digits = c(2, 1, 0),
-                        breaks = c(10, 100, Inf))
+  round_using_magnitude(digits = c(2, 1),
+                        breaks = c(2, Inf))
+
+# rspec <- round_spec() |>
+#   round_using_decimal(digits = 1)
 
 # save it to options:
 names(rspec) <- paste('table.glue', names(rspec), sep = '.')
@@ -67,6 +70,9 @@ tar_load(names = c(recoders,
                    long_inf,
                    base_inf,
                    ndi_baseline))
+
+n_total <- nrow(ndi_baseline)
+n_ehr <- sum(ndi_baseline$ehr_ancillary == 'Yes')
 
 fig <- left_join(base_viz_inc, base_viz_eff)
 
@@ -125,6 +131,11 @@ bp_diff_5yr <- bp_viz |>
   getElement('data') |> 
   filter(time_months == 60)
 
+bp_diff_10yr <- bp_viz |> 
+  getElement('diff') |> 
+  getElement('data') |> 
+  filter(time_months == 120)
+
 t_atten_sbp <- bp_viz |> 
   getElement('diff') |> 
   getElement('data') |> 
@@ -139,17 +150,17 @@ t_atten_sbp <- bp_viz |>
 
 # ABSTRACT
 
-__IMPORTANCE__. The Systolic Blood Pressure Intervention Trial (SPRINT) showed that intensive treatment, defined by a systolic blood pressure (SBP) goal of <120 mmHg, reduced the risk of cardiovascular morbidity and mortality. However, the post-trial association of intensive treatment with mortality is unknown. 
+__IMPORTANCE__. The Systolic Blood Pressure Intervention Trial (SPRINT) showed that intensive treatment, defined by a systolic blood pressure (SBP) goal of <120 mmHg, reduced the risk of cardiovascular and all-cause mortality. However, the legacy effect of intensive treatment on mortality, defined as the persistence of benefit after the trial, is unknown. 
 
-__OBJECTIVE__. To evaluate the association of receiving intensive treatment for approximately three years during the SPRINT trial with all-cause and cardiovascular mortality up to ten years post-randomization. 
+__OBJECTIVE__. To evaluate the legacy effect of receiving intensive treatment for approximately three years during the SPRINT trial with all-cause and cardiovascular mortality up to ten years post-randomization. 
 
-__DESIGN, SETTING, AND PARTICIPANTS__. SPRINT, a randomized clinical trial of 9361 patients aged 50 years or older with hypertension and increased cardiovascular risk, but without diabetes or history of stroke. Randomization began on November 8, 2010, the trial intervention ended on August 20, 2015, and trial follow-up visits occurred through July 2016.  
+__DESIGN, SETTING, AND PARTICIPANTS__. Randomized clinical trial of 9361 patients aged 50 years or older with hypertension and increased cardiovascular risk, but without diabetes or history of stroke. Randomization began on November 8, 2010, the trial intervention ended on August 20, 2015, and trial follow-up visits occurred through July 2016.  
 
 __INTERVENTIONS__. Randomization to SBP goal of either <120 mmHg (intensive treatment, N=4678) versus <140 mmHg (standard treatment, N=4683).
 
-__MAIN OUTCOMES AND MEASURES__. All-cause and cardiovascular mortality assessed via the US National Death Index, beginning in 2016 through December 31st, 2020. In a subset of 3644 trial participants, outpatient SBP levels measured in routine clinical practice after the trial were examined.    
+__MAIN OUTCOMES AND MEASURES__. Trial follow-up supplemented with mortality assessed via the US National Death Index, beginning in 2016 through December 31st, 2020. In a subset of `r n_ehr` trial participants, outpatient SBP levels measured in routine clinical practice after the trial were examined.    
 
-__RESULTS__. Among 9361 randomized participants (mean [standard deviation] age `r inline_text(tbl_characteristics, variable = 'age_yrs', column = 'stat_0_1')` years; `r inline_text(tbl_characteristics, variable = 'sex', column = 'stat_0_1')`% women), the median intervention phase was 3.3 years. Over a median follow-up of `r ap_b_o$fup_est` years, intensive treatment was beneficial for both cardiovascular (Hazard Ratio [HR] = `r with(ap_l_o_t, .("{cvd_est}, 95% confidence interval [CI] {cvd_lwr} to {cvd_upr}"))`) and all-cause mortality (HR = `r with(ap_l_o_t, .("{mort_est}, 95% CI {mort_lwr} to {mort_upr}"))`) through close-out visits for the trial. However, there was no evidence of association during post-trial follow-up for cardiovascular (HR = `r with(ap_l_o_c, .("{cvd_est}, 95% CI {cvd_lwr} to {cvd_upr}"))`) or all-cause mortality (HR = `r with(ap_l_o_c, .("{mort_est}, 95% CI {mort_lwr} to {mort_upr}"))`). The estimated mean (95% CI) SBP among participants randomized to intensive treatment was `r f(bp_viz_5yr$Intensive)` at 5 years and `r f(bp_viz_10yr$Intensive)` at 10 years post-randomization.
+__RESULTS__. Among `r n_total` randomized participants (mean [standard deviation] age `r inline_text(tbl_characteristics, variable = 'age_yrs', column = 'stat_0_1')` years; `r inline_text(tbl_characteristics, variable = 'sex', column = 'stat_0_1')`% women), the median intervention phase was 3.3 years. Over a median follow-up of `r ap_b_o$fup_est` years, intensive treatment was beneficial for both cardiovascular (Hazard Ratio [HR] = `r with(ap_l_o_t, .("{cvd_est}, 95% confidence interval [CI] {cvd_lwr} to {cvd_upr}"))`) and all-cause mortality (HR = `r with(ap_l_o_t, .("{mort_est}, 95% CI {mort_lwr} to {mort_upr}"))`) through close-out visits for the trial. However, there was no evidence of benefit during post-trial follow-up for cardiovascular (HR = `r with(ap_l_o_c, .("{cvd_est}, 95% CI {cvd_lwr} to {cvd_upr}"))`) or all-cause mortality (HR = `r with(ap_l_o_c, .("{mort_est}, 95% CI {mort_lwr} to {mort_upr}"))`). The estimated mean (95% CI) outpatient SBP among participants randomized to intensive treatment increased post-trial, from `r f(bp_viz_5yr$Intensive)` at five years to `r f(bp_viz_10yr$Intensive)` ten years post-randomization.
 
 
 __CONCLUSIONS AND RELEVANCE__. The beneficial effect of intensive treatment on cardiovascular and all-cause mortality was attenuated during post-trial observational follow-up. Given increasing SBP levels in participants randomized to intensive treatment following the trial, these results highlight the importance of consistent long-term management of hypertension. 
@@ -162,25 +173,27 @@ __CONCLUSIONS AND RELEVANCE__. The beneficial effect of intensive treatment on c
 
 <!-- Rmd automatically puts the mark after the punctuation when the csl file indicates it should be there (which it does for jama.csl). -->
 
-Hypertension is the leading modifiable risk factor for cardiovascular disease (CVD) [@gdbJACC2020]. Meta analyses of randomized trials have shown that pharmacological blood pressure (BP) lowering reduces the risk of major cardiovascular events across the spectrum of initial BP, with larger absolute risk reduction for older adults and lowest CVD risk when systolic BP (SBP) is 120 to 124 mm Hg [@rahimi_age_stratified_2021; @bundy_systolic_2017]. The Systolic Blood Pressure Intervention Trial (SPRINT) showed that intensive SBP control, defined by a SBP target < 120 mm Hg, reduced the risk for cardiovascular morbidity and mortality [@sprint_research_group_randomized_2015]. Because a clear benefit was evident for intensive SBP lowering after a median follow-up of 3.3 years, SPRINT was stopped early. However, the association of receiving intensive treatment during the SPRINT trial with cardiovascular and all-cause mortality risk after the trial has not been evaluated. 
+Hypertension is the leading modifiable risk factor for cardiovascular disease (CVD) [@gdbJACC2020]. Meta analyses of randomized trials have shown that pharmacological blood pressure (BP) lowering reduces the risk of major cardiovascular events across the spectrum of initial BP, with larger absolute risk reduction for older adults and lowest CVD risk when systolic BP (SBP) is 120 to 124 mm Hg [@rahimi_age_stratified_2021; @bundy_systolic_2017]. The Systolic Blood Pressure Intervention Trial (SPRINT) showed that intensive treatment, defined by a SBP target < 120 mm Hg, reduced the risk for cardiovascular and all-cause mortality [@sprint_research_group_randomized_2015]. Because a clear benefit was evident for intensive treatment after a median follow-up of 3.3 years, SPRINT was stopped early. However, the persistence of benefit after the trial (i.e., the legacy effect) of intensive treatment on cardiovascular and all-cause mortality has not been evaluated [@wander_legacy_2018].
 
-The objective of the current study was to evaluate the association of intensive SBP control during the SPRINT trial with post-trial all-cause and cardiovascular mortality. A secondary objective was to examine SBP following the conclusion of the SPRINT trial follow-up. To accomplish these objectives, we linked SPRINT participants to the National Death Index (NDI) from 2016 to 2020, and extracted longitudinal outpatient measurements of SBP available in the electronic health record (EHR) for a subset of trial participants over the same time period. 
+The objective of the current study was to evaluate the legacy effect of intensive treatment during the SPRINT trial by analyzing post-trial all-cause and cardiovascular mortality. A secondary objective was to examine SBP following the conclusion of the trial follow-up. To accomplish these objectives, we linked participants to the National Death Index (NDI) from 2016 to 2020 and extracted longitudinal outpatient measurements of SBP available in the electronic health record (EHR) for a subset of trial participants. 
 
 # METHODS
 
-__Trial Design__: The design and methods of SPRINT have been published previously [@ambrosius_design_2014; @sprint_research_group_randomized_2015]. Briefly, it was a multicenter randomized clinical trial that compared two strategies for managing SBP in older adults with hypertension who were at increased risk of CVD. Participants were aged 50 years or older and had an SBP between 130 and 180 mm Hg at the screening visit, depending on the number of anti-hypertensive agents prescribed. Participants were considered to have an increased cardiovascular risk if they had clinical or subclinical cardiovascular disease, chronic kidney disease (CKD; defined by an estimated glomerular filtration rate of <60 mL/min/1.73 m^2^), or a Framingham Risk Score of 15% or greater or if they were aged 75 years or older. Individuals residing in a nursing home, persons with a diagnosis of dementia (based on medical record review), and those treated with medications primarily used for dementia therapy were excluded, as were persons with prevalent diabetes mellitus, history of stroke, proteinuria > 1 gram per day, or polycystic kidney disease. Individuals at 102 sites in the United States and Puerto Rico were randomized (1:1) to a SBP goal of less than 120 mm Hg (intensive treatment group, n = 4678) or a goal of less than 140 mm Hg (standard treatment group, n = 4683), using random permuted blocks with the randomization stratified by clinic site. The algorithms and formulary for the trial are listed in the published study protocol ( __citations needed__? ). Trial enrollment began in November 2010 and ended in March 2013, with active follow-up through July 1, 2016.[@sprintFinal] The study was approved by the institutional review board at each participating site, and each participant provided written informed consent. The study is registered at ClinicalTrials.gov (NCT01206062).
+__Trial Design__: The design and methods of the SPRINT trial have been published previously [@ambrosius_design_2014; @sprint_research_group_randomized_2015]. Briefly, it was a multicenter randomized clinical trial that compared two strategies for managing SBP in older adults with hypertension who were at increased risk of CVD. Participants were aged 50 years or older and had an SBP between 130 and 180 mm Hg at the screening visit, depending on the number of anti-hypertensive agents prescribed. Participants were considered to have an increased cardiovascular risk if they had clinical or subclinical cardiovascular disease, chronic kidney disease (CKD; defined by an estimated glomerular filtration rate of <60 mL/min/1.73 m^2^), or a Framingham Risk Score of 15% or greater or if they were aged 75 years or older. Individuals residing in a nursing home, persons with a diagnosis of dementia (based on medical record review), and those treated with medications primarily used for dementia therapy were excluded, as were persons with prevalent diabetes mellitus, history of stroke, proteinuria > 1 gram per day, or polycystic kidney disease. Individuals at 102 sites in the United States and Puerto Rico were randomized (1:1) to a SBP goal of less than 120 mm Hg (intensive treatment group, n = 4678) or a goal of less than 140 mm Hg (standard treatment group, n = 4683), using random permuted blocks with the randomization stratified by clinic site. Trial enrollment began in November 2010 and ended in March 2013, with active follow-up through July 1, 2016.[@sprintFinal] The study was approved by the institutional review board at each participating site, and each participant provided written informed consent. The study is registered at ClinicalTrials.gov (NCT01206062).
 
 __Baseline Study Measurements__: Sociodemographic data were collected at baseline, with race or ethnicity information collected via self-report. The estimated glomerular filtration rate (eGFR) was calculated by the race-free 2021 CKD-EPI creatinine equation [@inker_new_2021]. Cognitive function was assessed using the Montreal Cognitive Assessment (MoCA) [@nasreddine_montreal_2005]. Lower cognitive function was defined as scoring at or below the estimated age and education-specific normative 10th percentile from the Irish Longitudinal Study of Aging [@kenny_normative_2013], after adding three points to the scores of non-White participants [@sachsMoCA2021]. We defined frailty status at baseline using a 36-item Frailty Index (FI) based upon the model of deficit accumulation [@pajewski_characterizing_2016]. The FI is calculated as the sum of the score for each deficit divided by the total number of nonmissing items. We categorized frailty status as fit (FI ≤ 0.10), less fit (0.10 < FI ≤ 0.21), or frail (FI > 0.21).
 
 __National Death Index Linkage__: Outcomes of interest included all-cause and cardiovascular mortality. Methods of ascertainment and adjudication through the course of trial follow-up have been previously described [@sprint_research_group_randomized_2015; @sprintFinal]. Subsequently, mortality was ascertained through a US National Death Index (NDI) search. Possible matches were identified according to NDI guidelines [@ndi_guide]. Deaths were treated as confirmed if they were a Class 1 match, or a Class 2, 3, or 4 match with a probabilistic score above cutoffs recommended by the NDI [@ndi_guide]. NDI follow-up began in 2016 and ended on the date of death or December 31, 2020. Deaths ascertained in 2020 were based on the NDI preliminary data release. CVD mortality for NDI-based follow-up used the NDI Plus System, which automatically identifies underlying causes of death from death certificates, including conversion to ICD-10 codes. we defined CVD mortality as any death containing the ICD-10 codes of I00 to I99 [@regards_ndi].
 
-__EHR Ancillary Study__: We examined the trajectory of SBP following the conclusion of the trial using outpatient SBPs extracted from the EHR. Methods for the linkage of participants to their medical record number and the extraction of vital sign data have been previously described [@drawz_concordance_2020]. Because encounter type information was inconsistently available (i.e. outpatient, inpatient, observation, etc.), we defined a BP measurement as outpatient if there were was not a BP measurement on the preceding or following day, and if there were 2 or less BP measurements on a particular day. We averaged outpatient EHR BP readings when there were 2 on the same day.
+__EHR Ancillary Study__: Methods for the linkage of participants to their medical record number and the extraction of vital sign data have been previously described [@drawz_concordance_2020]. We identified 3074 participants with 3 or more outpatient and trial BP measurements. After excluding `r 3074 - n_ehr` participants without EHR data following the conclusion of trial follow-up, a total of `r n_ehr` patients were included for the ancillary analysis. Because encounter type information was inconsistently available (i.e. outpatient, inpatient, observation, etc.), we defined a BP measurement as outpatient if there were was not a BP measurement on the preceding or following day, and if there were 2 or less BP measurements on a particular day. We averaged outpatient EHR BP readings when there were 2 on the same day.
 
-__Statistical Analysis__: Given the a priori expectation that treatment group differences may not be constant as a function of follow-up time (i.e. the proportional hazards assumption was likely to be invalid), we modeled treatment group differences as a function of time using two approaches. The first approach split each participant's follow-up time into non-overlapping trial and cohort phases, and estimated regression coefficients for intensive treatment separately during each phase [@zhang_time_varying_2018]. The second approach estimated a regression coefficient for intensive treatment as a continuous function of time since randomization [@martinussen2007dynamic; @therneau2017using]. All analyses accounted for correlation within study sites [@lin_robust_1989], and analyses of cardiovascular mortality accounted for the competing risk of non-cardiovascular mortality [@scheike_flexible_2008]. Mean between-group differences in outpatient SBP following the conclusion of trial follow-up were estimated using linear mixed models. Models included random effects for participant and clinic site and an interaction between treatment group and time since randomization, which was flexibly modeled using B-splines. All analyses were performed using SAS version 9.4 (SAS Institute Inc, Cary, NC) and R version `r paste(version$major, version$minor, sep = '.')` (R Project for Statistical Computing [http://www.r-project.org]) with multiple auxiliary R packages.[@r_language; @table.glue; @tidyverse; @survival_package; @timereg; @targets] All hypothesis tests were 2-sided, and P values less than 0.05 were considered statistically significant. No adjustments for multiple comparisons were made.
+__Statistical Analysis__: Given the a priori expectation that treatment group differences may not be constant as a function of follow-up time (i.e. the proportional hazards assumption was likely to be invalid), we modeled treatment group differences as a function of time using two approaches. The first approach split each participant's follow-up time into non-overlapping trial and cohort phases, and estimated regression coefficients for intensive treatment separately during each phase [@zhang_time_varying_2018]. The second approach estimated a regression coefficient for intensive treatment as a continuous function of time since randomization [@martinussen2007dynamic; @therneau2017using]. All analyses accounted for correlation within study sites [@lin_robust_1989], and analyses of cardiovascular mortality accounted for the competing risk of non-cardiovascular mortality [@scheike_flexible_2008]. 
+
+We examined the trajectory of SBP following the conclusion of the trial using outpatient SBPs extracted from the EHR. Mean between-group differences in outpatient SBP following the conclusion of trial follow-up were estimated using linear mixed models. Models included random effects for participant and clinic site and an interaction between treatment group and time since randomization, which was flexibly modeled using B-splines. All analyses were performed using SAS version 9.4 (SAS Institute Inc, Cary, NC) and R version `r paste(version$major, version$minor, sep = '.')` (R Project for Statistical Computing [http://www.r-project.org]) with multiple auxiliary R packages.[@r_language; @table.glue; @tidyverse; @survival_package; @timereg; @targets] All hypothesis tests were 2-sided, and P values less than 0.05 were considered statistically significant. No adjustments for multiple comparisons were made.
 
 # RESULTS
 
-___Study Participants___. A total of `r nrow(ndi_baseline)` participants were randomized between November 2010 and March 2013. The mean (standard deviation [SD]) age was `r inline_text(tbl_characteristics, variable = 'age_yrs', column = 'stat_0_1')` years, with `r inline_text(tbl_characteristics, variable = 'age_cat', column = 'stat_0_1')`% of participants aged 75 years or older (__eTable 1__). Participants were `r inline_text(tbl_characteristics, variable = 'sex', column = 'stat_0_1')`% female and `r inline_text(tbl_characteristics, variable = 'race', column = 'stat_0_1')`% black. The mean (SD) SBP at baseline was `r inline_text(tbl_characteristics, variable = 'sbp', column = 'stat_0_1')` and `r inline_text(tbl_characteristics, variable = 'moca', column = 'stat_0_1')`% of participants MoCA scores were below the 10^th^ percentile. Participants included in the ancillary EHR study had greater age, lower SBP, less cognitive impairment, higher prevalence of CKD, and were more likely to be male or black than participants not included. 
+___Study Participants___. A total of `r n_total` participants were randomized between November 2010 and March 2013. The mean (standard deviation [SD]) age was `r inline_text(tbl_characteristics, variable = 'age_yrs', column = 'stat_0_1')` years, with `r inline_text(tbl_characteristics, variable = 'age_cat', column = 'stat_0_1')`% of participants aged 75 years or older (__eTable 1__). Participants were `r inline_text(tbl_characteristics, variable = 'sex', column = 'stat_0_1')`% female and `r inline_text(tbl_characteristics, variable = 'race', column = 'stat_0_1')`% black. The mean (SD) SBP at baseline was `r inline_text(tbl_characteristics, variable = 'sbp', column = 'stat_0_1')` and `r inline_text(tbl_characteristics, variable = 'moca', column = 'stat_0_1')`% of participants MoCA scores were below the 10^th^ percentile. Compared to participants not included in the ancillary EHR study, participants included were more likely to be male, were older, had lower SBP and higher scores on the MoCA, and had a higher prevalence of CKD. 
 
 ```{r}
 
@@ -199,7 +212,7 @@ t_atten_acm <- acm_overall_epochs$label[2]
 
 ```
 
-___All-cause Mortality___. In both treatment groups, median follow-up time was `r ap_b_o$fup_est` years. A total of `r ap_b_i$n_acm` and `r ap_b_s$n_acm` deaths occurred among participants randomized to intensive and standard treatment, respectively (__eTable 2__). The hazard ratio (HR) for all-cause mortality comparing intensive to standard treatment was `r with(ap_l_o_t, .("{mort_est} (95% confidence interval [CI] {mort_lwr}, {mort_upr})"))` during the trial phase, and `r with(ap_l_o_c, .("{mort_est} (95% CI {mort_lwr}, {mort_upr})"))` during the cohort phase. The continuous time-dependent effect of intensive versus standard treatment indicated a benefit for all-cause mortality from `r t_signif_acm` to `r t_atten_acm` years from randomization, and was attenuated throughout the remainder of the cohort phase (__Figure 1__).  In subgroups based on age, sex, race, CKD, cognitive function, and frailty, there was no evidence that intensive treatment during the trial phase had benefit for all-cause mortality during the cohort phase (__Figure 2__).
+___All-cause Mortality___. In both treatment groups, median follow-up time was `r ap_b_o$fup_est` years. A total of `r ap_b_i$n_acm` and `r ap_b_s$n_acm` deaths occurred among participants randomized to intensive and standard treatment, respectively (__eTable 2__). The hazard ratio (HR) for all-cause mortality comparing intensive to standard treatment was `r with(ap_l_o_t, .("{mort_est} (95% confidence interval [CI] {mort_lwr}, {mort_upr})"))` during the trial phase, and `r with(ap_l_o_c, .("{mort_est} (95% CI {mort_lwr}, {mort_upr})"))` during the cohort phase. The continuous time-dependent effect of intensive versus standard treatment indicated a benefit for all-cause mortality from `r t_signif_acm` to `r t_atten_acm` years from randomization, and was attenuated throughout the remainder of the cohort phase (__Figure 1__).  In subgroups based on age, sex, race, CKD, cognitive function, and frailty status, there was no evidence that intensive treatment during the trial phase produced benefit for all-cause mortality during the cohort phase of follow-up (__Figure 2__).
 
 ```{r}
 
@@ -217,15 +230,15 @@ t_atten_cvd  <- cvd_overall_epochs$label[2]
 
 ```
 
-___Cardiovascular Mortality___. A total of `r ap_b_i$n_cvd` and `r ap_b_s$n_cvd` CVD mortality events occurred among participants randomized to intensive and standard treatment, respectively (__eTable 3__). The HR for CVD mortality among participants randomized to intensive versus standard treatment was `r with(ap_l_o_t, .("{cvd_est} (95% CI {cvd_lwr}, {cvd_upr})"))` during the trial phase and `r with(ap_l_o_c, .("{cvd_est} (95% CI {cvd_lwr}, {cvd_upr})"))` during the cohort phase. The time-dependent effect of intensive versus standard treatment indicated a benefit for CVD mortality from `r t_signif_cvd` to `r t_atten_cvd` years from randomization, and was attenuated throughout the remainder of the cohort phase (__Figure 3__). Adults randomized to intensive treatment who were <75 years of age, men, non-black, without CKD, or with cognitive function >10^th^ percentile had lower CVD mortality risk during the trial phase compared to their counterparts randomized to standard treatment, but there was no evidence that intensive treatment during the trial phase had benefit for CVD mortality during the cohort phase (__Figure 4__). 
+___Cardiovascular Mortality___. A total of `r ap_b_i$n_cvd` and `r ap_b_s$n_cvd` CVD deaths occurred among participants randomized to intensive and standard treatment, respectively (__eTable 3__). The HR for CVD mortality among participants randomized to intensive versus standard treatment was `r with(ap_l_o_t, .("{cvd_est} (95% CI {cvd_lwr}, {cvd_upr})"))` during the trial phase and `r with(ap_l_o_c, .("{cvd_est} (95% CI {cvd_lwr}, {cvd_upr})"))` during the cohort phase. The time-dependent effect of intensive versus standard treatment indicated a benefit for CVD mortality from `r t_signif_cvd` to `r t_atten_cvd` years from randomization, and was attenuated throughout the remainder of the cohort phase (__Figure 3__). Adults randomized to intensive treatment who were <75 years of age, men, non-black, without CKD, or with cognitive function >10^th^ percentile had lower CVD mortality risk during the trial phase compared to their counterparts randomized to standard treatment, but there was no evidence that intensive treatment during the trial phase produced benefit for CVD mortality during the cohort phase (__Figure 4__). 
 
-___Blood Pressure___. The estimated mean (95% CI) SBP among participants randomized to intensive treatment was `r f(bp_viz_5yr$Intensive)` at 5 years and `r f(bp_viz_10yr$Intensive)` at 10 years post-randomization (__Figure 5__). For participants randomized to standard treatment, mean (95% CI) SBP was estimated to be `r f(bp_viz_5yr$Standard)` at 5 years and `r f(bp_viz_10yr$Standard)` post-randomization. The difference in mean SBP levels between participants randomized to intensive versus standard treatment, in mm Hg, was `r f(bp_diff_5yr)` at 5 years post-randomization, and was attenuated at `r t_atten_sbp` years post-randomization (__eFigure 1__). 
+___Blood Pressure___. Amongst a subset of `r n_ehr` trial participants, the median number of outpatient BP measurements extracted from the EHR during the cohort phase of follow-up was X (Interquartile range Y to Z; NMP to add this result). The estimated mean (95% CI) SBP among participants randomized to intensive treatment was `r f(bp_viz_5yr$Intensive)` at 5 years and `r f(bp_viz_10yr$Intensive)` at 10 years post-randomization (__Figure 5__). For participants randomized to standard treatment, mean (95% CI) SBP was estimated to be `r f(bp_viz_5yr$Standard)` at 5 years and `r f(bp_viz_10yr$Standard)` post-randomization. The between-group difference in mean SBP levels (intensive minus standard)  was `r f(bp_diff_5yr)` mm Hg at 5 years post-randomization and was reduced to `r f(bp_diff_5yr)` at 10 years post-randomization (__eFigure 1__). 
 
 # DISCUSSION
 
-The current study analyzed all-cause and CVD-mortality among SPRINT participants up to 10 years following randomization and found no indication of benefit for randomization to intensive treatment after the trial had ended. Time-varying estimates of the benefit of intensive treatment for all-cause mortality were attenuated at `r t_atten_acm` years while the benefit for CVD-mortality was attenuated at `r t_atten_cvd` years post-randomization. Findings from our ancillary study of BP in the EHR indicated that the difference in SBP between treatment groups diminished over time and was attenuated approximately `r t_atten_sbp` years after randomization. These results in combination with the main findings of SPRINT indicate that the beneficial effect of BP control among adults with hypertension can be diminished if BP control is not sustained over time. 
+The current study analyzed all-cause and CVD-mortality among SPRINT participants up to 10 years following randomization, finding that the benefits associated with intensive treatment quickly attenuated after the trial ended. Time-varying estimates of the benefit of intensive treatment for all-cause mortality were attenuated at `r t_atten_acm` years while the benefit for CVD-mortality was attenuated at `r t_atten_cvd` years post-randomization. Findings from our ancillary study of outpatient SBP measured in routine clinical practice indicated that the difference in SBP between treatment groups diminished over time, with no detectable difference in SBP approximately `r t_atten_sbp` years after randomization. These results in combination with the primary findings of SPRINT indicate that the beneficial effect of intensive treatment among adults with hypertension can be diminished if BP control is not sustained. 
 
-The Strategy of Blood Pressure Intervention in the Elderly Hypertensive Patients (STEP) trial enrolled 8511 Chinese patients 60 to 80 years of age with hypertension and randomized patients to a SBP target of 110 to less than 130 mm Hg (intensive treatment) or a target of 130 to less than 150 mm Hg (standard treatment) [@zhang_trial_2021]. Similar to SPRINT, STEP found a HR of 0.72 (95% CI 0.39, 1.32) with intensive versus standard treatment for CVD mortality after a median follow-up of 3.34 years, but did not find evidence of a benefit for all-cause mortality. In the current study of SPRINT participants, the protective effect of intensive treatment for all-cause mortality was attenuated several years before the protective effect for CVD. These results in combination with findings from the STEP trial suggest weaker evidence for reduced all-cause versus CVD mortality risk with intensive BP control. 
+The Strategy of Blood Pressure Intervention in the Elderly Hypertensive Patients (STEP) trial enrolled 8511 Chinese patients 60 to 80 years of age with hypertension and randomized patients to a SBP target of 110 to less than 130 mm Hg (intensive treatment) or a target of 130 to less than 150 mm Hg (standard treatment) [@zhang_trial_2021]. STEP found a HR of 0.72 (95% CI 0.39, 1.32) with intensive versus standard treatment for CVD mortality after a median follow-up of 3.34 years, but did not find evidence of a benefit for all-cause mortality. In the current study of SPRINT participants, the protective effect of intensive treatment for all-cause mortality was attenuated several years before the protective effect for CVD. These results in combination with findings from the STEP trial suggest weaker evidence for reduced all-cause versus CVD mortality risk with intensive BP control. 
 
 <!-- I commenting this sentence out because I think it may be too speculative for this Discussion. Nick, if you like the idea of including the commented sentence in the paper, can we set up a call with Paul Whelton to discuss? -->
 
@@ -235,9 +248,17 @@ Previous studies have found rising BP levels among US adults during the time per
 
 In October 2020, the US Surgeon General published a call to action to control hypertension [@us_surgeon_2020]. Evidenced-based strategies to improve BP control addressed in the call to action include implementing treatment protocols, using integrated care teams, providing clinicians feedback on their performance, and promoting shared patient-provider management with self-measured BP monitoring. During the SPRINT trial, participants received team-based care consistent with strategies outlined in the 2020 call to action. After the trial phase, when these protocols were no longer followed, the incidence of all-cause mortality approximately doubled in both treatment groups. These data emphasize the potential benefit of implementing the goals and strategies of the 2020 US Surgeon General's call to action. Future research should continue to evaluate strategies for obtaining consistent BP control in clinical settings to reduce the burden of CVD, which remains the leading cause of death for US adults.
 
-This study has several limitations. First, while we restricted analyses to high quality NDI matches, misclassification in linking participants to the NDI is possible. Second, while several studies have shown reasonable performance of using NDI diagnosis codes for defining CVD mortality, it is not as robust as the adjudication process used in the primary follow-up for the trial. Third, information about SBP control after the trial was limited to routine outpatient SBP values extracted from the EHR, which are known to poorly reflect the standardized BP measurement process used during the SPRINT trial.[@drawz_concordance_2020]       
+This study has several limitations. First, while we restricted analyses to high quality NDI matches, misclassification in linking participants to the NDI is possible. Second, while several studies have shown reasonable performance of using NDI diagnosis codes for defining CVD mortality, it is not as robust as the adjudication process used in the primary follow-up for the trial. Third, information about SBP control after the trial was limited to routine outpatient SBP values extracted from the EHR, which are known to poorly reflect the standardized BP measurement process used during the SPRINT trial.[@drawz_concordance_2020] While this prohibits definite conclusions about the absolute level of BP in both treatment groups, as well as pin-pointing when the between-group difference may have completely attenuated, the general observation of steadily increasing BPs for participants in the intensive treatment following the trial is likely still valid.  
 
-In conclusion, the mean SBP levels of SPRINT participants randomized to intensive treatment increased after the trial and there was no evidence of association between receiving intensive treatment during the trial phase and post-trial all-cause or CVD-mortality up to 10 years following randomization. Therefore, maintaining controlled SBP may be essential for long-term CVD risk management.
+In conclusion, while intensive treatment produced beneficial effects on mortality during the trial, there was no evidence that this produced sustained benefits on cardiovascular and all-cause mortality subsequent to the conclusion of trial follow-up. Given steadily increasing mean SBP levels in participants randomized to intensive treatment after the trial, these results demonstrate that maintaining more intensive BP targets throughout adulthood will likely be essential for long-term CVD risk management.
+
+\newpage
+
+# REFERENCES
+
+<div id="refs"></div>
+
+\newpage
 
 # ACKNOWLEDGMENTS 
 The views expressed in this paper are those of the authors and do not represent the official position of the National Institutes of Health (NIH), the National Heart, Lung, and Blood Institute, the Department of Veterans Affairs, or the U.S. Government, or the SPRINT Research Group. This paper was not reviewed by the SPRINT Publications and Presentations Committee. The authors also wish to acknowledge computing support provided the Veterans Affairs Informatics and Computing Infrastructure (VINCI). 
@@ -307,7 +328,7 @@ block_section(
 
 ```
 
-__Figure 1__: (A) Cumulative incidence of all-cause mortality by treatment group. (B) Time-dependent effect of randomization to intensive treatment for all-cause mortality. `r single_par`
+__Figure 1__: Incidence of All-Cause Mortality by Treatment Group. `r single_par`
 
 ```{r}
 
@@ -340,7 +361,11 @@ plot_grid(
 
 ```
 
-The trial phase and cohort phase do not overlap for individual participants, but due to participants being randomized on different days, there is an overlap in the trial and cohort phase for the population when time is measured relative to the date of randomization.`r single_par` \newpage
+(A) Cumulative incidence of all-cause mortality by treatment group. (B) Time-dependent effect of randomization to intensive treatment for all-cause mortality.`r single_par`
+
+The trial phase and cohort phase do not overlap for individual participants, but due to participants being randomized on different days, there is an overlap in the trial and cohort phase for the population when time is measured relative to the date of randomization.`r single_par`
+
+\newpage
 
 __Figure 2__: All-cause mortality hazard ratio for participants randomized to intensive versus standard treatment.
 
@@ -350,9 +375,11 @@ long_viz_mort
 
 ```
 
-The trial phase and cohort phase do not overlap for individual participants, but due to participants being randomized on different days, there is an overlap in the trial and cohort phase for the population when time is measured relative to the date of randomization.`r single_par` \newpage
+The trial phase and cohort phase do not overlap for individual participants, but due to participants being randomized on different days, there is an overlap in the trial and cohort phase for the population when time is measured relative to the date of randomization.`r single_par` 
 
-__Figure 3__: (A) Cumulative incidence of cardiovascular and non-cardiovascular mortality by treatment group. (B) Time-dependent effect of randomization to intensive treatment for cardiovascular mortality. `r single_par`
+\newpage
+
+__Figure 3__: Incidence of cardiovascular versus non-cardiovascular mortality by treatment group. `r single_par`
 
 ```{r}
 
@@ -374,7 +401,11 @@ plot_grid(
 
 ```
 
-The trial phase and cohort phase do not overlap for individual participants, but due to participants being randomized on different days, there is an overlap in the trial and cohort phase for the population when time is measured relative to the date of randomization.`r single_par` \newpage
+(A) Cumulative incidence of cardiovascular and non-cardiovascular mortality by treatment group. (B) Time-dependent effect of randomization to intensive treatment for cardiovascular mortality.`r single_par`
+
+The trial phase and cohort phase do not overlap for individual participants, but due to participants being randomized on different days, there is an overlap in the trial and cohort phase for the population when time is measured relative to the date of randomization.`r single_par` 
+
+\newpage
 
 __Figure 4__: Cardiovascular mortality hazard ratio for participants randomized to intensive versus standard treatment.
 
@@ -383,9 +414,11 @@ __Figure 4__: Cardiovascular mortality hazard ratio for participants randomized 
 long_viz_cvd
 
 ```
-The trial phase and cohort phase do not overlap for individual participants, but due to participants being randomized on different days, there is an overlap in the trial and cohort phase for the population when time is measured relative to the date of randomization.`r single_par` \newpage
+The trial phase and cohort phase do not overlap for individual participants, but due to participants being randomized on different days, there is an overlap in the trial and cohort phase for the population when time is measured relative to the date of randomization.`r single_par` 
 
-__Figure 5__: Mean systolic blood pressure over time by treatment group. Shaded areas indicate a 95% confidence interval for the mean. `r single_par`
+\newpage
+
+__Figure 5__: Mean systolic blood pressure over time by treatment group. `r single_par`
 
 ```{r}
 
@@ -406,6 +439,9 @@ bp_viz$levels +
 # )
 
 ```
+
+EHR denotes electronic health record. `r single_par`
+Shaded areas indicate a 95% confidence interval for the mean.`r single_par`
 The trial phase and cohort phase do not overlap for individual participants, but due to participants being randomized on different days, there is an overlap in the trial and cohort phase for the population when time is measured relative to the date of randomization.`r single_par`
 
 
@@ -461,8 +497,8 @@ tbl_characteristics |>
     stat_0_1 = "Overall\nN = 9,361",
     stat_1_2 = "Standard\nN = 4,683",
     stat_2_2 = "Intensive\nN = 4,678",
-    stat_1_3 = "No\nN = 5,952",
-    stat_2_3 = "Yes\nN = 3,409",
+    stat_1_3 = "No\nN = 6,417",
+    stat_2_3 = "Yes\nN = 2,944",
     p.value_3 = "p-value"
   ) |> 
   add_header_row(
@@ -588,8 +624,8 @@ tbl_object <- tbl_data |>
   ) |> 
   add_header_row(
     values = c(" ", 
-               "Trial Follow-up Through Close-out Visits",
-               "Post-trial Follow-up"),
+               "Trial Phase",
+               "Cohort Phase"),
     colwidths = c(1, 5, 5)
   ) |> 
   set_header_labels(
@@ -690,8 +726,8 @@ tbl_object <- tbl_data |>
   ) |> 
   add_header_row(
     values = c(" ", 
-               "Trial Follow-up Through Close-out Visits",
-               "Post-trial Follow-up"),
+               "Trial Phase",
+               "Cohort Phase"),
     colwidths = c(1, 4, 4)
   ) |> 
   set_header_labels(
@@ -733,7 +769,7 @@ tbl_object
 
 \newpage
 
-__eFigure 1__: Mean difference in systolic blood pressure over time. Shaded areas indicate a 95% confidence interval for the mean. `r single_par`
+__eFigure 1__: Mean difference in systolic blood pressure measured in the trial and as part of routine clinical practice over time. `r single_par`
 
 ```{r}
 
@@ -742,6 +778,9 @@ bp_viz$diff +
 
 ```
 
+Shaded areas indicate a 95% confidence interval for the mean. `r single_par`
+
+EHR denotes electronic health record.`r single_par`
 
 ```{r}
 block_section(
@@ -753,5 +792,3 @@ block_section(
   )
 )
 ```
-
-# REFERENCES
