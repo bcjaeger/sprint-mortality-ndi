@@ -139,7 +139,7 @@ list(
       mutate(variable = str_remove(variable, '^base_viz_eff_'))
   ),
 
-  tar_render(manuscript, "doc/manuscript.Rmd"),
+  tar_render(manuscript, "doc/manuscript-rmd.Rmd"),
 
   tar_render(readme, "README.Rmd")
 
