@@ -46,9 +46,13 @@ ndi_base_viz_incidence <- function(ndi_data_list) {
         tables.height = 1/8
       )
 
-      fig_kap$plot <- add_annotations(fig_kap$plot,
-                                      cols = cols_bg,
-                                      ymax = ymax)
+      fig_kap$plot <- add_annotations(
+        fig_kap$plot,
+        cols = cols_bg,
+        ymax = ymax,
+        mid_label = '\nTrial\nAnd\nObservational\nPhase',
+        x_cohort_phase = 7
+      )
 
 
       fit_cr <- cuminc(ftime   = ndi_data$acm_years,
@@ -116,11 +120,14 @@ ndi_base_viz_incidence <- function(ndi_data_list) {
         group_by(event) |>
         summarize(est = mean(est))
 
-      fig_cr <- add_annotations(fig_cr,
-                                cols = cols_bg,
-                                ymax = ymax,
-                                xmax = 13,
-                                x_cohort_phase = 6.25) +
+      fig_cr <- add_annotations(
+        fig_cr,
+        cols = cols_bg,
+        ymax = ymax,
+        xmax = 13,
+        mid_label = '\nTrial\nAnd\nObservational\nPhase',
+        x_cohort_phase = 7
+      ) +
         annotate(geom = 'text',
                  x = 11.5,
                  y = y_text$est[y_text$event == 'Non-CVD mortality'],

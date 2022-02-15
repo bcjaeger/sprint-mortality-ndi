@@ -63,6 +63,8 @@ ndi_base_viz_tv_effect <- function(ndi_data_list) {
                                      ymax = 2.5,
                                      xmax = 10,
                                      ymin = 0.35,
+                                     mid_label = '\nTrial\nAnd\nObservational\nPhase',
+                                     x_cohort_phase = 7,
                                      ymult = 0.75)
 
       fit_cvd <- comp.risk(
@@ -109,6 +111,8 @@ ndi_base_viz_tv_effect <- function(ndi_data_list) {
                                      ymax = 2.5,
                                      xmax = 10,
                                      ymin = 0.15,
+                                     mid_label = '\nTrial\nAnd\nObservational\nPhase',
+                                     x_cohort_phase = 7,
                                      ymult = 0.75)
 
       tibble(eff_acm = list(fig_eff_acm),

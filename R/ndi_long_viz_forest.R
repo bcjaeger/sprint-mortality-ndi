@@ -36,13 +36,13 @@ ndi_long_viz_mort <- function(long_inf, recoders) {
       trial_phase = factor(
         trial_phase,
         levels = c('trial', 'cohort'),
-        labels = c("Trial Phase", "Cohort Phase")
+        labels = c("Trial Phase", "Observational Phase")
       ),
       fill = 1 +
         as.numeric(variable == 'Overall') +
-        as.numeric(variable == 'Overall' & trial_phase == 'Cohort Phase') +
+        as.numeric(variable == 'Overall' & trial_phase == 'Observational Phase') +
         as.numeric(variable != group) +
-        as.numeric(variable != group & trial_phase == 'Cohort Phase'),
+        as.numeric(variable != group & trial_phase == 'Observational Phase'),
       fill = factor(fill),
       label = table_value(mort_est, rspec = rspec),
       label = replace(label, label == 'NA', "")
@@ -73,14 +73,14 @@ ndi_long_viz_mort <- function(long_inf, recoders) {
                       group = '',
                       label = 'HR',
                       fill = '1',
-                      trial_phase = c('Trial Phase', 'Cohort Phase'))
+                      trial_phase = c('Trial Phase', 'Observational Phase'))
 
 
   data_gg <- bind_rows(data_bind, data_gg) |>
     mutate(
       trial_phase = factor(
         trial_phase,
-        levels = c("Trial Phase", "Cohort Phase")
+        levels = c("Trial Phase", "Observational Phase")
       )
     )
 
@@ -161,13 +161,13 @@ ndi_long_viz_cvd <- function(long_inf, recoders) {
       trial_phase = factor(
         trial_phase,
         levels = c('trial', 'cohort'),
-        labels = c("Trial Phase", "Cohort Phase")
+        labels = c("Trial Phase", "Observational Phase")
       ),
       fill = 1 +
         as.numeric(variable == 'Overall') +
-        as.numeric(variable == 'Overall' & trial_phase == 'Cohort Phase') +
+        as.numeric(variable == 'Overall' & trial_phase == 'Observational Phase') +
         as.numeric(variable != group) +
-        as.numeric(variable != group & trial_phase == 'Cohort Phase'),
+        as.numeric(variable != group & trial_phase == 'Observational Phase'),
       fill = factor(fill),
       label = table_value(cvd_est, rspec = rspec),
       label = replace(label, label == 'NA', "")
@@ -198,14 +198,14 @@ ndi_long_viz_cvd <- function(long_inf, recoders) {
                       group = '',
                       label = 'HR',
                       fill = '1',
-                      trial_phase = c('Trial Phase', 'Cohort Phase'))
+                      trial_phase = c('Trial Phase', 'Observational Phase'))
 
 
   data_gg <- bind_rows(data_bind, data_gg) |>
     mutate(
       trial_phase = factor(
         trial_phase,
-        levels = c("Trial Phase", "Cohort Phase")
+        levels = c("Trial Phase", "Observational Phase")
       )
     )
 

@@ -11,6 +11,7 @@ add_annotations <- function(fig,
                             xmax = NULL,
                             xmin = NULL,
                             ymult = 0.90,
+                            mid_label = 'Trial And\nObservational\nPhase',
                             x_cohort_phase = 6,
                             textsize = 4.5) {
 
@@ -53,11 +54,11 @@ add_annotations <- function(fig,
              x = 3.51,
              y = fig_ymax * ymult,
              size = textsize,
-             label = 'Trial And\nCohort\nPhase') +
+             label = mid_label) +
     annotate(geom = 'text',
              x = x_cohort_phase,
              y = fig_ymax * ymult,
              size = textsize,
-             label = 'Cohort Phase')
+             label = 'Observational Phase')
 
 }

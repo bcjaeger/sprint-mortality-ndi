@@ -5,20 +5,23 @@
 #' @title
 #' @param date
 
-bp_long_viz <- function(date = "01-15-22") {
+bp_long_viz <- function(date_ehr = "02-08-22",
+                        date_trial = "01-15-22") {
 
   cols_bg <- viridis(3)
   cols_tx <- pal_lancet()(2)
   cols_diff <- c("maroon4","black")
 
-  .date <- str_remove_all(date, fixed('-'))
+  .date_ehr <- str_remove_all(date_ehr, fixed('-'))
+  .date_trial <- str_remove_all(date_trial, fixed('-'))
 
-  fname <- paste0("SPRINT_EHR_SBP_GLIMMIX_LongTerm_", .date, ".csv")
-  fname2 <- paste0("SPRINT_EHR_SBP_GLIMMIX_JAMA_IM_REDO_", .date, ".csv")
+
+  fname_ehr <- paste0("SPRINT_EHR_SBP_LongTerm_EHRonly_", .date_ehr, ".csv")
+  fname_trial <- paste0("SPRINT_EHR_SBP_GLIMMIX_JAMA_IM_REDO_", .date_trial, ".csv")
 
   # Blood pressure levels over time ----
 
-  bp <- read_csv(file.path('ehr', fname)) |>
+  bp_ehr <- read_csv(file.path('ehr', fname_ehr)) |>
     select(-Statement, -Alpha, -tValue, -DF, -StdErr) |>
     separate(Label, into = c('group', 'time_months'), sep = ';') |>
     mutate(time_months = as.numeric(time_months),
@@ -27,33 +30,19 @@ bp_long_viz <- function(date = "01-15-22") {
                           "INT" = "Intensive (EHR)",
                           "DIFF" = "Difference (EHR)"))
 
-  bp_trial <- read_csv(file.path('ehr', fname2)) |>
+  bp_trial <- read_csv(file.path('ehr', fname_trial)) |>
     select(-Statement, -Alpha, -tValue, -DF, -StdErr) |>
     separate(Label, into = c('group', 'source', 'time_months'), sep = ';') |>
-    mutate(time_months = as.numeric(time_months))
-
-  bp_levels <- filter(bp, group %in% c("Standard (EHR)",
-                                       "Intensive (EHR)") & time_months>54)
-
-  bp_levels_trial <- bp_trial |>
-    filter(group %in% c("STD", "INT") & source=="EHR") |>
-    select(-source) |>
-    mutate(group = recode(group,
-                          "STD" = "Standard (EHR)",
-                          "INT" = "Intensive (EHR)",
-                          "DIFF" = "Difference (EHR)"))
-
-  bp_levels<-rbind(bp_levels_trial, bp_levels)
-
-  bp_levels_trial <- filter(bp_trial, group %in% c("STD",
-                                                   "INT") & source=="CLINIC") |>
+    mutate(time_months = as.numeric(time_months)) |>
+    filter(source == 'CLINIC') |>
     select(-source) |>
     mutate(group = recode(group,
                           "STD" = "Standard (trial)",
                           "INT" = "Intensive (trial)",
                           "DIFF" = "Difference (trial)"))
 
-  bp_levels<-rbind(bp_levels_trial, bp_levels) |>
+  bp_levels <- bind_rows(bp_ehr, bp_trial) |>
+    filter(!str_detect(group, '^Diff')) |>
     separate(group,
              into = c('treatment', 'source'),
              sep = ' ') |>
@@ -63,21 +52,8 @@ bp_long_viz <- function(date = "01-15-22") {
 
   # Blood pressure difference over time ----
 
-  bp_diff_orig <- filter(bp, group == 'Difference (EHR)' & time_months>54)
-
-  bp_diff_ehr<- bp_trial |>
-    filter(group=="DIFF" & source=="EHR") |>
-    select(-source) |>
-    mutate(group = recode(group, "DIFF" = "Difference (EHR)"))
-
-  bp_diff_clinic <- bp_trial |>
-    filter(group=="DIFF" & source=="CLINIC") |>
-    select(-source) |>
-    mutate(group = recode(group, "DIFF" = "Difference (trial)"))
-
-  bp_diff <- rbind(bp_diff_ehr,
-                   bp_diff_orig,
-                   bp_diff_clinic) |>
+  bp_diff <- bind_rows(bp_ehr, bp_trial) |>
+    filter(str_detect(group, '^Diff')) |>
     separate(group,
              into = c('drop_me', 'source'),
              sep = ' ') |>
