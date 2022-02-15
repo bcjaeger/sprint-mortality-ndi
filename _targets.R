@@ -107,7 +107,8 @@ list(
     tar_target(base_viz_eff, ndi_base_viz_tv_effect(base_sub))
   ),
 
-  tar_target(bp_viz, bp_long_viz(date='01-15-22')),
+  tar_target(bp_viz, bp_long_viz(date_trial = '01-15-22',
+                                 date_ehr = '02-08-22')),
 
   # ndi_long_describe(ndi_data_list)
 
