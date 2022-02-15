@@ -45,7 +45,7 @@ the trial. However, there was no evidence of association during
 post-trial follow-up for cardiovascular (HR = 1.02, 95% CI 0.84 to 1.24)
 or all-cause mortality (HR = 1.08, 95% CI 0.94 to 1.23). The estimated
 mean (95% CI) SBP among participants randomized to intensive treatment
-was 133 (132, 134) at 5 years and 140 (137, 143) at 10 years
+was 133 (132, 134) at 5 years and 140 (138, 143) at 10 years
 post-randomization.
 
 **CONCLUSIONS AND RELEVANCE**. The beneficial effect of intensive
