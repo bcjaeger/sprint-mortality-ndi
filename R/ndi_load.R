@@ -7,13 +7,14 @@
 ndi_load <- function(sasinet_drive = "Z", fname, ...) {
 
   path <- file.path(
-    paste0(sasinet_drive, ""),
+    paste0(sasinet_drive, ":"),
     "npajewski",
     "NDI",
     "Data",
     fname
   )
 
+  # sub_cvd = history of cvd variable.
 
   data_in <- read_csv(path) |>
     transmute(

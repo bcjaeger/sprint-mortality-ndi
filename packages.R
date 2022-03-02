@@ -22,6 +22,10 @@ library(officer)
 library(cowplot)
 library(gtsummary)
 
+library(grid)
+library(glue)
+library(broom)
+
 conflict_prefer("filter", "dplyr")
 conflict_prefer("select", "dplyr")
 conflict_prefer("border", "flextable")

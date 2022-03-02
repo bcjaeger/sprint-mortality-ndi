@@ -1,0 +1,84 @@
+---
+title: "Longer term All-Cause and Cardiovascular Mortality with Intensive Blood Pressure Control"
+subtitle: "A Secondary Analysis of SPRINT"
+author: "Nicholas Pajewski, PhD"
+institute: "Wake Forest School of Medicine"
+date: "2016/12/12 (updated: `r Sys.Date()`)"
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+background-image: url(https://upload.wikimedia.org/wikipedia/commons/b/be/Sharingan_triple.svg)
+
+```{r setup, include=FALSE}
+
+options(htmltools.dir.version = FALSE)
+
+source("packages.R")
+
+knitr::opts_chunk$set(echo = FALSE, 
+                      message = FALSE,
+                      warning = FALSE,
+                      dpi = 600, 
+                      fig.width = 10, 
+                      fig.height = 8)
+
+tar_load(names = c(base_viz_inc,
+                   base_viz_eff,
+                   long_viz,
+                   bp_viz,
+                   ndi_baseline))
+
+fig <- left_join(base_viz_inc, base_viz_eff)
+
+```
+
+???
+
+Notes for you go here
+
+---
+
+
+```{r}
+
+fig$inc_acm[[1]]
+
+
+# If you wanted to make multiple figs on the same slide
+# blank_plot <- ggplot(data.frame()) + aes() + theme_void()
+# 
+# legend <- get_legend(
+#   fig$inc_acm[[1]]$plot + 
+#     theme(legend.position = c(.55, .2),
+#           legend.direction = 'horizontal')
+# )
+# 
+# plot_grid(
+#   # row 1 (legend)
+#   legend, 
+#   blank_plot,
+#   # row 2 (figures)
+#   fig$inc_acm[[1]]$plot + theme(legend.position = ''), 
+#   fig$eff_acm[[1]],
+#   # row 3 (table)
+#   fig$inc_acm[[1]]$table, 
+#   blank_plot,
+#   ncol = 2,
+#   align = 'v',
+#   axis = 'lr',
+#   rel_heights = c(1,10,2),
+#   labels = c("","","A","B","",""),
+#   label_x = 0.1,
+#   label_y = 1.05
+# )
+
+```
+
+---
+

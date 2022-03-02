@@ -13,6 +13,8 @@ if(user == 'nmpieyeskey'){
 }
 
 
+# TODO: consider history of CVD as a subgroup.
+
 ## Load your R files
 lapply(list.files("./R", full.names = TRUE), source)
 
@@ -64,6 +66,18 @@ list(
     ndi_tabulate_characteristics(ndi_baseline, recoders)
   ),
 
+  trt_intr <- tar_map(
+    values = subgroups,
+    tar_target(long_trt_intr, ndi_long_intr(ndi_longitudinal, group))
+  ),
+
+  tar_combine(
+    trt_hetero,
+    trt_intr[[1]],
+    command = bind_rows(!!!.x, .id = 'variable') |>
+      mutate(variable = str_remove(variable, '^long_trt_intr_'))
+  ),
+
   # arrow assignment is necessary to make 'long' an object that
   # will be recognized in downstream tar_ functions
   long <- tar_map(
@@ -90,8 +104,10 @@ list(
       mutate(variable = str_remove(variable, '^long_inf_'))
   ),
 
-  tar_target(long_viz_mort, ndi_long_viz_mort(long_inf, recoders)),
-  tar_target(long_viz_cvd, ndi_long_viz_cvd(long_inf, recoders)),
+  tar_target(long_viz, ndi_long_viz(long_inf,
+                                    trt_hetero,
+                                    long_ds,
+                                    recoders)),
 
   base <- tar_map(
     values = subgroups,
