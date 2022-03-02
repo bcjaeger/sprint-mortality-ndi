@@ -17,16 +17,18 @@ background-image: url(https://upload.wikimedia.org/wikipedia/commons/b/be/Sharin
 
 ```{r setup, include=FALSE}
 
-options(htmltools.dir.version = FALSE)
+# IN CASE YOU NEED THIS IN PDF: Run this code in console:
+# pagedown::chrome_print('index.html')
+# But avoid using the pdf version when you present b/c you 
+# can access keyboard shortcuts if you present from html.
+# e.g., presenter mode by pressing 'p'
 
-source("packages.R")
+options(htmltools.dir.version = FALSE)
 
 knitr::opts_chunk$set(echo = FALSE, 
                       message = FALSE,
                       warning = FALSE,
-                      dpi = 600, 
-                      fig.width = 10, 
-                      fig.height = 8)
+                      dpi = 600)
 
 tar_load(names = c(base_viz_inc,
                    base_viz_eff,
@@ -45,10 +47,14 @@ Notes for you go here
 ---
 
 
-```{r}
+```{r fig.width = 10, fig.height = 8}
 
-fig$inc_acm[[1]]
-
+fig$inc_cvd[[1]] + 
+  theme(legend.key.size = unit(1.2, 'cm'), #change legend key size
+        legend.key.height = unit(1.2, 'cm'), #change legend key height
+        legend.key.width = unit(1.2, 'cm'), #change legend key width
+        legend.title = element_text(size=16), #change legend title font size
+        legend.text = element_text(size=16)) #change legend text font size
 
 # If you wanted to make multiple figs on the same slide
 # blank_plot <- ggplot(data.frame()) + aes() + theme_void()

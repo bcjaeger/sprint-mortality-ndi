@@ -4,10 +4,10 @@
 #'
 #' @title
 #' @param sasinet_drive
-ndi_load <- function(sasinet_drive = "Z", fname, ...) {
+ndi_load <- function(sasinet_drive = "Z:", fname, ...) {
 
   path <- file.path(
-    paste0(sasinet_drive, ":"),
+    paste0(sasinet_drive),
     "npajewski",
     "NDI",
     "Data",

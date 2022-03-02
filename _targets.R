@@ -158,7 +158,9 @@ list(
 
   tar_render(manuscript, "doc/manuscript-rmd.Rmd"),
 
-  tar_render(readme, "README.Rmd")
+  tar_render(readme, "README.Rmd"),
+
+  tar_render(slides, "index.Rmd")
 
 )
 
