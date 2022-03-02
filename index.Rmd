@@ -46,6 +46,14 @@ Notes for you go here
 
 ---
 
+```{r out.width='100%'}
+
+knitr::include_graphics('fig/sprint-ndi-timeline.png')
+
+```
+
+
+---
 
 ```{r fig.width = 10, fig.height = 8}
 
