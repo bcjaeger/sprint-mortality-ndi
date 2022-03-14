@@ -1,9 +1,9 @@
 ---
 title: "Longer term All-Cause and Cardiovascular Mortality with Intensive Blood Pressure Control"
 subtitle: "A Secondary Analysis of SPRINT"
-author: "Nicholas Pajewski, PhD"
+author: "Nicholas M. Pajewski, PhD & Byron C. Jaeger, PhD"
 institute: "Wake Forest School of Medicine"
-date: "2016/12/12 (updated: `r Sys.Date()`)"
+date: "`r Sys.Date()`"
 output:
   xaringan::moon_reader:
     lib_dir: libs
@@ -12,8 +12,6 @@ output:
       highlightLines: true
       countIncrementalSlides: false
 ---
-
-background-image: url(https://upload.wikimedia.org/wikipedia/commons/b/be/Sharingan_triple.svg)
 
 ```{r setup, include=FALSE}
 
@@ -30,25 +28,74 @@ knitr::opts_chunk$set(echo = FALSE,
                       warning = FALSE,
                       dpi = 600)
 
-tar_load(names = c(base_viz_inc,
+tar_load(names = c(recoders,
+                   base_viz_inc,
                    base_viz_eff,
-                   long_viz,
                    bp_viz,
+                   tbl_characteristics,
+                   base_ds, 
+                   long_ds,
+                   long_inf,
+                   trt_hetero,
+                   base_inf,
                    ndi_baseline))
+
+long_viz <-
+  ndi_long_viz(long_inf, trt_hetero, long_ds, recoders, size_text = 4.5)
+
+n_total <- nrow(ndi_baseline)
+
+n_ehr <- sum(ndi_baseline$ehr_ancillary == 'Yes')
 
 fig <- left_join(base_viz_inc, base_viz_eff)
 
 ```
 
+## Importance and Background
+
+- SPRINT showed that intensive treatment reduced the risk of cardiovascular and all-cause mortality. 
+
+- The trial began in 2010 and the last study closeout visit occurred in 2016.
+
+## Objective and Methods   
+
+- We assessed whether the benefit of intensive treatment persisted after the final study closeout visit in 2016.
+
+- We tracked cardiovascular and all-cause mortality events from the US National Death Index from 2016 to 2020.
+
+- In a subset of participants, we examined outpatient systolic blood pressure levels measured in routine clinical practice after the trial.
+
 ???
 
-Notes for you go here
+intensive treatment: Systolic blood pressure goal of < 120 mm Hg
+
+legacy effect: the persistence of benefit after the trial
+
 
 ---
 
-```{r out.width='100%'}
+```{r fig.width = 10, fig.height = 8}
 
-knitr::include_graphics('fig/sprint-ndi-timeline.png')
+fig$inc_cvd[[1]] +
+  theme(legend.key.size = unit(1.2, 'cm'),    
+        legend.key.height = unit(1.2, 'cm'),  
+        legend.key.width = unit(1.2, 'cm'),   
+        legend.title = element_text(size=16), 
+        legend.text = element_text(size=16))
+
+```
+
+---
+
+```{r fig.width = 10, fig.height = 8}
+
+bp_viz$levels + 
+  theme(legend.position = 'top',
+        legend.key.size = unit(1.2, 'cm'), #change legend key size
+        legend.key.height = unit(1.2, 'cm'), #change legend key height
+        legend.key.width = unit(1.2, 'cm'), #change legend key width
+        legend.title = element_text(size=16), #change legend title font size
+        legend.text = element_text(size=16))
 
 ```
 
@@ -57,42 +104,20 @@ knitr::include_graphics('fig/sprint-ndi-timeline.png')
 
 ```{r fig.width = 10, fig.height = 8}
 
-fig$inc_cvd[[1]] + 
-  theme(legend.key.size = unit(1.2, 'cm'), #change legend key size
-        legend.key.height = unit(1.2, 'cm'), #change legend key height
-        legend.key.width = unit(1.2, 'cm'), #change legend key width
-        legend.title = element_text(size=16), #change legend title font size
-        legend.text = element_text(size=16)) #change legend text font size
-
-# If you wanted to make multiple figs on the same slide
-# blank_plot <- ggplot(data.frame()) + aes() + theme_void()
-# 
-# legend <- get_legend(
-#   fig$inc_acm[[1]]$plot + 
-#     theme(legend.position = c(.55, .2),
-#           legend.direction = 'horizontal')
-# )
-# 
-# plot_grid(
-#   # row 1 (legend)
-#   legend, 
-#   blank_plot,
-#   # row 2 (figures)
-#   fig$inc_acm[[1]]$plot + theme(legend.position = ''), 
-#   fig$eff_acm[[1]],
-#   # row 3 (table)
-#   fig$inc_acm[[1]]$table, 
-#   blank_plot,
-#   ncol = 2,
-#   align = 'v',
-#   axis = 'lr',
-#   rel_heights = c(1,10,2),
-#   labels = c("","","A","B","",""),
-#   label_x = 0.1,
-#   label_y = 1.05
-# )
+long_viz$cvd$cohort
 
 ```
 
 ---
 
+## Key findings
+
+- Intensive treatment produced beneficial effects on mortality during the trial. 
+
+- The benefits associated with intensive treatment quickly attenuated as systolic blood pressure levels increased among participants who underwent intensive treatment after the trial.
+
+- There was no evidence of sustained benefits after discontinuing the intervention protocol.
+
+## Conclusion
+
+Maintaining intensive BP targets throughout adulthood is likely an essential component of long-term CVD risk management.

@@ -9,7 +9,8 @@
 ndi_long_viz <- function(long_inf,
                          trt_hetero,
                          long_ds,
-                         recoders) {
+                         recoders,
+                         size_text = 3) {
 
 
   rspec <- round_spec() |>
@@ -35,6 +36,17 @@ ndi_long_viz <- function(long_inf,
     pivot_wider(values_from = mort_inc,
                 names_from = treatment)
 
+  gg_acm_counts <- long_ds |>
+    transmute(
+      variable, group, trial_phase, treatment,
+      mort_label = table_glue(
+        "{as.integer(n_acm)}/{n_obs} ({as.integer(100*n_acm)/n_obs})",
+        rspec = rspec
+      )
+    ) |>
+    pivot_wider(values_from = mort_label,
+                names_from = treatment)
+
   gg_cvd_counts <- long_ds |>
     transmute(
       variable, group, trial_phase, treatment,
@@ -54,7 +66,7 @@ ndi_long_viz <- function(long_inf,
 
   gg_acm <- long_inf |>
     left_join(trt_hetero_merge_in) |>
-    left_join(gg_acm_incidence) |>
+    left_join(gg_acm_counts) |>
     transmute(
       variable = recode(variable, !!!recoders$variable),
       group = recode(group, !!!recoders$group),
@@ -150,7 +162,7 @@ ndi_long_viz <- function(long_inf,
   y_col_2 <- exp(-1.5)
   y_col_3 <- exp(1.5)
   y_col_4 <- exp(2.5)
-  size_text <- 3
+
   size_arrow <- 0.15
 
   ndi_forest_worker <- function(gg_data,
@@ -275,7 +287,7 @@ ndi_long_viz <- function(long_inf,
     .x = gg$acm,
     .y = c("Observational phase", "Trial phase"),
     .f = ndi_forest_worker,
-    header_ds = "Incidence rate (95% CI) per 1000 person-years",
+    header_ds = "no. of all-cause deaths / no. at risk (%)",
     y_col_0 = y_col_0,
     y_col_1 = y_col_1,
     y_col_2 = y_col_2,
