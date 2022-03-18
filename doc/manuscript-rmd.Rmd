@@ -38,9 +38,39 @@ single_par <- fp_par(line_spacing=1)
 
 ```
 
-Byron C. Jaeger, PhD,^1^ Adam P. Bress, PharmD, MS,^2,3^ Joshua D. Bundy, PhD,^4^ Alfred K. Cheung, MD,^5,6^ William C. Cushman, MD,^7^ Paul E. Drawz, MD,^8^ Lawrence J. Fine, MD,^9^ Karen C. Johnson, MD, MPH^7^ Cora E. Lewis, MD, MSPH^10^ Suzanne Oparil, MD,^11^ Michael V. Rocco, MD,^12^ Stephen R. Rapp, PhD, ^13^ Joni K. Snyder, RN,BSN,^9^ Mark A. Supiano, MD,^14^ Paul K. Whelton, MD,^4^ Jeff D. Williamson, MD, MHS,^15^ Jackson T. Wright, Jr, MD, PhD,^16^ David M. Reboussin, PhD,^1^ and Nicholas M. Pajewski, PhD^1^ 
+Byron C. Jaeger, PhD,^1^ 
+Adam P. Bress, PharmD, MS,^2,3^ 
+Joshua D. Bundy, PhD,^4^ 
+Alfred K. Cheung, MD,^5,6^ 
+William C. Cushman, MD,^7^ 
+Paul E. Drawz, MD,^8^ 
+Karen C. Johnson, MD, MPH^7^ 
+Cora E. Lewis, MD, MSPH^9^ 
+Suzanne Oparil, MD,^10^ 
+Michael V. Rocco, MD,^11^ 
+Stephen R. Rapp, PhD, ^12^ 
+Mark A. Supiano, MD,^13^ 
+Paul K. Whelton, MD,^4^ 
+Jeff D. Williamson, MD, MHS,^14^ 
+Jackson T. Wright, Jr, MD, PhD,^15^ 
+David M. Reboussin, PhD,^1^ and 
+Nicholas M. Pajewski, PhD^1^ 
 
-^1^Department of Biostatistics and Data Science, Wake Forest School of Medicine, Winston-Salem, NC. ^2^Informatics, Decision-Enhancement, and Analytic Sciences (IDEAS) Center, Veterans Affairs, Salt Lake City Health Care System, Salt Lake City, UT. ^3^Department of Population Health Sciences, University of Utah School of Medicine, Salt Lake City, UT. ^4^Department of Epidemiology, Tulane University School of Public Health and Tropical Medicine, New Orleans, LA. ^5^Renal Section, Veterans Affairs Salt Lake City Healthcare System, UT. ^6^Division of Nephrology and Hypertension, Department of Internal Medicine, University of Utah School of Medicine, Salt Lake City, UT. ^7^Department of Preventive Medicine, University of Tennessee Health Science Center, Memphis TN. ^8^Division of Renal Diseases & Hypertension, University of Minnesota, MN. ^9^Clinical Applications and Prevention Branch, National Heart, Lung, and Blood Institute, National Institutes of Health, Bethesda, MD. ^10^Department of Epidemiology, University of Alabama at Birmingham. ^11^Division of Cardiovascular Disease, Department of Medicine, University of Alabama at Birmingham. ^12^Section on Nephrology, Department of Internal Medicine, Wake Forest School of Medicine, Winston-Salem, NC. ^13^Departments of Psychiatry and Behavioral Medicine & Social Sciences and Health Policy, Wake Forest School of Medicine, Winston-Salem, NC. ^14^Division of Geriatrics, University of Utah School of Medicine, Salt Lake City. ^15^Section on Gerontology and Geriatric Medicine, Department of Internal Medicine, Wake Forest School of Medicine, Winston-Salem, NC. ^16^Division of Nephrology and Hypertension, University Hospitals Cleveland Medical Center, Case Western Reserve University, OH `r single_par`
+^1^Department of Biostatistics and Data Science, Wake Forest School of Medicine, Winston-Salem, NC. `r single_par`
+^2^Informatics, Decision-Enhancement, and Analytic Sciences (IDEAS) Center, Veterans Affairs, Salt Lake City Health Care System, Salt Lake City, UT. `r single_par`
+^3^Department of Population Health Sciences, University of Utah School of Medicine, Salt Lake City, UT. `r single_par`
+^4^Department of Epidemiology, Tulane University School of Public Health and Tropical Medicine, New Orleans, LA. `r single_par`
+^5^Renal Section, Veterans Affairs Salt Lake City Healthcare System, UT. `r single_par`
+^6^Division of Nephrology and Hypertension, Department of Internal Medicine, University of Utah School of Medicine, Salt Lake City, UT. `r single_par`
+^7^Department of Preventive Medicine, University of Tennessee Health Science Center, Memphis, TN. `r single_par`
+^8^Division of Renal Diseases & Hypertension, University of Minnesota, MN. `r single_par`
+^9^Department of Epidemiology, University of Alabama at Birmingham. `r single_par`
+^10^Division of Cardiovascular Disease, Department of Medicine, University of Alabama at Birmingham. `r single_par`
+^11^Section on Nephrology, Department of Internal Medicine, Wake Forest School of Medicine, Winston-Salem, NC. `r single_par`
+^11^Departments of Psychiatry and Behavioral Medicine & Social Sciences and Health Policy, Wake Forest School of Medicine, Winston-Salem, NC. `r single_par`
+^13^Division of Geriatrics, University of Utah School of Medicine, Salt Lake City. `r single_par`
+^14^Section on Gerontology and Geriatric Medicine, Department of Internal Medicine, Wake Forest School of Medicine, Winston-Salem, NC. `r single_par`
+^15^Division of Nephrology and Hypertension, University Hospitals Cleveland Medical Center, Case Western Reserve University, OH `r single_par`
 \
 
 **Correspondence to:** \
@@ -148,22 +178,20 @@ t_atten_sbp <- bp_viz |>
 
 # ABSTRACT
 
-__IMPORTANCE__. The Systolic Blood Pressure Intervention Trial (SPRINT) showed that intensive treatment, defined by a systolic blood pressure (SBP) goal of <120mmHg, reduced the risk of cardiovascular and all-cause mortality. However, the legacy effect of intensive treatment on mortality, defined as the persistence of benefit after stopping intensive treatment, is unknown. 
+__IMPORTANCE__. The Systolic Blood Pressure Intervention Trial (SPRINT) showed that intensive treatment, defined by a systolic blood pressure (SBP) goal of <120mmHg, reduced cardiovascular and all-cause mortality risk. However, the legacy effect of intensive treatment, defined as the persistence of benefit after stopping intensive treatment, is unknown. 
 
-<!-- The edit to defn of legacy effect was recommended by JW -->
+__OBJECTIVE__. To evaluate the effect of receiving intensive treatment during the SPRINT trial, which began in 2010 and ended in 2016, with cardiovascular and all-cause mortality through 2020. 
 
-__OBJECTIVE__. To evaluate the legacy effect of receiving intensive treatment during the SPRINT trial with all-cause and cardiovascular mortality up to ten years post-randomization. 
-
-__DESIGN, SETTING, AND PARTICIPANTS__. Randomized clinical trial of 9361 patients aged 50 years or older with hypertension and increased cardiovascular risk, but without diabetes or history of stroke. Randomization began on November 8, 2010, the trial intervention ended on August 20, 2015, and observational trial follow-up visits occurred through July 2016.  
+__DESIGN, SETTING, AND PARTICIPANTS__. Randomized clinical trial of 9361 patients aged ≥50 years with hypertension and increased cardiovascular risk, but without diabetes or history of stroke. Randomization began on November 8, 2010, the trial intervention ended on August 20, 2015, and observational trial follow-up visits occurred through July 2016.  
 
 __INTERVENTIONS__. Randomization to SBP goal of <120mmHg (intensive, N=4678) versus <140mmHg (standard, N=4683).
 
-__MAIN OUTCOMES AND MEASURES__. Extended trial follow-up assessed mortality via the US National Death Index, beginning in 2016 through December 31st, 2020. In a subset of `r n_ehr` trial participants, outpatient SBP levels measured in routine clinical practice after the trial were examined.    
+__MAIN OUTCOMES AND MEASURES__. Extended trial follow-up assessed mortality via the US National Death Index from 2016 through 2020. In a subset of `r n_ehr` trial participants, outpatient SBP levels measured in routine clinical practice after the trial were examined.    
 
-__RESULTS__. Among `r n_total` randomized participants, the mean (standard deviation) age was `r inline_text(tbl_characteristics, variable = 'age_yrs', column = 'stat_0_1')` years and `r inline_text(tbl_characteristics, variable = 'sex', column = 'stat_0_1')`% were women. Over the median intervention phase of 3.3 years, intensive treatment was beneficial for both cardiovascular mortality (Hazard Ratio [HR] = `r with(ap_l_o_t, .("{cvd_est}, 95% confidence interval [CI] {cvd_lwr} to {cvd_upr}"))`) and all-cause mortality (HR = `r with(ap_l_o_t, .("{mort_est}, 95% CI {mort_lwr} to {mort_upr}"))`). However, at the median total follow-up of `r ap_b_o$fup_est` years, there was no longer evidence of benefit for cardiovascular mortality (HR = `r with(ap_l_o_c, .("{cvd_est}, 95% CI {cvd_lwr} to {cvd_upr}"))`) or all-cause mortality (HR = `r with(ap_l_o_c, .("{mort_est}, 95% CI {mort_lwr} to {mort_upr}"))`). The estimated mean (95% CI) outpatient SBP among participants randomized to intensive treatment increased from `r f(bp_viz_5yr$Intensive)` at five years to `r f(bp_viz_10yr$Intensive)` ten years post-randomization.
+__RESULTS__. Among `r n_total` randomized participants, the mean (standard deviation) age was `r inline_text(tbl_characteristics, variable = 'age_yrs', column = 'stat_0_1')` years and `r inline_text(tbl_characteristics, variable = 'sex', column = 'stat_0_1')`% were women. Over the median intervention phase of 3.3 years, intensive treatment was beneficial for both cardiovascular mortality (Hazard Ratio [HR] = `r with(ap_l_o_t, .("{cvd_est}, 95% confidence interval [CI] {cvd_lwr} to {cvd_upr}"))`) and all-cause mortality (HR = `r with(ap_l_o_t, .("{mort_est}, 95% CI {mort_lwr} to {mort_upr}"))`). However, at the median total follow-up of `r ap_b_o$fup_est` years, there was no longer evidence of benefit for cardiovascular mortality (HR = `r with(ap_l_o_c, .("{cvd_est}, 95% CI {cvd_lwr} to {cvd_upr}"))`) or all-cause mortality (HR = `r with(ap_l_o_c, .("{mort_est}, 95% CI {mort_lwr} to {mort_upr}"))`). In a subgroup of `r n_ehr` participants, the estimated mean (95% CI) outpatient SBP among participants randomized to intensive treatment increased from `r f(bp_viz_5yr$Intensive)` at five years to `r f(bp_viz_10yr$Intensive)` ten years post-randomization.
 
 
-__CONCLUSIONS AND RELEVANCE__. The beneficial effect of intensive treatment on cardiovascular and all-cause mortality did not persist after the trial was stopped. Given increasing SBP levels in participants randomized to intensive treatment following the trial, these results highlight the importance of consistent long-term management of hypertension. 
+__CONCLUSIONS AND RELEVANCE__. The beneficial effect of intensive treatment on cardiovascular and all-cause mortality did not persist after the trial. Given increasing SBP levels in participants randomized to intensive treatment following the trial, these results highlight the importance of consistent long-term management of hypertension. 
 
 \newpage
 
@@ -173,9 +201,9 @@ __CONCLUSIONS AND RELEVANCE__. The beneficial effect of intensive treatment on c
 
 <!-- Rmd automatically puts the mark after the punctuation when the csl file indicates it should be there (which it does for jama.csl). -->
 
-Hypertension is the leading modifiable risk factor for cardiovascular disease (CVD) [@gdbJACC2020]. The Systolic Blood Pressure Intervention Trial (SPRINT) showed that intensive treatment, defined by a SBP target < 120 mm Hg, reduced the risk for cardiovascular and all-cause mortality [@sprintFinal]. Because a clear benefit was evident for intensive treatment after a median follow-up of 3.3 years, SPRINT was stopped early. However, the persistence of benefit after the trial was stopped (i.e., "legacy" effect) of intensive treatment on cardiovascular and all-cause mortality has not been evaluated [@wander_legacy_2018].
+Hypertension is the leading modifiable risk factor for cardiovascular disease (CVD) [@gdbJACC2020]. The Systolic Blood Pressure Intervention Trial (SPRINT) showed that intensive treatment, defined by a SBP target < 120 mm Hg, reduced the risk for cardiovascular and all-cause mortality compared with treatment to an SBP target of < 140 mm Hg [@sprintFinal]. Because a clear benefit was evident for intensive antihypertensive drug treatment after a median follow-up of 3.3 years, the trial was stopped early. However, the longer-term effect of randomization to intensive treatment on cardiovascular and all-cause mortality after the trial (i.e., the legacy effect [@wander_legacy_2018]) has not been evaluated.
 
-The objective of the current study was to evaluate the effect of stopping intensive treatment as specified by the SPRINT trial protocol by analyzing post-trial all-cause and cardiovascular mortality. A secondary objective was to examine SBP following the discontinuation of the trial intervention. To accomplish these objectives, we linked participants to the National Death Index (NDI) from 2016 through 2020 and extracted longitudinal outpatient measurements of SBP from 20xx to 2020 available in the electronic health record (EHR) for a subset of trial participants. 
+The objective of the current study was to evaluate the long-term legacy effect of intensive treatment on mortality by passive follow-up using administrative data sources. We linked participants to the National Death Index (NDI) from 2016 through 2020, adding 4 years of follow-up after the conclusion of trial visits. A secondary objective was to examine change in attained BP levels following the discontinuation of the trial intervention and study visits. To examine this issue, we extracted longitudinal outpatient measurements of SBP from 2010 to 2020 available in the electronic health record (EHR) for a subset of trial participants.
 
 # METHODS
 
