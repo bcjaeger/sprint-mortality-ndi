@@ -1,9 +1,6 @@
-#' .. content for \description{} (no empty lines) ..
-#'
-#' .. content for \details{} ..
-#'
-#' @title
-#' @param ndi_data_list
+
+# tar_load(long_sub_overall)
+# ndi_data_list <- long_sub_overall
 
 ndi_long_infer <- function(ndi_data_list, n_sim = 1000) {
 

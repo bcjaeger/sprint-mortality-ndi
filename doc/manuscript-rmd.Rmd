@@ -6,6 +6,7 @@ always_allow_html: true
 output: 
   officedown::rdocx_document:
     reference_docx: style_manuscript_times_new_roman.docx
+    keep_md: true
 ---
 ```{r setup, include=FALSE}
 
@@ -386,6 +387,12 @@ plot_grid(
   label_y = 1.05
 )
 
+ggsave(filename = 'fig/figure1.pdf', 
+       device = 'pdf', 
+       dpi = knitr::opts_chunk$get("dpi"),
+       width = knitr::opts_chunk$get("fig.width"), 
+       height = knitr::opts_chunk$get("fig.height"))
+
 ```
 
 (A) Cumulative incidence of all-cause mortality by treatment group. (B) Time-dependent effect of randomization to intensive treatment for all-cause mortality.`r single_par`
@@ -403,6 +410,12 @@ plot_grid(long_viz$acm$trial,
           long_viz$acm$cohort,
           align = 'v',
           nrow = 1)
+
+ggsave(filename = 'fig/figure2.pdf', 
+       device = 'pdf', 
+       dpi = knitr::opts_chunk$get("dpi"),
+       width = knitr::opts_chunk$get("fig.width"), 
+       height = knitr::opts_chunk$get("fig.height"))
 
 ```
 
@@ -430,6 +443,12 @@ plot_grid(
   label_y = 1.05
 )
 
+ggsave(filename = 'fig/figure3.pdf', 
+       device = 'pdf', 
+       dpi = knitr::opts_chunk$get("dpi"),
+       width = knitr::opts_chunk$get("fig.width"), 
+       height = knitr::opts_chunk$get("fig.height"))
+
 ```
 
 (A) Cumulative incidence of cardiovascular and non-cardiovascular mortality by treatment group. (B) Time-dependent effect of randomization to intensive treatment for cardiovascular mortality.`r single_par`
@@ -447,6 +466,12 @@ plot_grid(long_viz$cvd$trial,
           align = 'v',
           nrow = 1)
 
+ggsave(filename = 'fig/figure4.pdf', 
+       device = 'pdf', 
+       dpi = knitr::opts_chunk$get("dpi"),
+       width = knitr::opts_chunk$get("fig.width"), 
+       height = knitr::opts_chunk$get("fig.height"))
+
 ```
 P-values test for heterogeneity in the treatment effect among subgroups and were not adjusted for multiple testing.`r single_par` 
 
@@ -459,18 +484,11 @@ __Figure 5__: Mean systolic blood pressure over time by treatment group. `r sing
 bp_viz$levels + 
   theme(legend.key.size = unit(1, 'cm'))
 
-# fpath <- file.path(
-#   paste0(get_sasinet_drive(), ":"),
-#   'bjaeger',
-#   'sprint-mortality-ndi',
-#   'fig',
-#   'SPRINT_EHR_SBP_LongTerm_Comparison_122721.png'
-# )
-# 
-# knitr::include_graphics(
-#   path = fpath, 
-#   dpi = 600
-# )
+ggsave(filename = 'fig/figure5.pdf', 
+       device = 'pdf', 
+       dpi = knitr::opts_chunk$get("dpi"),
+       width = knitr::opts_chunk$get("fig.width"), 
+       height = knitr::opts_chunk$get("fig.height"))
 
 ```
 
@@ -813,18 +831,19 @@ __eFigure 1__: Timeline of landmark events and definition of 'trial' and 'observ
 
 ```{r}
 
-fpath <- file.path(
-  get_sasinet_drive(),
-  'bjaeger',
-  'sprint-mortality-ndi',
-  'fig',
-  'sprint-ndi-timeline.png'
-)
-
-knitr::include_graphics(
-  path = fpath,
-  dpi = 600
-)
+# fpath <- file.path(
+#   # get_sasinet_drive(),
+#   # 'bjaeger',
+#   # 'sprint-mortality-ndi',
+#   # 'fig',
+#   'doc',
+#   'sprint-ndi-timeline.png'
+# )
+# 
+# knitr::include_graphics(
+#   path = fpath,
+#   dpi = 600
+# )
 
 ```
 
@@ -836,6 +855,13 @@ __eFigure 2__: Mean difference in systolic blood pressure measured in the trial 
 
 bp_viz$diff + 
   theme(legend.key.size = unit(1, 'cm'))
+
+ggsave(filename = 'fig/figure6.pdf', 
+       device = 'pdf', 
+       dpi = knitr::opts_chunk$get("dpi"),
+       width = knitr::opts_chunk$get("fig.width"), 
+       height = knitr::opts_chunk$get("fig.height"))
+
 
 ```
 

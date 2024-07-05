@@ -1,9 +1,8 @@
-#' .. content for \description{} (no empty lines) ..
-#'
-#' .. content for \details{} ..
-#'
-#' @title
-#' @param base_sub
+
+# tar_load(base_sub_overall)
+# ndi_data_list <- base_sub_overall
+# ndi_data <- ndi_data_list$overall
+
 ndi_base_viz_incidence <- function(ndi_data_list) {
 
   cols_bg <- viridis(3)
@@ -82,12 +81,14 @@ ndi_base_viz_incidence <- function(ndi_data_list) {
 
       ymax <- ymax_candidates[min(which(ymax_candidates > ymax_true))]
 
+      xmax <- max(data_cr$time)
+
       fig_cr <- ggplot(data_cr) +
         aes(x = time,
             y = est,
             col = treatment,
             group = interaction(treatment, event)) +
-        geom_line(size = 1.5) +
+        geom_line(linewidth = 1.5) +
         geom_ribbon(
           aes(x = time,
               ymin = est - sqrt(var) * 1.96,
@@ -106,36 +107,34 @@ ndi_base_viz_incidence <- function(ndi_data_list) {
         scale_y_continuous(labels = scales::percent,
                            breaks = seq(0, ymax, by = 0.05),
                            limits = c(0, ymax)) +
-        scale_x_continuous(breaks = c(0:10),
-                           expand = c(0, 0, 0, 0),
-                           limits = c(0, 13)) +
+        scale_x_continuous(breaks = c(0:13),
+                           expand = c(0, 0, 0, 0)) +
         scale_color_manual(values = cols_tx) +
         scale_fill_manual(values = cols_tx)
-
-
 
       y_text <- data_cr |>
         group_by(treatment, event) |>
         filter(time == max(time)) |>
         group_by(event) |>
-        summarize(est = mean(est))
+        summarize(est_max = max(est) + 0.02,
+                  est_min = min(est) - 0.04)
 
       fig_cr <- add_annotations(
         fig_cr,
         cols = cols_bg,
         ymax = ymax,
-        xmax = 13,
+        xmax = xmax,
         mid_label = '\nTrial\nAnd\nObservational\nPhase',
         x_cohort_phase = 7
       ) +
         annotate(geom = 'text',
                  x = 11.5,
-                 y = y_text$est[y_text$event == 'Non-CVD mortality'],
+                 y = y_text$est_max[y_text$event == 'Non-CVD mortality'],
                  size = 5,
                  label = 'Non-CVD\nMortality') +
         annotate(geom = 'text',
                  x = 11.5,
-                 y = y_text$est[y_text$event == 'CVD mortality'],
+                 y = y_text$est_min[y_text$event == 'CVD mortality'],
                  size = 5,
                  label = 'CVD\nMortality')
 

@@ -35,7 +35,7 @@ ndi_tabulate_characteristics <- function(ndi_baseline, recoders) {
   }
 
   tbl_by_anci <- ndi_tbl_data |>
-    relocate(sbp, treatment, .after = race) |>
+    relocate(sbp, treatment, n_agents, .after = race) |>
     tbl_summary(
       by = 'ehr_ancillary',
       statistic = list(
@@ -52,6 +52,7 @@ ndi_tabulate_characteristics <- function(ndi_baseline, recoders) {
       type = list(age_yrs ~ "continuous",
                   age_cat ~ "dichotomous",
                   sbp ~ 'continuous',
+                  n_agents ~ 'continuous',
                   treatment ~ "dichotomous",
                   sex ~ "dichotomous",
                   race ~ "dichotomous",
@@ -69,7 +70,7 @@ ndi_tabulate_characteristics <- function(ndi_baseline, recoders) {
     add_p()
 
   tbl_by_tx <- ndi_tbl_data |>
-    relocate(sbp, treatment, ehr_ancillary, .after = race) |>
+    relocate(sbp, treatment, n_agents, ehr_ancillary, .after = race) |>
     tbl_summary(
       by = 'treatment',
       statistic = list(
@@ -87,6 +88,7 @@ ndi_tabulate_characteristics <- function(ndi_baseline, recoders) {
                   age_cat ~ "dichotomous",
                   ehr_ancillary ~ "dichotomous",
                   sbp ~ 'continuous',
+                  n_agents ~ 'continuous',
                   sex ~ "dichotomous",
                   race ~ "dichotomous",
                   ckd_2021 ~ "dichotomous",
@@ -120,6 +122,7 @@ ndi_tabulate_characteristics <- function(ndi_baseline, recoders) {
       type = list(age_yrs ~ "continuous",
                   age_cat ~ "dichotomous",
                   sbp ~ 'continuous',
+                  n_agents ~ 'continuous',
                   treatment ~ "dichotomous",
                   ehr_ancillary ~ "dichotomous",
                   sex ~ "dichotomous",

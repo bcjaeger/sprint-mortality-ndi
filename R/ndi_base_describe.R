@@ -16,7 +16,8 @@ ndi_base_describe <- function(ndi_data_list) {
         group_map(
           .f = ~ prodlim(Hist(acm_years, 1 - acm_event) ~ 1, data = .x) |>
             quantile() |>
-            getElement('quantiles.survival') |>
+            unclass() %>%
+            as_tibble() %>%
             filter(q == 0.50) |>
             bind_cols(.y) # .y is the group info
         )
@@ -25,7 +26,8 @@ ndi_base_describe <- function(ndi_data_list) {
         prodlim(Hist(acm_years, 1 - acm_event) ~ 1,
                 data = ndi_data) |>
         quantile() |>
-        getElement('quantiles.survival') |>
+        unclass() %>%
+        as_tibble() %>%
         filter(q == 0.50) |>
         mutate(treatment = 'overall')
 

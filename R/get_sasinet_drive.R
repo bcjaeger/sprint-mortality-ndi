@@ -11,7 +11,7 @@ get_sasinet_drive <- function(username = NULL) {
 
   switch(
     username,
-    'bcjaeger' = 'Z:',
+    'bcjaeger' = 'T:/sprint',
     'nmpieyeskey' = 'O:/sprint'
   )
 

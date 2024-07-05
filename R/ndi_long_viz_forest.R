@@ -165,6 +165,12 @@ ndi_long_viz <- function(long_inf,
 
   size_arrow <- 0.15
 
+  gg$acm$cohort$pval <- gg$acm$cohort$p_acm
+  gg$acm$trial$pval <- gg$acm$trial$p_acm
+
+  gg$cvd$cohort$pval <- gg$cvd$cohort$p_cvd
+  gg$cvd$trial$pval <- gg$cvd$trial$p_cvd
+
   ndi_forest_worker <- function(gg_data,
                                 header_top,
                                 header_ds,
@@ -239,7 +245,7 @@ ndi_long_viz <- function(long_inf,
                 hjust = 0.5, size = size_text) +
       geom_text(aes(label = hr, y = y_col_3),
                 hjust = 0.5, size = size_text) +
-      geom_text(aes(label = p_acm, y = y_col_4),
+      geom_text(aes(label = pval, y = y_col_4),
                 hjust = 1, size = size_text) +
       geom_text(data = gg_header,
                 aes(x = x,
@@ -275,6 +281,7 @@ ndi_long_viz <- function(long_inf,
             axis.ticks.y = element_blank(),
             axis.text.y = element_blank(),
             axis.line = element_blank())
+
 
     cowplot::plot_grid(fig_main,
                        fig_bottom,

@@ -4,7 +4,7 @@
 #'
 #' @title
 #' @param sasinet_drive
-ndi_load <- function(sasinet_drive = "Z:", fname, ...) {
+ndi_load <- function(sasinet_drive = "T:", fname, ...) {
 
   path <- file.path(
     paste0(sasinet_drive),
@@ -51,6 +51,7 @@ ndi_load <- function(sasinet_drive = "Z:", fname, ...) {
                      labels = c("Fit",
                                 "Pre_frail",
                                 "Frail")),
+      hdl = HDL,
       # treatment indicator with factor structure is useful for tables
       treatment = factor(intensive,
                          levels = c(0,1),

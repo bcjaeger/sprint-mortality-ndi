@@ -12,6 +12,7 @@ recoders_make <- function() {
                  "age_cat" = "Age group",
                  "age_yrs" = "Age, years",
                  "sbp" = "Systolic blood pressure",
+                 "n_agents" = "Number of blood pressure medications prescribed",
                  "sex" = "Sex",
                  "race" = "Race",
                  "ckd_2021" = "Chronic Kidney Disease",

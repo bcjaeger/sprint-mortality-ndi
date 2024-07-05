@@ -1,0 +1,431 @@
+---
+title: "Longer Term All-Cause and Cardiovascular Mortality With Intensive Blood Pressure Control"
+subtitle: "A Secondary Analysis of a Randomized Clinical Trial"
+author: "Byron C. Jaeger, PhD"
+institute: "Wake Forest University School of Medicine"
+format: 
+  revealjs:
+    slide-number: true
+    footer: Slides available at
+    width: 1280
+    height: 720
+    fig-dpi: 300
+    fig-width: 8
+    fig-height: 6
+    fig-align: "center"
+    message: false
+    bibliography: doc/refs.bib
+    reference-location: document
+knitr:
+  opts_chunk:
+    out.width: "100%"
+---
+
+```{r}
+
+
+withr::with_dir(
+  here::here(),
+  code = {
+    source("packages.R")
+    targets::tar_load(
+      names = c(long_viz,
+                bp_viz,
+                base_viz_inc,
+                base_sub_overall)
+    )
+  }
+)
+
+ltd_2020 <- read_csv("T:/sprint/npajewski/NDI/Data/longterm_death.csv")
+ltd_2023 <- read_csv("T:/sprint/npajewski/NDI/Data/longterm_death_2023.csv")
+
+n_cvd_2020 <- sum(ltd_2020$cvd_event_cr == 1, na.rm = TRUE)
+n_cvd_2023 <- sum(ltd_2023$cvd_event_cr == 1, na.rm = TRUE)
+
+n_acm_2020 <- sum(ltd_2020$acm_event, na.rm = TRUE)
+n_acm_2023 <- sum(ltd_2023$acm_event, na.rm = TRUE)
+
+theme_fig <- function(x, ...){
+  theme_bw() +
+    theme(text = element_text(size = 18),
+          axis.text = element_text(size = 18),
+          axis.title = element_text(size = 18),
+          panel.grid.major.x = element_blank(),
+          panel.grid.minor = element_blank(),
+          panel.border = element_blank(),
+          legend.text = element_text(size = 18),
+          legend.title = element_text(size = 18),
+          legend.background = element_blank(),
+          ...)
+}
+
+theme_tbl <- function(x, ...) {
+  theme_void() +
+    theme(text = element_text(size = 18),
+          plot.caption = element_text(hjust = 0, size = 2),
+          plot.title.position = "plot",
+          plot.caption.position =  "plot",
+          ...)
+}
+
+cols_bg <- viridis(3)
+cols_tx <- pal_lancet()(2)
+
+```
+
+## Overview
+
+- Background: SPRINT
+
+- Why is longer term follow-up relevant?
+
+- How did SPRINT do longer term follow-up on *all-cause and CVD mortality*?
+
+- How did we analyze the longer term follow-up?
+
+- Results
+
+- Conclusion
+
+## SPRINT
+
+Two treatments with different systolic blood pressure (SBP) targets:
+
+- *Standard*: SBP target of < 140 mm Hg
+- *Intensive*: SBP target of < 120 mm Hg 
+
+Participants:
+
+- aged 50 years or older 
+- with hypertension and increased cardiovascular risk
+- without diabetes or history of stroke
+
+## Why do longer term follow-up?
+
+::: {.column width="39%"}
+
+- Investigate the legacy effect of intensive treatment
+
+- Does targeting SBP < 120 mm Hg have long term benefits or harms compared to targeting SBP < 140 mm Hg?
+
+:::
+
+::: {.column width="59%"}
+
+```{r}
+
+ndi_data <- base_sub_overall$overall
+
+fit_cr <- cuminc(ftime   = ndi_data$acm_years,
+                 fstatus = factor(ndi_data$cvd_event_cr,
+                                  levels = c(0, 1, 2),
+                                  labels = c("- Censored",
+                                             "- CVD mortality",
+                                             "- Non-CVD mortality")),
+                 group   = ndi_data$treatment,
+                 cencode = '- Censored')
+
+data_cr <-
+  map_dfr(.x = fit_cr[1:4],
+          .f = as_tibble,
+          .id = 'fit') |>
+  separate(fit, into = c('treatment','event'), sep = ' - ') |>
+  mutate(
+    treatment = factor(
+      x = treatment,
+      levels = c("Standard", "Intensive")
+    ),
+    lwr = est - 1.96 * sqrt(var),
+    upr = est + 1.96 * sqrt(var)
+  )
+
+ymax <- 0.10
+
+fig_cr <- ggplot(filter(data_cr, time < 4.48)) +
+  aes(x = time,
+      y = est,
+      col = treatment,
+      group = interaction(treatment, event)) +
+  geom_line(linewidth = 1.5) +
+  geom_ribbon(
+    aes(x = time,
+        ymin = est - sqrt(var) * 1.96,
+        ymax = est + sqrt(var) * 1.96,
+        fill = treatment,
+        group = interaction(treatment, event)),
+    alpha = 0.10,
+    inherit.aes = FALSE
+  ) +
+  theme_fig(legend.position = 'inside',
+            legend.position.inside = c(0.15, 0.75)) +
+  labs(linetype = 'Event',
+       color = 'Treatment',
+       fill = 'Treatment') +
+  ylab('Cumulative incidence') +
+  xlab('Years since randomization') +
+  scale_y_continuous(labels = scales::percent,
+                     breaks = seq(0, ymax, by = 0.05),
+                     limits = c(0, ymax)) +
+  scale_x_continuous(breaks = c(0:12),
+                     expand = c(0, 0, 0, 0),
+                     limits = c(0, 13)) +
+  scale_color_manual(values = cols_tx) +
+  scale_fill_manual(values = cols_tx) + 
+  annotate(geom = "text", hjust = 0, size = 7,
+           x = 5, y = .045, label = "Non-CVD mortality") + 
+  annotate(geom = "text", hjust = 0, size = 7,
+           x = 5, y = 0.0175, 
+           label = "CVD mortality") + 
+  annotate(geom = "text", hjust = 0, size = 7,
+           x = 11, y = 0.07, 
+           label = "What\nhappens\nhere??")
+
+fig_cr
+
+```
+
+
+:::
+
+## Longer term all-cause/CVD mortality
+
+::: {.column width="49%"}
+
+
+- We assessed all-cause^[Deaths were treated as confirmed if they were a Class 1 match, or a Class 2, 3, or 4 match with a probabilistic score above cutoffs recommended by the NDI.] and cardiovascular disease^[Cardiovascular mortality for NDI-based follow-up used the NDI Plus System, which automatically identifies underlying causes of death from death certificates, including conversion to International Statistical Classification of Diseases and Related Health Problems, Tenth Revision (ICD-10) codes. We defined CVD mortality as any death containing the ICD-10 codes of I00 to I99] (CVD) mortality post-trial via the US National Death Index (NDI) from 2016-2020 [@jaeger2022longer]. 
+
+- Among 2944 trial participants,^[We identified 3074 participants with 3 or more electronic health record reports of outpatient blood pressure measurements during the trial. After excluding 130 participants without electronic health record data following July 2016 (ie, conclusion of the trial), a total of 2944 patients were included for the ancillary blood pressure analysis.] post-trial SBP levels were analyzed [@drawz_concordance_2020].
+
+:::
+
+::: {.column width="49%"}
+![](img/jama_cardio_cover.png)
+:::
+
+## How did we analyze longer term follow-up?
+
+![](img/ph-assumption.gif){.absolute top="120" right="0"}
+
+::: {.column width="50%"}
+- assumed treatment group differences would not be constant over time.
+
+- split each participant’s follow-up time into non-overlapping trial and observational phases
+
+- estimated regression coefficients for intensive treatment separately during each phase.
+
+:::
+
+::: {.column width="49%"}
+:::
+
+# Results
+
+## What's changed?
+
+::: {.column width="49%"}
+**2016-2020**
+
+- `r n_acm_2020` all-cause mortality events
+- `r n_cvd_2020` CVD mortality events
+:::
+
+
+::: {.column width="49%"}
+**2016-2023**
+
+- `r n_acm_2023` all-cause mortality events
+- `r n_cvd_2023` CVD mortality events
+:::
+
+
+**Difference**:
+
+- `r n_acm_2023 - n_acm_2020` additional all-cause mortality events
+- `r n_cvd_2023 - n_cvd_2020` additional CVD mortality events
+- No additional analyses on BP 
+
+
+## Systolic BP levels
+
+
+::: {.column width="15%"}
+
+SBP levels among the intensive group increased after the trial.
+
+:::
+
+::: {.column width="4%"}
+
+:::
+
+::: {.column width="79%"}
+```{r}
+#| fig-width: 10
+
+bp_viz$levels + 
+  theme_fig(legend.position = 'top')
+
+```
+:::
+
+## Systolic BP difference
+
+::: {.column width="15%"}
+By year 10, the estimated difference was about 0
+:::
+
+::: {.column width="4%"}
+
+:::
+
+::: {.column width="79%"}
+```{r}
+#| fig-width: 10
+
+bp_viz$diff + 
+  theme_fig(legend.position = 'top') + 
+  ylab("Between-group difference in SBP, mm Hg")
+
+```
+:::
+
+## All-cause mortality (2016-2020)
+
+::: {.column width="15%"}
+Our original analysis showed the benefit for all-cause mortality attenuated quickly
+:::
+
+::: {.column width="4%"}
+:::
+
+::: {.column width="79%"}
+
+```{r}
+#| fig-width: 10
+
+base_viz_inc$inc_acm[[1]]$plot + 
+  annotate(geom = 'rect',
+           xmin = 9.8,
+           ymin = .18,
+           xmax = Inf,
+           ymax = .35,
+           fill = 'black',
+           alpha = 1) + 
+  theme_fig(legend.position = 'inside',
+            legend.position.inside = c(0.75, 0.20))
+
+
+```
+:::
+
+## All-cause mortality (2016-2023)
+
+::: {.column width="15%"}
+This update shows an unexpected separation after several years of overlap
+:::
+
+::: {.column width="4%"}
+:::
+
+::: {.column width="79%"}
+
+```{r}
+#| fig-width: 10
+
+base_viz_inc$inc_acm[[1]]$plot + 
+  theme_fig(legend.position = 'inside',
+            legend.position.inside = c(0.75, 0.20))
+
+```
+
+:::
+
+## CVD mortality (2016-2020)
+
+::: {.column width="15%"}
+Our original analysis showed benefit for CVD mortality attenuated.
+:::
+
+::: {.column width="4%"}
+:::
+
+::: {.column width="79%"}
+
+```{r}
+#| fig-width: 10
+
+base_viz_inc$inc_cvd[[1]] + 
+  annotate(geom = 'rect',
+           xmin = 9.8,
+           ymin = .02,
+           xmax = 13.2,
+           ymax = .25,
+           fill = 'black',
+           alpha = 1) + 
+  theme_fig(legend.position = 'inside',
+            legend.position.inside = c(0.5, 0.69))
+
+
+```
+
+:::
+
+## CVD mortality (2016-2023)
+
+::: {.column width="15%"}
+This update is a bit of a head-scratcher.
+:::
+
+::: {.column width="4%"}
+:::
+
+
+::: {.column width="79%"}
+```{r}
+#| fig-width: 10
+
+base_viz_inc$inc_cvd[[1]] +
+  theme_fig(legend.position = 'inside',
+            legend.position.inside = c(0.5, 0.69))
+
+```
+:::
+
+## All-cause mortalty (time-split analysis)
+
+```{r}
+#| fig-width: 14
+
+library(cowplot)
+
+plot_grid(
+  long_viz$acm$trial,
+  long_viz$acm$cohort,
+  nrow = 1
+)
+
+
+```
+
+## CVD mortalty (time-split analysis)
+
+```{r}
+#| fig-width: 14
+
+plot_grid(
+  long_viz$cvd$trial,
+  long_viz$cvd$cohort,
+  nrow = 1
+)
+
+
+```
+
+
+
+## References
+
+::: {#refs}
+:::
+

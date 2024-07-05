@@ -43,3 +43,6 @@ renv/
 .Rproj.user
 .Rdata
 .DS_Store
+
+data/
+fig/

@@ -37,13 +37,13 @@ examined.
 
 **RESULTS**. Among 9361 randomized participants (mean \[standard
 deviation\] age 67.9 (9.4) years; 35.6% women), the median intervention
-phase was 3.3 years. Over a median follow-up of 8.76 years, intensive
+phase was 3.3 years. Over a median follow-up of 11.8 years, intensive
 treatment was beneficial for both cardiovascular (Hazard Ratio \[HR\] =
-0.66, 95% confidence interval \[CI\] 0.49 to 0.89) and all-cause
+0.65, 95% confidence interval \[CI\] 0.48 to 0.88) and all-cause
 mortality (HR = 0.83, 95% CI 0.68 to 1.01) through close-out visits for
 the trial. However, there was no evidence of association during
-post-trial follow-up for cardiovascular (HR = 1.02, 95% CI 0.84 to 1.24)
-or all-cause mortality (HR = 1.08, 95% CI 0.94 to 1.23). The estimated
+post-trial follow-up for cardiovascular (HR = 0.92, 95% CI 0.81 to 1.05)
+or all-cause mortality (HR = 1.00, 95% CI 0.90 to 1.10). The estimated
 mean (95% CI) SBP among participants randomized to intensive treatment
 was 133 (132, 134) at 5 years and 140 (138, 143) at 10 years
 post-randomization.

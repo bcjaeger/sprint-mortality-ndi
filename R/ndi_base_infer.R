@@ -26,15 +26,11 @@ ndi_base_infer <- function(ndi_data_list) {
           treatment + treatment:time_factor + strata(randSite)
       )
 
+      k_mat <- diag(length(acm_fit_timevarying$coefficients))
+      k_mat[, 1] <- 1
 
       cph_estimate(acm_fit_timevarying,
-                   k_mat = rbind(c(1,0,0,0,0,0,0),
-                                 c(1,1,0,0,0,0,0),
-                                 c(1,0,1,0,0,0,0),
-                                 c(1,0,0,1,0,0,0),
-                                 c(1,0,0,0,1,0,0),
-                                 c(1,0,0,0,0,1,0),
-                                 c(1,0,0,0,0,0,1))) |>
+                   k_mat = k_mat) |>
         mutate(years = levels(ndi_intervals$time_factor),
                .before = 1)
 

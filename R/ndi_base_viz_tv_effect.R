@@ -24,7 +24,10 @@ ndi_base_viz_tv_effect <- function(ndi_data_list) {
         data = ndi_data
       )
 
-      plot_times <- seq(0, 10, length.out = 1000)
+      maxtime <- 10 # for original ndi
+      maxtime <- 13.5 # for updated ndi
+
+      plot_times <- seq(0, maxtime, length.out = 1000)
 
       spline_x <- cbind(1, ns(x = plot_times, df=6))
 
@@ -50,7 +53,7 @@ ndi_base_viz_tv_effect <- function(ndi_data_list) {
         geom_line(color = cols_tx[2]) +
         scale_y_log10(limits = c(0.35, 2.5),
                       breaks = c(0.5, 1)) +
-        scale_x_continuous(breaks = seq(0,10)) +
+        scale_x_continuous(breaks = seq(0,maxtime)) +
         theme_fig() +
         geom_segment(aes(x = 0, xend = max(time),
                          y = 1, yend = 1),
@@ -61,7 +64,7 @@ ndi_base_viz_tv_effect <- function(ndi_data_list) {
 
       fig_eff_acm <- add_annotations(fig_eff_acm, cols = cols_bg,
                                      ymax = 2.5,
-                                     xmax = 10,
+                                     xmax = maxtime,
                                      ymin = 0.35,
                                      mid_label = '\nTrial\nAnd\nObservational\nPhase',
                                      x_cohort_phase = 7,
@@ -73,7 +76,7 @@ ndi_base_viz_tv_effect <- function(ndi_data_list) {
         model = 'prop',
         n.sim = 1000,
         # times = times,
-        data = ndi_data
+        data = drop_na(ndi_data, cvd_event_cr)
       )
 
       var_cvd <- as_tibble(fit_cvd$var.cum) |>
@@ -98,18 +101,18 @@ ndi_base_viz_tv_effect <- function(ndi_data_list) {
         geom_ribbon(alpha = 0.2) +
         geom_line(color = cols_tx[2]) +
         scale_y_log10(limits = c(0.15, 2.5), breaks = c(0.15, 0.25, 0.5, 1)) +
-        scale_x_continuous(breaks = seq(0,10)) +
+        scale_x_continuous(breaks = seq(0,maxtime)) +
         theme_fig() +
         geom_segment(aes(x = 0, xend = max(time),
                          y = 1, yend = 1),
                      linetype = 2,
                      color = 'black') +
         labs(x = 'Years since randomization',
-             y = 'Hazard ratio (95% CI)')
+             y = 'Hazard ratio for CVD mortality (95% CI)')
 
       fig_eff_cvd <- add_annotations(fig_eff_cvd, cols = cols_bg,
                                      ymax = 2.5,
-                                     xmax = 10,
+                                     xmax = maxtime,
                                      ymin = 0.15,
                                      mid_label = '\nTrial\nAnd\nObservational\nPhase',
                                      x_cohort_phase = 7,

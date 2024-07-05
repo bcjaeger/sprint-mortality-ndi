@@ -13,10 +13,9 @@ if(user == 'nmpieyeskey'){
 }
 
 
-# TODO: consider history of CVD as a subgroup.
-
 ## Load your R files
 lapply(list.files("./R", full.names = TRUE), source)
+
 
 subgroups <- tibble(group = c("overall",
                               "age_cat",
@@ -37,6 +36,10 @@ list(
              fname = 'longterm_death.csv',
              # participant identifier
              pid,
+             # Number of Medications Prescribed
+             n_agents,
+             # Number of Medication Classes Prescribed
+             n_classes,
              # systolic blood pressure at baseline
              sbp,
              # study site
@@ -45,7 +48,16 @@ list(
              acm_years, acm_event,
              # cvd mortality status
              cvd_event = as.numeric(cvd_event_cr == 1),
-             cvd_event_cr)
+             cvd_event_cr) %>%
+      ndi_baseline_update() %>%
+      # todo: ask nick about this
+      filter(pid != 10055290)
+  ),
+
+  tar_target(
+    # assert my data splitting replicates nick's on older data.
+    test_longi_update_code,
+    ndi_longitudinal_assert_replication_nmp()
   ),
 
   tar_target(
@@ -58,7 +70,10 @@ list(
                                   levels = c(0,1),
                                   labels = c("trial", "cohort")),
              start_yrs, end_yrs,
-             mortality, cvd_mortality)
+             mortality, cvd_mortality) %>%
+      ndi_longitudinal_update() %>%
+      # todo: ask nick about this
+      filter(pid != 10055290)
   ),
 
   tar_target(
@@ -123,8 +138,10 @@ list(
     tar_target(base_viz_eff, ndi_base_viz_tv_effect(base_sub))
   ),
 
-  tar_target(bp_viz, bp_long_viz(date_trial = '01-15-22',
-                                 date_ehr = '02-08-22')),
+  tar_target(bp_viz,
+             cue = tar_cue('always'),
+             bp_long_viz(date_trial = '01-15-22',
+                         date_ehr = '02-08-22')),
 
   # ndi_long_describe(ndi_data_list)
 
@@ -158,15 +175,17 @@ list(
 
   tar_render(manuscript, "doc/manuscript-rmd.Rmd"),
 
-  tar_render(readme, "README.Rmd"),
+  tar_render(readme, "README.Rmd")
 
-  tar_render(slides, "index.Rmd")
+  # tar_render(slides, "index.Rmd")
 
 )
 
 
-
-
+# run this code to zip the files that get made when you knit the doc.
+# zip(zipfile = 'figs',
+#     files = list.files(path = 'fig',
+#                        pattern = '^figure\\d\\.tiff$'))
 
 
 
