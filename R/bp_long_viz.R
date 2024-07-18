@@ -91,8 +91,46 @@ bp_long_viz <- function(date_ehr = "02-08-22",
                               group = interaction(treatment, source)),
                 inherit.aes = FALSE)
 
+  fig_levels_ehr_only <-
+    ggplot(filter(bp_levels, source == "EHR")) +
+    aes(x = time_months/12,
+        y = Estimate,
+        color = treatment) +
+    geom_line(size = 0.85) +
+    labs(y = 'Systolic blood pressure, mm Hg',
+         x = 'Years since randomization',
+         fill = 'Treatment',
+         color = 'Treatment',
+         linetype = 'Data Source') +
+    scale_x_continuous(limits = c(0,10),
+                       breaks = seq(0,10)) +
+    scale_y_continuous(limits = c(110, 152),
+                       breaks = seq(110, 150, by=5)) +
+    scale_color_manual(values = cols_tx) +
+    scale_fill_manual(values = cols_tx) +
+    scale_linetype_manual(values = c(1,2)) +
+    theme_fig(legend.position = 'right') +
+    geom_ribbon(alpha = 0.2,
+                mapping = aes(x = time_months/12,
+                              ymin = Lower,
+                              ymax = Upper,
+                              fill = treatment,
+                              group = interaction(treatment, source)),
+                inherit.aes = FALSE)
+
+
+
   fig_levels <-
     add_annotations(fig_levels,
+                    cols = cols_bg,
+                    ymax = 152,
+                    xmax = 10,
+                    ymin = 110,
+                    ymult = 0.965,
+                    x_cohort_phase = 6)
+
+  fig_levels_ehr_only <-
+    add_annotations(fig_levels_ehr_only,
                     cols = cols_bg,
                     ymax = 152,
                     xmax = 10,
@@ -120,6 +158,24 @@ bp_long_viz <- function(date_ehr = "02-08-22",
                        breaks = seq(-5,25, by=5)) +
     theme_fig(legend.position = 'right')
 
+  fig_diff_ehr_only <-
+    ggplot(filter(bp_diff, source == "EHR")) +
+    aes(x = time_months/12,
+        y = Estimate) +
+    geom_line(color = cols_tx[2], size = 0.85) +
+    geom_ribbon(aes(ymin = Lower, ymax = Upper),
+                fill = cols_tx[2],
+                alpha = 0.2) +
+    labs(y = 'Between-group difference in systolic blood pressure, mm Hg',
+         x = 'Years since randomization',
+         linetype = 'Data Source') +
+    scale_linetype_manual(values = c(2,1)) +
+    scale_x_continuous(limits = c(0,10),
+                       breaks = seq(0,10)) +
+    scale_y_continuous(limits = c(-5, 25),
+                       breaks = seq(-5,25, by=5)) +
+    theme_fig(legend.position = 'right')
+
   fig_diff <-
     add_annotations(fig_diff,
                     cols = cols_bg,
@@ -129,7 +185,18 @@ bp_long_viz <- function(date_ehr = "02-08-22",
                     ymult = 0.85,
                     x_cohort_phase = 6)
 
+  fig_diff_ehr_only <-
+    add_annotations(fig_diff_ehr_only,
+                    cols = cols_bg,
+                    ymax = 25,
+                    xmax = 10,
+                    ymin = -5,
+                    ymult = 0.85,
+                    x_cohort_phase = 6)
+
   list(levels = fig_levels,
-       diff = fig_diff)
+       levels_ehr_only = fig_levels_ehr_only,
+       diff = fig_diff,
+       diff_ehr_only = fig_diff_ehr_only)
 
 }

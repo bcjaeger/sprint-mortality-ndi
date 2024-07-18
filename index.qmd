@@ -6,7 +6,7 @@ institute: "Wake Forest University School of Medicine"
 format: 
   revealjs:
     slide-number: true
-    footer: Slides available at
+    footer: Slides available at https://www.byronjaeger.com/talk/ (google byron jaeger biostats talks)
     width: 1280
     height: 720
     fig-dpi: 300
@@ -74,6 +74,16 @@ cols_tx <- pal_lancet()(2)
 
 ```
 
+## Disclosures
+
+I have nothing to disclose.
+
+## TL;DR
+
+- After SPRINT, from 2016-2020, the mean systolic blood pressure levels of participants returned to about 140 mm Hg, and the benefit of intensive blood pressure control attenuated. 
+
+- Additional follow-up from 2020-2023 provides an opportunity to think carefully about interventions that had a beneficial effect.
+
 ## Overview
 
 - Background: SPRINT
@@ -81,8 +91,6 @@ cols_tx <- pal_lancet()(2)
 - Why is longer term follow-up relevant?
 
 - How did SPRINT do longer term follow-up on *all-cause and CVD mortality*?
-
-- How did we analyze the longer term follow-up?
 
 - Results
 
@@ -203,25 +211,10 @@ fig_cr
 ![](img/jama_cardio_cover.png)
 :::
 
-## How did we analyze longer term follow-up?
-
-![](img/ph-assumption.gif){.absolute top="120" right="0"}
-
-::: {.column width="50%"}
-- assumed treatment group differences would not be constant over time.
-
-- split each participant’s follow-up time into non-overlapping trial and observational phases
-
-- estimated regression coefficients for intensive treatment separately during each phase.
-
-:::
-
-::: {.column width="49%"}
-:::
 
 # Results
 
-## What's changed?
+## Number of events
 
 ::: {.column width="49%"}
 **2016-2020**
@@ -263,7 +256,7 @@ SBP levels among the intensive group increased after the trial.
 ```{r}
 #| fig-width: 10
 
-bp_viz$levels + 
+bp_viz$levels_ehr_only + 
   theme_fig(legend.position = 'top')
 
 ```
@@ -283,7 +276,7 @@ By year 10, the estimated difference was about 0
 ```{r}
 #| fig-width: 10
 
-bp_viz$diff + 
+bp_viz$diff_ehr_only + 
   theme_fig(legend.position = 'top') + 
   ylab("Between-group difference in SBP, mm Hg")
 
@@ -374,7 +367,7 @@ base_viz_inc$inc_cvd[[1]] +
 ## CVD mortality (2016-2023)
 
 ::: {.column width="15%"}
-This update is a bit of a head-scratcher.
+A bit of a head-scratcher.
 :::
 
 ::: {.column width="4%"}
@@ -391,6 +384,45 @@ base_viz_inc$inc_cvd[[1]] +
 
 ```
 :::
+
+## Conclusion
+
+- After SPRINT, from 2016-2020, SBP returned to about 140 mm Hg, and the benefit of intensive blood pressure control attenuated. 
+
+- The latest update shows what appears to be a resurfaced benefit in terms of CVD mortality. This could be attributed to:
+    
+    + participants in the intensive blood pressure control group who maintained control after the trial
+
+    + intensive blood pressure control has higher estimated benefit for younger adults.
+
+## References
+
+::: {#refs}
+:::
+
+
+::: {style="font-size: 2em"}
+# BONUS ROUND
+:::
+
+
+
+## How did we analyze longer term follow-up?
+
+![](img/ph-assumption.gif){.absolute top="120" right="0"}
+
+::: {.column width="50%"}
+- assumed treatment group differences would not be constant over time.
+
+- split each participant’s follow-up time into non-overlapping trial and observational phases
+
+- estimated regression coefficients for intensive treatment separately during each phase.
+
+:::
+
+::: {.column width="49%"}
+:::
+
 
 ## All-cause mortalty (time-split analysis)
 
@@ -421,11 +453,3 @@ plot_grid(
 
 
 ```
-
-
-
-## References
-
-::: {#refs}
-:::
-
