@@ -16,7 +16,7 @@ knitr::opts_chunk$set(echo = FALSE,
                       fig.height = 6.25)
 
 # specification for tables
-rspec <- round_spec() |>
+rspec <- round_spec() %>%
   round_using_magnitude(digits = c(2, 1, 0),
                         breaks = c(10, 100, Inf))
 
@@ -37,17 +37,27 @@ options(rspec)
 
 ```{r load-targets, include=FALSE}
 
-tar_load(names = c(recoders,
-                   base_viz_inc,
-                   base_viz_eff,
-                   long_viz,
-                   bp_viz,
-                   tbl_characteristics,
-                   base_ds, 
-                   long_ds,
-                   long_inf,
-                   base_inf,
-                   ndi_baseline))
+withr::with_dir(
+  here::here(),
+  code = {
+    tar_load(names = c(recoders,
+                       base_viz_inc,
+                       base_viz_eff,
+                       long_viz,
+                       bp_viz,
+                       tbl_characteristics,
+                       base_ds, 
+                       long_ds,
+                       long_inf,
+                       base_inf,
+                       ndi_baseline))
+  }
+)
+
+```
+
+
+```{r make-results, include=FALSE}
 
 fig <- left_join(base_viz_inc, base_viz_eff)
 
@@ -55,19 +65,25 @@ inline <- list()
 
 tbl_variables <- c('variable', 'group', 'treatment')
 
-inline$base_ds <- base_ds |>
+inline$base_ds <- base_ds %>%
   mutate(across(matches("est$|lwr$|upr"), table_value),
-         across(matches("^n_"), ~table_value(as.integer(.x)))) |>
-  as_inline(tbl_variables = tbl_variables,
-            tbl_values = setdiff(names(base_ds), tbl_variables))
+         across(matches("^n_"), ~table_value(as.integer(.x))))
+
+inline$base_ds <- as_inline(inline$base_ds,
+                            tbl_variables = tbl_variables,
+                            tbl_values = setdiff(names(base_ds), 
+                                                 tbl_variables))
 
 tbl_variables <- c('variable', 'group', 'trial_phase')
 
-inline$long_inf <- long_inf |>
+inline$long_inf <- long_inf %>%
   mutate(across(matches("est$|lwr$|upr"), table_value),
-         across(matches("^n_"), ~table_value(as.integer(.x)))) |>
-  as_inline(tbl_variables = tbl_variables,
-            tbl_values = setdiff(names(long_inf), tbl_variables))
+         across(matches("^n_"), ~table_value(as.integer(.x))))
+
+inline$long_inf <- as_inline(inline$long_inf,
+                             tbl_variables = tbl_variables,
+                             tbl_values = setdiff(names(long_inf),
+                                                  tbl_variables))
 
 # ap makes inline insertion of results less text-heavy.
 # ap = access point, 
@@ -82,17 +98,17 @@ ap_b_s <- inline$base_ds$overall$overall$Standard
 ap_l_o_t <- inline$long_inf$overall$overall$trial
 ap_l_o_c <- inline$long_inf$overall$overall$cohort
 
-bp_viz_5yr <- bp_viz |> 
-  getElement('levels') |> 
-  getElement('data') |> 
+bp_viz_5yr <- bp_viz %>% 
+  getElement('levels') %>% 
+  getElement('data') %>% 
   filter(source == 'EHR', 
          time_months == 60)
 
 bp_viz_5yr <- split(bp_viz_5yr, bp_viz_5yr$treatment)
 
-bp_viz_10yr <- bp_viz |> 
-  getElement('levels') |> 
-  getElement('data') |> 
+bp_viz_10yr <- bp_viz %>% 
+  getElement('levels') %>% 
+  getElement('data') %>% 
   filter(source=='EHR',
          time_months == 120)
 
@@ -101,17 +117,17 @@ bp_viz_10yr <- split(bp_viz_10yr, bp_viz_10yr$treatment)
 # a temporary function for inline reporting of BP values
 f <- function(d) with(d, .("{Estimate} ({Lower}, {Upper})"))
 
-bp_diff_5yr <- bp_viz |> 
-  getElement('diff') |> 
-  getElement('data') |> 
+bp_diff_5yr <- bp_viz %>% 
+  getElement('diff') %>% 
+  getElement('data') %>% 
   filter(time_months == 60)
 
-t_atten_sbp <- bp_viz |> 
-  getElement('diff') |> 
-  getElement('data') |> 
+t_atten_sbp <- bp_viz %>% 
+  getElement('diff') %>% 
+  getElement('data') %>% 
   filter(source == 'EHR',
-         find_signchange_lgl(Lower)) |> 
-  pull(time_months) |> 
+         find_signchange_lgl(Lower)) %>% 
+  pull(time_months) %>% 
   divide_by(12)
 
 ```

@@ -6,7 +6,6 @@ institute: "Wake Forest University School of Medicine"
 format: 
   revealjs:
     slide-number: true
-    footer: Slides available at https://www.byronjaeger.com/talk/ (google byron jaeger biostats talks)
     width: 1280
     height: 720
     fig-dpi: 300
@@ -83,6 +82,9 @@ I have nothing to disclose.
 - After SPRINT, from 2016-2020, the mean systolic blood pressure levels of participants returned to about 140 mm Hg, and the benefit of intensive blood pressure control attenuated. 
 
 - Additional follow-up from 2020-2023 provides an opportunity to think carefully about interventions that had a beneficial effect.
+
+
+- Slides are available at https://www.byronjaeger.com/talk/ (google byron jaeger biostats talks)
 
 ## Overview
 
@@ -305,8 +307,7 @@ base_viz_inc$inc_acm[[1]]$plot +
            ymax = .35,
            fill = 'black',
            alpha = 1) + 
-  theme_fig(legend.position = 'inside',
-            legend.position.inside = c(0.75, 0.20))
+  theme_fig(legend.position = 'top')
 
 
 ```
@@ -327,8 +328,7 @@ This update shows an unexpected separation after several years of overlap
 #| fig-width: 10
 
 base_viz_inc$inc_acm[[1]]$plot + 
-  theme_fig(legend.position = 'inside',
-            legend.position.inside = c(0.75, 0.20))
+  theme_fig(legend.position = 'top')
 
 ```
 
@@ -356,8 +356,7 @@ base_viz_inc$inc_cvd[[1]] +
            ymax = .25,
            fill = 'black',
            alpha = 1) + 
-  theme_fig(legend.position = 'inside',
-            legend.position.inside = c(0.5, 0.69))
+  theme_fig(legend.position = 'top')
 
 
 ```
@@ -379,8 +378,7 @@ A bit of a head-scratcher.
 #| fig-width: 10
 
 base_viz_inc$inc_cvd[[1]] +
-  theme_fig(legend.position = 'inside',
-            legend.position.inside = c(0.5, 0.69))
+  theme_fig(legend.position = 'top')
 
 ```
 :::

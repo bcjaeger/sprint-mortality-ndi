@@ -53,6 +53,9 @@ ndi_base_viz_incidence <- function(ndi_data_list) {
         x_cohort_phase = 7
       )
 
+      fig_kap$plot <- fig_kap$plot +
+        scale_x_continuous(expand = c(0, 0, 0, 0),
+                           breaks = 1:12)
 
       fit_cr <- cuminc(ftime   = ndi_data$acm_years,
                        fstatus = factor(ndi_data$cvd_event_cr,
